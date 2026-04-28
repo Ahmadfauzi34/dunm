@@ -1,10 +1,9 @@
-
+# .github/workflows/jules.yml
 name: Jules Agent
 
 on: 
   pull_request:
     types: [opened, synchronize, reopened] # Memastikan Jules berjalan saat PR di-update
-
 
 jobs:
   jules:
@@ -14,5 +13,4 @@ jobs:
       - name: Run Jules
         uses: google-labs-code/jules-action@v1
         with:
-          github-token: ${{ secrets.AQ.Ab8RN6KA-bZFotE3sEqbd7to_AloOoKmRFVGGl-FGNZ0hJyO0g }}
-
+          github-token: ${{ secrets.GITHUB_TOKEN }}
