@@ -1,0 +1,22 @@
+pub mod axiom_generator;
+pub mod entanglement_graph;
+pub mod entanglement_optimizer;
+pub mod global_blackboard;
+pub mod grover_diffusion_system;
+pub mod hamiltonian_pruner;
+pub mod hierarchical_inference;
+pub mod multiverse_sandbox;
+pub mod quantum_search;
+pub mod quantum_search_simd;
+pub mod rrm_agent;
+pub mod skill_library;
+pub mod swarm_dynamics;
+pub mod top_down_axiomator;
+pub mod topological_aligner;
+pub mod wave_dynamics;
+
+pub mod causal_reasoning;
+pub mod counterfactual_engine;
+pub mod hierarchical_planner;
+pub mod skill_composer;
+pub mod structures;

@@ -1,0 +1,1630 @@
+   Compiling rrm_rust v0.1.0 (/app/rrm_rust)
+warning: unused import: `futures_lite::future`
+  --> src/reasoning/rrm_agent.rs:18:5
+   |
+18 | use futures_lite::future;
+   |     ^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `crate::reasoning::hamiltonian_pruner::HamiltonianPruner`
+ --> src/reasoning/quantum_search.rs:5:5
+  |
+5 | use crate::reasoning::hamiltonian_pruner::HamiltonianPruner;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::core::config::GLOBAL_DIMENSION`
+ --> src/reasoning/grover_diffusion_system.rs:1:5
+  |
+1 | use crate::core::config::GLOBAL_DIMENSION;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::reasoning::hamiltonian_pruner::HamiltonianPruner`
+ --> src/reasoning/grover_diffusion_system.rs:4:5
+  |
+4 | use crate::reasoning::hamiltonian_pruner::HamiltonianPruner;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused doc comment
+ --> src/perception/hierarchical_gestalt.rs:5:1
+  |
+5 | /// Thread-local buffer pool untuk SIMD/Cache-friendly operations
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ rustdoc does not generate documentation for macro invocations
+  |
+  = help: to document an item produced by a macro, the macro must produce the documentation as part of its expansion
+  = note: `#[warn(unused_doc_comments)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `Fft`
+ --> src/core/fhrr.rs:5:15
+  |
+5 | use rustfft::{Fft, FftPlanner};
+  |               ^^^
+
+warning: value assigned to `min_x` is never read
+   --> src/reasoning/multiverse_sandbox.rs:166:29
+    |
+166 |             let mut min_x = 0.0; let mut max_x = 0.0;
+    |                             ^^^
+    |
+    = help: maybe it is overwritten before being read?
+    = note: `#[warn(unused_assignments)]` (part of `#[warn(unused)]`) on by default
+
+warning: value assigned to `max_x` is never read
+   --> src/reasoning/multiverse_sandbox.rs:166:50
+    |
+166 |             let mut min_x = 0.0; let mut max_x = 0.0;
+    |                                                  ^^^
+    |
+    = help: maybe it is overwritten before being read?
+
+warning: value assigned to `max_x` is never read
+   --> src/reasoning/multiverse_sandbox.rs:208:25
+    |
+208 |                         max_x = min_x + target_w - 1.0;
+    |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: maybe it is overwritten before being read?
+
+warning: value assigned to `min_y` is never read
+   --> src/reasoning/multiverse_sandbox.rs:167:29
+    |
+167 |             let mut min_y = 0.0; let mut max_y = 0.0;
+    |                             ^^^
+    |
+    = help: maybe it is overwritten before being read?
+
+warning: value assigned to `max_y` is never read
+   --> src/reasoning/multiverse_sandbox.rs:167:50
+    |
+167 |             let mut min_y = 0.0; let mut max_y = 0.0;
+    |                                                  ^^^
+    |
+    = help: maybe it is overwritten before being read?
+
+warning: value assigned to `max_y` is never read
+   --> src/reasoning/multiverse_sandbox.rs:209:25
+    |
+209 |                         max_y = min_y + target_h - 1.0;
+    |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: maybe it is overwritten before being read?
+
+warning: value assigned to `target_w` is never read
+   --> src/reasoning/multiverse_sandbox.rs:168:32
+    |
+168 |             let mut target_w = 0.0; let mut target_h = 0.0;
+    |                                ^^^
+    |
+    = help: maybe it is overwritten before being read?
+
+warning: value assigned to `target_h` is never read
+   --> src/reasoning/multiverse_sandbox.rs:168:56
+    |
+168 |             let mut target_w = 0.0; let mut target_h = 0.0;
+    |                                                        ^^^
+    |
+    = help: maybe it is overwritten before being read?
+
+warning: value assigned to `found` is never read
+   --> src/reasoning/multiverse_sandbox.rs:196:25
+    |
+196 |                         found = true;
+    |                         ^^^^^^^^^^^^
+    |
+    = help: maybe it is overwritten before being read?
+
+warning: unused variable: `best_grover_idx`
+   --> src/reasoning/rrm_agent.rs:211:21
+    |
+211 |                 let best_grover_idx = grover.search(&candidates, &grove...
+    |                     ^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_best_grover_idx`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `interference`
+   --> src/reasoning/quantum_search.rs:197:13
+    |
+197 |         let interference = if pragmatic_error == 0.0 { 1.0 } else { 1.0...
+    |             ^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_interference`
+
+warning: unused variable: `chunk`
+   --> src/shared/visualizer.rs:391:17
+    |
+391 |         for (i, chunk) in tensor.iter().take(100).enumerate().step_by(1...
+    |                 ^^^^^ help: if this is intentional, prefix it with an underscore: `_chunk`
+
+warning: method `clear` is never used
+   --> src/memory/logic_seed_bank.rs:103:8
+    |
+ 19 | impl LshIndex {
+    | ------------- method in this implementation
+...
+103 |     fn clear(&mut self) {
+    |        ^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: field `pruner` is never read
+  --> src/reasoning/rrm_agent.rs:23:5
+   |
+20 | pub struct RrmAgent {
+   |            -------- field in this struct
+...
+23 |     pruner: HamiltonianPruner, // Akan di-deprecate karena diganti Async...
+   |     ^^^^^^
+
+warning: field `sandbox` is never read
+  --> src/reasoning/grover_diffusion_system.rs:43:5
+   |
+37 | pub struct GroverDiffusionSystem<'a> {
+   |            --------------------- field in this struct
+...
+43 |     sandbox: &'a mut MultiverseSandbox,
+   |     ^^^^^^^
+
+warning: `rrm_rust` (bin "rrm_rust") generated 21 warnings (run `cargo fix --bin "rrm_rust" -p rrm_rust` to apply 7 suggestions)
+    Finished `release` profile [optimized] target(s) in 1m 00s
+     Running `target/release/rrm_rust`
+🌌 RRM Quantum Sandbox (Rust Edition) Initialized.
+Solving Task: 025d127b.json
+[Depth 1] Axioms: ["IF_COLOR(8)_THEN_TRANS_-3_-3"] | Pragmatic: 26000.00 | Epistemic: 2.55 | Prob: 0.4701 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.470 μ=0.635 range[0.470, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  26000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     2.546  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 25997.455  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: ⏸️  PENDING (queued for evaluation)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["IF_COLOR(8)_THEN_SHIFT(->4)"] | Pragmatic: 26000.00 | Epistemic: 0.00 | Prob: 0.4700 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.470 μ=0.635 range[0.470, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  26000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     0.000  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 26000.000  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: ⏸️  PENDING (queued for evaluation)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["IF_COLOR(4)_THEN_TRANS_0_-3"] | Pragmatic: 26000.00 | Epistemic: 3.32 | Prob: 0.4701 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.470 μ=0.635 range[0.470, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  26000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     3.323  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 25996.678  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: ⏸️  PENDING (queued for evaluation)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+   🧠 [Metakognisi] Terjebak di Local Optimum (Fast Pass Gagal).
+   🧠 Beralih ke Mode: PROBABILISTIC (Mengaktifkan Rasa Ingin Tahu Tinggi untuk Struktur Kosmik!)
+   [Rust MCTS] Fast Pass gagal. Memulai ADVANCED PASS (Depth 2, All Physics)...
+   🧠 Advanced Pass Axioms Generated (Sim >= 0.3): 38
+      [0] ["IF_COLOR(8)_THEN_TRANS_-3_-3"] | sim: 1.000 | tier: 0 | dx: -3 dy: -3
+      [1] ["IF_COLOR(8)_THEN_MOVE_TO_COLOR(4)"] | sim: 1.000 | tier: 3 | dx: 4 dy: 999
+      [2] ["IF_COLOR(8)_THEN_SHIFT(->4)"] | sim: 1.000 | tier: 0 | dx: 0 dy: 0
+      [3] ["CROP_WINDOW_AROUND(3)"] | sim: 0.980 | tier: 7 | dx: 0 dy: 0
+      [4] ["CROP_TO_COLOR(4)"] | sim: 0.980 | tier: 7 | dx: 0 dy: 0
+      [5] ["CROP_WINDOW_AROUND(4)"] | sim: 0.980 | tier: 7 | dx: 0 dy: 0
+      [6] ["CROP_WINDOW_AROUND(8)"] | sim: 0.980 | tier: 7 | dx: 0 dy: 0
+      [7] ["IF_COLOR(4)_THEN_TRANS_0_-3"] | sim: 0.900 | tier: 0 | dx: 0 dy: -3
+      [8] ["IF_COLOR(8)_THEN_TRANS_0_-3"] | sim: 0.900 | tier: 0 | dx: 0 dy: -3
+      [9] ["IF_COLOR(8)_THEN_TRANS_0_-3"] | sim: 0.900 | tier: 0 | dx: 0 dy: -3
+      [10] ["IF_COLOR(4)_THEN_MOVE_TO_COLOR(8)"] | sim: 0.900 | tier: 3 | dx: 8 dy: 999
+      [11] ["IF_COLOR(8)_THEN_TRANS_0_0"] | sim: 0.800 | tier: 0 | dx: 0 dy: 0
+      [12] ["GLOBAL_MIRROR_X"] | sim: 0.500 | tier: 4 | dx: 0 dy: 0
+      [13] ["GLOBAL_MIRROR_Y"] | sim: 0.490 | tier: 4 | dx: 0 dy: 0
+      [14] ["GLOBAL_ROTATE_90"] | sim: 0.480 | tier: 4 | dx: 0 dy: 0
+      [15] ["GLOBAL_ROTATE_180"] | sim: 0.470 | tier: 4 | dx: 0 dy: 0
+      [16] ["GLOBAL_ROTATE_270"] | sim: 0.460 | tier: 4 | dx: 0 dy: 0
+      [17] ["IF_COLOR(3)_THEN_MIRROR_X"] | sim: 0.400 | tier: 4 | dx: 0 dy: 0
+      [18] ["IF_COLOR(3)_THEN_MIRROR_Y"] | sim: 0.400 | tier: 4 | dx: 0 dy: 0
+      [19] ["IF_COLOR(3)_THEN_ROTATE_90"] | sim: 0.400 | tier: 4 | dx: 0 dy: 0
+      [20] ["IF_COLOR(3)_THEN_ROTATE_180"] | sim: 0.400 | tier: 4 | dx: 0 dy: 0
+      [21] ["IF_COLOR(3)_THEN_ROTATE_270"] | sim: 0.400 | tier: 4 | dx: 0 dy: 0
+      [22] ["IF_COLOR(4)_THEN_MIRROR_X"] | sim: 0.400 | tier: 4 | dx: 0 dy: 0
+      [23] ["IF_COLOR(4)_THEN_MIRROR_Y"] | sim: 0.400 | tier: 4 | dx: 0 dy: 0
+      [24] ["IF_COLOR(4)_THEN_ROTATE_90"] | sim: 0.400 | tier: 4 | dx: 0 dy: 0
+      [25] ["IF_COLOR(4)_THEN_ROTATE_180"] | sim: 0.400 | tier: 4 | dx: 0 dy: 0
+      [26] ["IF_COLOR(4)_THEN_ROTATE_270"] | sim: 0.400 | tier: 4 | dx: 0 dy: 0
+      [27] ["IF_COLOR(8)_THEN_MIRROR_X"] | sim: 0.400 | tier: 4 | dx: 0 dy: 0
+      [28] ["IF_COLOR(8)_THEN_MIRROR_Y"] | sim: 0.400 | tier: 4 | dx: 0 dy: 0
+      [29] ["IF_COLOR(8)_THEN_ROTATE_90"] | sim: 0.400 | tier: 4 | dx: 0 dy: 0
+   🔍 Search Attempt 1: Exploring top 2 advanced axioms...
+   ⚡ Memulai MCTS dari ROOT ZERO-POINT (Depth 0) dengan 37 amunisi unik...
+[Depth 0] Axioms: ["ROOT_START"] | Pragmatic: 26000.00 | Epistemic: 0.00 | Prob: 0.4700 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 0                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.470 μ=0.635 range[0.470, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  26000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     0.000  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 26000.000  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "CROP_WINDOW_AROUND(3)"] | Pragmatic: 26000.00 | Epistemic: 0.00 | Prob: 0.4700 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.470 μ=0.635 range[0.470, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  26000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     0.000  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 26000.000  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "CROP_TO_COLOR(4)"] | Pragmatic: 11000.00 | Epistemic: 3.24 | Prob: 0.7701 | Dim: 1x1
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.770 μ=0.785 range[0.770, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  11000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     3.239  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 10996.762  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [___█_______________________________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "CROP_WINDOW_AROUND(4)"] | Pragmatic: 26000.00 | Epistemic: 0.00 | Prob: 0.4700 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.470 μ=0.635 range[0.470, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  26000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     0.000  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 26000.000  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "CROP_WINDOW_AROUND(8)"] | Pragmatic: 26000.00 | Epistemic: 0.00 | Prob: 0.4700 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.470 μ=0.635 range[0.470, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  26000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     0.000  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 26000.000  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "CROP_TO_COLOR(3)"] | Pragmatic: 26000.00 | Epistemic: 0.00 | Prob: 0.4700 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.470 μ=0.635 range[0.470, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  26000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     0.000  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 26000.000  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "CROP_TO_COLOR(4)"] | Pragmatic: 11000.00 | Epistemic: 3.24 | Prob: 0.7701 | Dim: 1x1
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.770 μ=0.785 range[0.770, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  11000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     3.239  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 10996.762  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [___█_______________________________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "CROP_TO_COLOR(8)"] | Pragmatic: 11000.00 | Epistemic: 4.80 | Prob: 0.7701 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.770 μ=0.785 range[0.770, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  11000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     4.800  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 10995.200  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "GLOBAL_MIRROR_X"] | Pragmatic: 13000.00 | Epistemic: 9.51 | Prob: 0.7302 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.730 μ=0.765 range[0.730, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  13000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     9.514  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 12990.485  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "GLOBAL_MIRROR_Y"] | Pragmatic: 13000.00 | Epistemic: 9.51 | Prob: 0.7302 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.730 μ=0.765 range[0.730, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  13000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     9.514  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 12990.485  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "GLOBAL_ROTATE_90"] | Pragmatic: 13000.00 | Epistemic: 9.89 | Prob: 0.7302 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.730 μ=0.765 range[0.730, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  13000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     9.895  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 12990.105  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "GLOBAL_ROTATE_180"] | Pragmatic: 13000.00 | Epistemic: 9.89 | Prob: 0.7302 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.730 μ=0.765 range[0.730, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  13000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     9.895  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 12990.105  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "GLOBAL_ROTATE_270"] | Pragmatic: 13000.00 | Epistemic: 9.89 | Prob: 0.7302 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.730 μ=0.765 range[0.730, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  13000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     9.895  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 12990.105  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "IF_COLOR(3)_THEN_MIRROR_X"] | Pragmatic: 13000.00 | Epistemic: 5.02 | Prob: 0.7301 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.730 μ=0.765 range[0.730, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  13000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     5.021  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 12994.979  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "IF_COLOR(3)_THEN_MIRROR_Y"] | Pragmatic: 13000.00 | Epistemic: 5.02 | Prob: 0.7301 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.730 μ=0.765 range[0.730, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  13000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     5.021  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 12994.979  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "IF_COLOR(3)_THEN_ROTATE_90"] | Pragmatic: 13000.00 | Epistemic: 5.53 | Prob: 0.7301 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.730 μ=0.765 range[0.730, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  13000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     5.531  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 12994.469  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "IF_COLOR(3)_THEN_ROTATE_180"] | Pragmatic: 13000.00 | Epistemic: 5.53 | Prob: 0.7301 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.730 μ=0.765 range[0.730, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  13000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     5.531  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 12994.469  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "IF_COLOR(3)_THEN_ROTATE_270"] | Pragmatic: 13000.00 | Epistemic: 5.53 | Prob: 0.7301 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.730 μ=0.765 range[0.730, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  13000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     5.531  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 12994.469  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "IF_COLOR(4)_THEN_MIRROR_X"] | Pragmatic: 13000.00 | Epistemic: 3.32 | Prob: 0.7301 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.730 μ=0.765 range[0.730, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  13000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     3.323  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 12996.677  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "IF_COLOR(4)_THEN_MIRROR_Y"] | Pragmatic: 13000.00 | Epistemic: 3.32 | Prob: 0.7301 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.730 μ=0.765 range[0.730, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  13000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     3.323  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 12996.677  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "IF_COLOR(4)_THEN_ROTATE_90"] | Pragmatic: 13000.00 | Epistemic: 3.32 | Prob: 0.7301 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.730 μ=0.765 range[0.730, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  13000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     3.323  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 12996.677  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+   🔍 Search Attempt 2: Exploring top 5 advanced axioms...
+   ⚡ Memulai MCTS dari ROOT ZERO-POINT (Depth 0) dengan 37 amunisi unik...
+[Depth 0] Axioms: ["ROOT_START"] | Pragmatic: 26000.00 | Epistemic: 0.00 | Prob: 0.4700 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 0                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.470 μ=0.635 range[0.470, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  26000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     0.000  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 26000.000  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "CROP_WINDOW_AROUND(3)"] | Pragmatic: 26000.00 | Epistemic: 0.00 | Prob: 0.4700 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.470 μ=0.635 range[0.470, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  26000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     0.000  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 26000.000  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "CROP_TO_COLOR(4)"] | Pragmatic: 11000.00 | Epistemic: 3.24 | Prob: 0.7701 | Dim: 1x1
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.770 μ=0.785 range[0.770, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  11000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     3.239  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 10996.762  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [___█_______________________________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "CROP_WINDOW_AROUND(4)"] | Pragmatic: 26000.00 | Epistemic: 0.00 | Prob: 0.4700 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.470 μ=0.635 range[0.470, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  26000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     0.000  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 26000.000  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "CROP_WINDOW_AROUND(8)"] | Pragmatic: 26000.00 | Epistemic: 0.00 | Prob: 0.4700 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.470 μ=0.635 range[0.470, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  26000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     0.000  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 26000.000  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "CROP_TO_COLOR(3)"] | Pragmatic: 26000.00 | Epistemic: 0.00 | Prob: 0.4700 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.470 μ=0.635 range[0.470, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  26000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     0.000  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 26000.000  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "CROP_TO_COLOR(4)"] | Pragmatic: 11000.00 | Epistemic: 3.24 | Prob: 0.7701 | Dim: 1x1
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.770 μ=0.785 range[0.770, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  11000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     3.239  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 10996.762  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [___█_______________________________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "CROP_TO_COLOR(8)"] | Pragmatic: 11000.00 | Epistemic: 4.80 | Prob: 0.7701 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.770 μ=0.785 range[0.770, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  11000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     4.800  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 10995.200  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "GLOBAL_MIRROR_X"] | Pragmatic: 13000.00 | Epistemic: 9.51 | Prob: 0.7302 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.730 μ=0.765 range[0.730, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  13000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     9.514  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 12990.485  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "GLOBAL_MIRROR_Y"] | Pragmatic: 13000.00 | Epistemic: 9.51 | Prob: 0.7302 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.730 μ=0.765 range[0.730, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  13000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     9.514  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 12990.485  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "GLOBAL_ROTATE_90"] | Pragmatic: 13000.00 | Epistemic: 9.89 | Prob: 0.7302 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.730 μ=0.765 range[0.730, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  13000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     9.895  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 12990.105  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "GLOBAL_ROTATE_180"] | Pragmatic: 13000.00 | Epistemic: 9.89 | Prob: 0.7302 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.730 μ=0.765 range[0.730, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  13000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     9.895  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 12990.105  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "GLOBAL_ROTATE_270"] | Pragmatic: 13000.00 | Epistemic: 9.89 | Prob: 0.7302 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.730 μ=0.765 range[0.730, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  13000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     9.895  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 12990.105  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "IF_COLOR(3)_THEN_MIRROR_X"] | Pragmatic: 13000.00 | Epistemic: 5.02 | Prob: 0.7301 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.730 μ=0.765 range[0.730, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  13000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     5.021  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 12994.979  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "IF_COLOR(3)_THEN_MIRROR_Y"] | Pragmatic: 13000.00 | Epistemic: 5.02 | Prob: 0.7301 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.730 μ=0.765 range[0.730, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  13000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     5.021  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 12994.979  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "IF_COLOR(3)_THEN_ROTATE_90"] | Pragmatic: 13000.00 | Epistemic: 5.53 | Prob: 0.7301 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.730 μ=0.765 range[0.730, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  13000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     5.531  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 12994.469  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "IF_COLOR(3)_THEN_ROTATE_180"] | Pragmatic: 13000.00 | Epistemic: 5.53 | Prob: 0.7301 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.730 μ=0.765 range[0.730, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  13000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     5.531  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 12994.469  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "IF_COLOR(3)_THEN_ROTATE_270"] | Pragmatic: 13000.00 | Epistemic: 5.53 | Prob: 0.7301 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.730 μ=0.765 range[0.730, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  13000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     5.531  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 12994.469  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "IF_COLOR(4)_THEN_MIRROR_X"] | Pragmatic: 13000.00 | Epistemic: 3.32 | Prob: 0.7301 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.730 μ=0.765 range[0.730, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  13000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     3.323  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 12996.677  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "IF_COLOR(4)_THEN_MIRROR_Y"] | Pragmatic: 13000.00 | Epistemic: 3.32 | Prob: 0.7301 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.730 μ=0.765 range[0.730, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  13000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     3.323  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 12996.677  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "IF_COLOR(4)_THEN_ROTATE_90"] | Pragmatic: 13000.00 | Epistemic: 3.32 | Prob: 0.7301 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.730 μ=0.765 range[0.730, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  13000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     3.323  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 12996.677  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+   🔍 Search Attempt 3: Exploring top 10 advanced axioms...
+   ⚡ Memulai MCTS dari ROOT ZERO-POINT (Depth 0) dengan 37 amunisi unik...
+[Depth 0] Axioms: ["ROOT_START"] | Pragmatic: 26000.00 | Epistemic: 0.00 | Prob: 0.4700 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 0                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.470 μ=0.635 range[0.470, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  26000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     0.000  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 26000.000  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "CROP_WINDOW_AROUND(3)"] | Pragmatic: 26000.00 | Epistemic: 0.00 | Prob: 0.4700 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.470 μ=0.635 range[0.470, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  26000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     0.000  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 26000.000  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "CROP_TO_COLOR(4)"] | Pragmatic: 11000.00 | Epistemic: 3.24 | Prob: 0.7701 | Dim: 1x1
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.770 μ=0.785 range[0.770, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  11000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     3.239  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 10996.762  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [___█_______________________________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "CROP_WINDOW_AROUND(4)"] | Pragmatic: 26000.00 | Epistemic: 0.00 | Prob: 0.4700 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.470 μ=0.635 range[0.470, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  26000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     0.000  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 26000.000  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "CROP_WINDOW_AROUND(8)"] | Pragmatic: 26000.00 | Epistemic: 0.00 | Prob: 0.4700 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.470 μ=0.635 range[0.470, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  26000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     0.000  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 26000.000  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "CROP_TO_COLOR(3)"] | Pragmatic: 26000.00 | Epistemic: 0.00 | Prob: 0.4700 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.470 μ=0.635 range[0.470, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  26000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     0.000  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 26000.000  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "CROP_TO_COLOR(4)"] | Pragmatic: 11000.00 | Epistemic: 3.24 | Prob: 0.7701 | Dim: 1x1
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.770 μ=0.785 range[0.770, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  11000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     3.239  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 10996.762  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [___█_______________________________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "CROP_TO_COLOR(8)"] | Pragmatic: 11000.00 | Epistemic: 4.80 | Prob: 0.7701 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.770 μ=0.785 range[0.770, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  11000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     4.800  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 10995.200  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "GLOBAL_MIRROR_X"] | Pragmatic: 13000.00 | Epistemic: 9.51 | Prob: 0.7302 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.730 μ=0.765 range[0.730, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  13000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     9.514  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 12990.485  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "GLOBAL_MIRROR_Y"] | Pragmatic: 13000.00 | Epistemic: 9.51 | Prob: 0.7302 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.730 μ=0.765 range[0.730, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  13000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     9.514  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 12990.485  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "GLOBAL_ROTATE_90"] | Pragmatic: 13000.00 | Epistemic: 9.89 | Prob: 0.7302 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.730 μ=0.765 range[0.730, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  13000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     9.895  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 12990.105  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "GLOBAL_ROTATE_180"] | Pragmatic: 13000.00 | Epistemic: 9.89 | Prob: 0.7302 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.730 μ=0.765 range[0.730, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  13000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     9.895  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 12990.105  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "GLOBAL_ROTATE_270"] | Pragmatic: 13000.00 | Epistemic: 9.89 | Prob: 0.7302 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.730 μ=0.765 range[0.730, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  13000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     9.895  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 12990.105  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "IF_COLOR(3)_THEN_MIRROR_X"] | Pragmatic: 13000.00 | Epistemic: 5.02 | Prob: 0.7301 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.730 μ=0.765 range[0.730, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  13000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     5.021  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 12994.979  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "IF_COLOR(3)_THEN_MIRROR_Y"] | Pragmatic: 13000.00 | Epistemic: 5.02 | Prob: 0.7301 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.730 μ=0.765 range[0.730, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  13000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     5.021  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 12994.979  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "IF_COLOR(3)_THEN_ROTATE_90"] | Pragmatic: 13000.00 | Epistemic: 5.53 | Prob: 0.7301 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.730 μ=0.765 range[0.730, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  13000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     5.531  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 12994.469  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "IF_COLOR(3)_THEN_ROTATE_180"] | Pragmatic: 13000.00 | Epistemic: 5.53 | Prob: 0.7301 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.730 μ=0.765 range[0.730, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  13000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     5.531  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 12994.469  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "IF_COLOR(3)_THEN_ROTATE_270"] | Pragmatic: 13000.00 | Epistemic: 5.53 | Prob: 0.7301 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.730 μ=0.765 range[0.730, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  13000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     5.531  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 12994.469  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "IF_COLOR(4)_THEN_MIRROR_X"] | Pragmatic: 13000.00 | Epistemic: 3.32 | Prob: 0.7301 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.730 μ=0.765 range[0.730, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  13000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     3.323  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 12996.677  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "IF_COLOR(4)_THEN_MIRROR_Y"] | Pragmatic: 13000.00 | Epistemic: 3.32 | Prob: 0.7301 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.730 μ=0.765 range[0.730, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  13000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     3.323  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 12996.677  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "IF_COLOR(4)_THEN_ROTATE_90"] | Pragmatic: 13000.00 | Epistemic: 3.32 | Prob: 0.7301 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.730 μ=0.765 range[0.730, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  13000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     3.323  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 12996.677  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+   🔍 Search Attempt 4: Exploring top 20 advanced axioms...
+   ⚡ Memulai MCTS dari ROOT ZERO-POINT (Depth 0) dengan 37 amunisi unik...
+[Depth 0] Axioms: ["ROOT_START"] | Pragmatic: 26000.00 | Epistemic: 0.00 | Prob: 0.4700 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 0                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.470 μ=0.635 range[0.470, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  26000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     0.000  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 26000.000  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "CROP_WINDOW_AROUND(3)"] | Pragmatic: 26000.00 | Epistemic: 0.00 | Prob: 0.4700 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.470 μ=0.635 range[0.470, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  26000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     0.000  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 26000.000  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "CROP_TO_COLOR(4)"] | Pragmatic: 11000.00 | Epistemic: 3.24 | Prob: 0.7701 | Dim: 1x1
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.770 μ=0.785 range[0.770, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  11000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     3.239  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 10996.762  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [___█_______________________________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "CROP_WINDOW_AROUND(4)"] | Pragmatic: 26000.00 | Epistemic: 0.00 | Prob: 0.4700 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.470 μ=0.635 range[0.470, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  26000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     0.000  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 26000.000  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "CROP_WINDOW_AROUND(8)"] | Pragmatic: 26000.00 | Epistemic: 0.00 | Prob: 0.4700 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.470 μ=0.635 range[0.470, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  26000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     0.000  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 26000.000  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "CROP_TO_COLOR(3)"] | Pragmatic: 26000.00 | Epistemic: 0.00 | Prob: 0.4700 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.470 μ=0.635 range[0.470, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  26000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     0.000  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 26000.000  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "CROP_TO_COLOR(4)"] | Pragmatic: 11000.00 | Epistemic: 3.24 | Prob: 0.7701 | Dim: 1x1
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.770 μ=0.785 range[0.770, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  11000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     3.239  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 10996.762  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [___█_______________________________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "CROP_TO_COLOR(8)"] | Pragmatic: 11000.00 | Epistemic: 4.80 | Prob: 0.7701 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.770 μ=0.785 range[0.770, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  11000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     4.800  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 10995.200  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "GLOBAL_MIRROR_X"] | Pragmatic: 13000.00 | Epistemic: 9.51 | Prob: 0.7302 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.730 μ=0.765 range[0.730, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  13000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     9.514  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 12990.485  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "GLOBAL_MIRROR_Y"] | Pragmatic: 13000.00 | Epistemic: 9.51 | Prob: 0.7302 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.730 μ=0.765 range[0.730, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  13000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     9.514  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 12990.485  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "GLOBAL_ROTATE_90"] | Pragmatic: 13000.00 | Epistemic: 9.89 | Prob: 0.7302 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.730 μ=0.765 range[0.730, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  13000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     9.895  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 12990.105  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "GLOBAL_ROTATE_180"] | Pragmatic: 13000.00 | Epistemic: 9.89 | Prob: 0.7302 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.730 μ=0.765 range[0.730, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  13000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     9.895  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 12990.105  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "GLOBAL_ROTATE_270"] | Pragmatic: 13000.00 | Epistemic: 9.89 | Prob: 0.7302 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.730 μ=0.765 range[0.730, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  13000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     9.895  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 12990.105  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "IF_COLOR(3)_THEN_MIRROR_X"] | Pragmatic: 13000.00 | Epistemic: 5.02 | Prob: 0.7301 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.730 μ=0.765 range[0.730, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  13000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     5.021  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 12994.979  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "IF_COLOR(3)_THEN_MIRROR_Y"] | Pragmatic: 13000.00 | Epistemic: 5.02 | Prob: 0.7301 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.730 μ=0.765 range[0.730, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  13000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     5.021  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 12994.979  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "IF_COLOR(3)_THEN_ROTATE_90"] | Pragmatic: 13000.00 | Epistemic: 5.53 | Prob: 0.7301 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.730 μ=0.765 range[0.730, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  13000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     5.531  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 12994.469  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "IF_COLOR(3)_THEN_ROTATE_180"] | Pragmatic: 13000.00 | Epistemic: 5.53 | Prob: 0.7301 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.730 μ=0.765 range[0.730, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  13000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     5.531  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 12994.469  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "IF_COLOR(3)_THEN_ROTATE_270"] | Pragmatic: 13000.00 | Epistemic: 5.53 | Prob: 0.7301 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.730 μ=0.765 range[0.730, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  13000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     5.531  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 12994.469  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "IF_COLOR(4)_THEN_MIRROR_X"] | Pragmatic: 13000.00 | Epistemic: 3.32 | Prob: 0.7301 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.730 μ=0.765 range[0.730, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  13000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     3.323  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 12996.677  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "IF_COLOR(4)_THEN_MIRROR_Y"] | Pragmatic: 13000.00 | Epistemic: 3.32 | Prob: 0.7301 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.730 μ=0.765 range[0.730, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  13000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     3.323  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 12996.677  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+[Depth 1] Axioms: ["ROOT_START", "IF_COLOR(4)_THEN_ROTATE_90"] | Pragmatic: 13000.00 | Epistemic: 3.32 | Prob: 0.7301 | Dim: 5x5
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 2/2 │ Depth 1                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ ●=0.730 μ=0.765 range[0.730, 0.800]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  13000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     3.323  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 12996.677  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (25/1000): [█████████████████████████__________... (truncated)]
+   [Rust MCTS] WARNING: Semua gelombang hancur! (Halusinasi/Meleset)
+
+=== OUTPUT ===
+[1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1]
+[1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1]
+[1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1]
+[1, 1, 1, 1, 1, 1, 0, 1, 2, 1, 1, 1, 1]
+[1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1]
+[1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1]
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+[1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1]
+[1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1]
+[1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1]
+[1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1]
+[1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1]
+[1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1]
+
+=== EXPECTED ===
+[1, 1, 1, 1, 1, 1]
+[1, 1, 1, 1, 1, 1]
+[1, 1, 1, 1, 1, 1]
+[1, 2, 1, 1, 1, 1]
+[1, 1, 1, 1, 1, 1]
+[1, 1, 1, 1, 1, 1]
+
+Duration: 10.686352806s
+💀 FAILED (Mismatch)
