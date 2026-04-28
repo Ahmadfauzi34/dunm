@@ -18,8 +18,8 @@ fn seeded_random(custom_seed: Option<u64>) -> f32 {
             *seed = cs;
         }
         // Sama dengan JS LCG: seed = (seed * 16807) % 2147483647
-        *seed = (*seed * 16807) % 2147483647;
-        (*seed as f32 - 1.0) / 2147483646.0
+        *seed = (*seed * 16807) % 2_147_483_647;
+        (*seed as f32 - 1.0) / 2_147_483_646.0
     })
 }
 

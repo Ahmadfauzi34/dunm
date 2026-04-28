@@ -51,9 +51,8 @@ impl SimdEnergyCalculator {
             if dim_diff > 0.0 {
                 // EXTREME PENALTY: FORCE MCTS TO AVOID TRANSLATIONS IF DIMENSIONS ARE WRONG
                 return 10000.0 * dim_diff;
-            } else {
-                return -500.0; // Sukses mutlak di Fase 1! Abaikan piksel berantakan.
             }
+            return -500.0; // Sukses mutlak di Fase 1! Abaikan piksel berantakan.
         }
 
         // 🌟 GERBANG FASE 2: MIKROSKOPIS 🌟

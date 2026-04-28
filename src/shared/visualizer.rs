@@ -2,13 +2,10 @@ use crate::core::config::GLOBAL_DIMENSION;
 use crate::core::entity_manifold::EntityManifold;
 use ndarray::Array1;
 use std::time::Instant;
-
-/// ═══════════════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════════════════
 /// QUANTUM VISUALIZER v2.0 — Deep Transparency for FHRR/VSA Debugging
-/// ═══════════════════════════════════════════════════════════════════════════════
-
+// ═══════════════════════════════════════════════════════════════════════════════
 pub struct Visualizer;
-
 /// Mode transparansi — semakin tinggi, semakin detail
 #[derive(Clone, Copy, PartialEq, PartialOrd)]
 pub enum TransparencyLevel {
@@ -19,11 +16,9 @@ pub enum TransparencyLevel {
     Diagnostic,   // + memory tracking + anomalies
     QuantumDebug, // EVERYTHING: FFT, coherence, full state dump
 }
-
-/// ═══════════════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════════════════
 /// DATA STRUCTURES
-/// ═══════════════════════════════════════════════════════════════════════════════
-
+// ═══════════════════════════════════════════════════════════════════════════════
 #[derive(Debug)]
 pub struct TensorStatsDetailed {
     pub mean: f32,
@@ -40,7 +35,6 @@ pub struct TensorStatsDetailed {
     pub skewness: f32,
     pub kurtosis: f32,
 }
-
 #[derive(Debug, Clone)]
 pub struct SpectralInfo {
     pub dc: f32,
@@ -48,14 +42,12 @@ pub struct SpectralInfo {
     pub high_freq: f32,
     pub dominant_band: &'static str,
 }
-
 #[derive(Debug, Clone, Copy)]
 pub enum AnomalySeverity {
     Critical,
     Warning,
     Info,
 }
-
 #[derive(Debug, Clone)]
 pub struct MctsNodeInfo {
     pub id: usize,
@@ -71,28 +63,23 @@ pub struct MctsNodeInfo {
     pub path: Vec<String>,
     pub axiom_type: String,
 }
-
 // Platform-specific memory tracking (Implemented)
 fn get_heap_usage() -> usize {
     crate::memory::allocator::TrackingAllocator::get_allocated()
 }
-
-/// ═══════════════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════════════════
 /// 1. REAL-TIME PROBABILITY & ENERGY VISUALIZATION
-/// ═══════════════════════════════════════════════════════════════════════════════
-
+// ═══════════════════════════════════════════════════════════════════════════════
 impl Visualizer {
     /// Mencetak 40 elemen pertama Tensor sebagai Barcode Holografik (Legacy Port)
     pub fn print_tensor_barcode(name: &str, tensor: &Array1<f32>) {
         Self::print_tensor_standard(name, tensor);
     }
-
     /// Mencetak Memory Map Partikel: █ = Hidup, _ = Dark Matter (Massa 0) (Legacy Port)
     pub fn print_particle_memory_map(manifold: &EntityManifold) {
         let mut mem_map = String::new();
         let cap = manifold.masses.len();
         let limit = std::cmp::min(manifold.active_count + 10, cap);
-
         for i in 0..limit {
             if manifold.masses[i] > 0.0 {
                 mem_map.push('█'); // Partikel aktif (Entitas riil)
@@ -100,17 +87,14 @@ impl Visualizer {
                 mem_map.push('_'); // Dark Matter (Vakum)
             }
         }
-
         if limit < cap {
             mem_map.push_str("... (truncated)");
         }
-
         println!(
             "  [Memory]  Map ({}/{}): [{}]",
             manifold.active_count, cap, mem_map
         );
     }
-
     /// Visualisasi rentang probabilitas dengan gradient color
     pub fn print_probability_range(
         min_prob: f32,
@@ -124,7 +108,6 @@ impl Visualizer {
         let pos = (((current - min_prob) / denom) * width as f32).clamp(0.0, width as f32) as usize;
         let threshold_pos =
             (((threshold - min_prob) / denom) * width as f32).clamp(0.0, width as f32) as usize;
-
         let mut bar = String::with_capacity(width);
         for i in 0..width {
             if i == threshold_pos {
@@ -135,7 +118,6 @@ impl Visualizer {
                 bar.push('░');
             }
         }
-
         let status = if current > threshold * 1.2 {
             "\x1b[32m🟢 HIGH\x1b[0m"
         } else if current > threshold {
@@ -143,13 +125,11 @@ impl Visualizer {
         } else {
             "\x1b[31m🔴 PRUNED\x1b[0m"
         };
-
         println!(
             "  [PROB] {:<20} [{:>6.3}] {} | {} | range[{:.3}, {:.3}] thresh={:.3}",
             context, current, bar, status, min_prob, max_prob, threshold
         );
     }
-
     /// Visualisasi interference pattern (constructive/destructive)
     pub fn print_interference(before_prob: f32, after_prob: f32, energy: f32, depth: usize) {
         let interference = if before_prob > 0.0 {
@@ -164,10 +144,8 @@ impl Visualizer {
         } else {
             "DESTRUCTIVE"
         };
-
         let wave_chars: &[char] = &['▁', '▃', '▅', '▇', '█', '▇', '▅', '▃'];
         let wave_idx = ((interference * 4.0).min(7.0) as usize).max(0);
-
         println!(
             "  [INTERF] d{} │{}{}{}│ {} | γ={:.3} | E={:.2} | Δp={:+.3e}",
             depth,
@@ -180,7 +158,6 @@ impl Visualizer {
             after_prob - before_prob
         );
     }
-
     /// Timeline probabilitas untuk tracking evolution
     pub fn print_probability_timeline(
         history: &[(usize, f32, f32)], // (depth, prob, energy)
@@ -189,21 +166,17 @@ impl Visualizer {
         if history.is_empty() {
             return;
         }
-
         println!("  ╔══════════════════════════════════════════════════════════════╗");
         println!("  ║  QUANTUM TRAJECTORY                                          ║");
         println!("  ╠══════════════════════════════════════════════════════════════╣");
-
         let max_prob = history
             .iter()
             .map(|(_, p, _)| *p)
             .fold(0.0f32, f32::max)
             .max(0.001);
-
         for (depth, prob, energy) in history {
             let normalized = ((prob / max_prob) * 30.0).clamp(0.0, 30.0) as usize;
             let bar = "█".repeat(normalized) + &"░".repeat(30 - normalized);
-
             let symbol = if *prob > 0.9 {
                 "★"
             } else if *prob > 0.5 {
@@ -213,26 +186,21 @@ impl Visualizer {
             } else {
                 "✕"
             };
-
             let detail = match level {
                 TransparencyLevel::QuantumDebug => format!("E={:.2e} S={:.3}", energy, -prob.ln()),
                 TransparencyLevel::Diagnostic => format!("E={:.1}", energy),
                 _ => String::new(),
             };
-
             println!(
                 "  ║  d{:>2} {} │{}│ {:>6.4} {:<20} ║",
                 depth, symbol, bar, prob, detail
             );
         }
-
         println!("  ╚══════════════════════════════════════════════════════════════╝");
     }
-
-    /// ═════════════════════════════════════════════════════════════════════════
+    // ═════════════════════════════════════════════════════════════════════════
     /// 2. MEMORY TRANSPARENCY — TRACKING ALLOCATION & FRAGMENTATION
-    /// ═════════════════════════════════════════════════════════════════════════
-
+    // ═════════════════════════════════════════════════════════════════════════
     pub fn print_memory_transparency(
         manifolds: &[&EntityManifold],
         tensor_ops_count: usize,
@@ -246,9 +214,7 @@ impl Visualizer {
             .iter()
             .map(|m| m.active_count * GLOBAL_DIMENSION * 3 * 4)
             .sum();
-
         let efficiency = total_active as f32 / total_capacity.max(1) as f32;
-
         println!("  ┌──────────────────────────────────────────────────────────────┐");
         println!("  │  MEMORY TRANSPARENCY                                         │");
         println!("  ├──────────────────────────────────────────────────────────────┤");
@@ -264,7 +230,6 @@ impl Visualizer {
             tensor_ops_count,
             (1.0 - efficiency) * 100.0
         );
-
         if level >= TransparencyLevel::Diagnostic {
             // Per-manifold breakdown
             for (i, m) in manifolds.iter().enumerate() {
@@ -272,7 +237,6 @@ impl Visualizer {
                 let density = m.active_count as f32 / cap as f32;
                 let mem_actual = m.active_count * GLOBAL_DIMENSION * 3 * 4;
                 let mem_wasted = (m.masses.len() - m.active_count) * GLOBAL_DIMENSION * 3 * 4;
-
                 let density_bar = Self::density_gradient_bar(density, 20);
                 println!(
                     "  │  [{}] {} entities {} │ +{:>5}KB -{:>5}KB waste          │",
@@ -284,10 +248,8 @@ impl Visualizer {
                 );
             }
         }
-
         println!("  └──────────────────────────────────────────────────────────────┘");
     }
-
     /// Real-time allocation tracker
     pub fn track_allocation<T, F>(name: &str, operation: F, level: TransparencyLevel) -> T
     where
@@ -296,16 +258,12 @@ impl Visualizer {
         if level < TransparencyLevel::Diagnostic {
             return operation();
         }
-
         let start = Instant::now();
         let pre_mem = get_heap_usage(); // Platform-specific
-
         let result = operation();
-
         let post_mem = get_heap_usage();
         let duration = start.elapsed();
         let allocated = post_mem.saturating_sub(pre_mem);
-
         println!(
             "  [ALLOC] {:<20} │ +{:>6}KB │ {:>6}µs │ {}",
             name,
@@ -317,14 +275,11 @@ impl Visualizer {
                 "✓"
             }
         );
-
         result
     }
-
-    /// ═════════════════════════════════════════════════════════════════════════
+    // ═════════════════════════════════════════════════════════════════════════
     /// 3. TENSOR DEEP INSPECTION — FHRR/VSA SPECIFIC
-    /// ═════════════════════════════════════════════════════════════════════════
-
+    // ═════════════════════════════════════════════════════════════════════════
     pub fn print_tensor_quantum(
         name: &str,
         tensor: &Array1<f32>,
@@ -343,16 +298,13 @@ impl Visualizer {
             TransparencyLevel::QuantumDebug => Self::print_tensor_full_quantum(name, tensor),
         }
     }
-
     fn print_tensor_standard(name: &str, tensor: &Array1<f32>) {
         let stats = Self::compute_stats(tensor);
         let sample_size = std::cmp::min(40, tensor.len());
-
         let mut barcode = String::with_capacity(sample_size * 3);
         for i in 0..sample_size {
             barcode.push_str(Self::amplitude_to_unicode(tensor[i]));
         }
-
         // Energy indicator dengan threshold
         let energy_status = if stats.energy > 100.0 {
             "🔥"
@@ -361,7 +313,6 @@ impl Visualizer {
         } else {
             "○"
         };
-
         println!(
             "  [T] {:<18} │{}│ {} μ={:+.2} σ={:.2} S={:.0}%",
             name,
@@ -372,13 +323,10 @@ impl Visualizer {
             stats.sparsity * 100.0
         );
     }
-
     fn print_tensor_verbose(name: &str, tensor: &Array1<f32>, context: Option<&str>) {
         let stats = Self::compute_stats(tensor);
-
         // Spectral analysis (simulated FFT magnitude)
         let spectral = Self::estimate_spectral_content(tensor);
-
         println!("  ┌─ TENSOR: {:<50} ─┐", name);
         if let Some(ctx) = context {
             println!("  │  Context: {:<48} │", ctx);
@@ -400,11 +348,9 @@ impl Visualizer {
         );
         println!("  └──────────────────────────────────────────────────────────────┘");
     }
-
     fn print_tensor_diagnostic(name: &str, tensor: &Array1<f32>) {
         let stats = Self::compute_stats(tensor);
         let anomalies = Self::detect_anomalies(tensor, &stats);
-
         println!("╔════════════════════════════════════════════════════════════════╗");
         println!("║  TENSOR DIAGNOSTIC: {:<42} ║", name);
         println!("╠════════════════════════════════════════════════════════════════╣");
@@ -432,7 +378,6 @@ impl Visualizer {
             stats.non_zeros,
             stats.zero_crossings
         );
-
         if !anomalies.is_empty() {
             println!(
                 "║  ⚠️  ANOMALIES ({})                                             ║",
@@ -450,7 +395,6 @@ impl Visualizer {
                 );
             }
         }
-
         // Pattern classification
         let pattern = Self::classify_pattern(tensor);
         println!(
@@ -459,11 +403,9 @@ impl Visualizer {
         );
         println!("╚════════════════════════════════════════════════════════════════╝");
     }
-
     fn print_tensor_full_quantum(name: &str, tensor: &Array1<f32>) {
         // Full state dump untuk debugging quantum
         Self::print_tensor_diagnostic(name, tensor);
-
         println!("  ─── FULL STATE DUMP (first 100 elements) ───");
         for (i, _chunk) in tensor.iter().take(100).enumerate().step_by(10) {
             let values: Vec<String> = tensor
@@ -474,7 +416,6 @@ impl Visualizer {
                 .collect();
             println!("    [{:>4}] {}", i, values.join(" "));
         }
-
         // FFT plan (simulated)
         println!("  ─── FREQUENCY DOMAIN (simulated FFT) ───");
         let fft_sim = Self::simulate_fft_magnitude(tensor);
@@ -487,11 +428,9 @@ impl Visualizer {
             Self::magnitude_bar(&fft_sim[10..20], 40)
         );
     }
-
-    /// ═════════════════════════════════════════════════════════════════════════
+    // ═════════════════════════════════════════════════════════════════════════
     /// 4. MCTS TREE TRANSPARENCY — DECISION POINT VISUALIZATION
-    /// ═════════════════════════════════════════════════════════════════════════
-
+    // ═════════════════════════════════════════════════════════════════════════
     pub fn print_mcts_transparent(
         node: &MctsNodeInfo,
         siblings: &[MctsNodeInfo],
@@ -500,7 +439,6 @@ impl Visualizer {
         if level < TransparencyLevel::Standard {
             return;
         }
-
         // Context: posisi relatif terhadap siblings
         let rank = siblings
             .iter()
@@ -508,17 +446,14 @@ impl Visualizer {
             .count()
             + 1;
         let total = siblings.len().max(1);
-
         println!("  ╭──────────────────────────────────────────────────────────────╮");
         println!(
             "  │  MCTS NODE [{}] — Rank {}/{} │ Depth {}                       │",
             node.id, rank, total, node.depth
         );
         println!("  ├──────────────────────────────────────────────────────────────┤");
-
         // Probability dengan konteks kompetisi
         Self::print_probability_competition(node.probability, siblings, node.threshold);
-
         // Energy breakdown
         println!("  │  Energy Components:                                          │");
         println!(
@@ -538,13 +473,11 @@ impl Visualizer {
             "  │    Total Free Energy: {:>7.3}  │  G = E - I + C                  │",
             node.pragmatic_error - node.epistemic_value + node.complexity
         );
-
         if level >= TransparencyLevel::Verbose {
             println!("  │                                                              │");
             println!("  │  Policy Path: {:<46} │", node.path.join(" → "));
             println!("  │  Axiom: {:<52} │", node.axiom_type);
         }
-
         // Decision visualization
         let decision = if node.is_pruned {
             "❌ PRUNED (destructive interference)"
@@ -555,12 +488,10 @@ impl Visualizer {
         } else {
             "⏸️  PENDING (queued for evaluation)"
         };
-
         println!("  ├──────────────────────────────────────────────────────────────┤");
         println!("  │  Status: {:<53} │", decision);
         println!("  ╰──────────────────────────────────────────────────────────────╯");
     }
-
     fn print_probability_competition(prob: f32, siblings: &[MctsNodeInfo], threshold: f32) {
         if siblings.is_empty() {
             println!(
@@ -569,16 +500,13 @@ impl Visualizer {
             );
             return;
         }
-
         let all_probs: Vec<f32> = siblings.iter().map(|s| s.probability).collect();
         let min = all_probs.iter().fold(f32::INFINITY, |a, &b| a.min(b));
         let max = all_probs.iter().fold(f32::NEG_INFINITY, |a, &b| a.max(b));
         let mean = all_probs.iter().sum::<f32>() / all_probs.len() as f32;
-
         let width = 30;
         let denom = (max - min).max(0.001);
         let pos = (((prob - min) / denom) * width as f32).clamp(0.0, width as f32) as usize;
-
         let mut bar = String::with_capacity(width);
         for i in 0..width {
             if i == pos {
@@ -589,7 +517,6 @@ impl Visualizer {
                 bar.push('┅');
             }
         }
-
         println!(
             "  │  P(dist): {} ●={:.3} μ={:.3} range[{:.3}, {:.3}]   │",
             bar, prob, mean, min, max
@@ -604,34 +531,26 @@ impl Visualizer {
             }
         );
     }
-
-    /// ═════════════════════════════════════════════════════════════════════════
+    // ═════════════════════════════════════════════════════════════════════════
     /// 5. UTILITY & HELPER FUNCTIONS
-    /// ═════════════════════════════════════════════════════════════════════════
-
+    // ═════════════════════════════════════════════════════════════════════════
     fn compute_stats(tensor: &Array1<f32>) -> TensorStatsDetailed {
         let n = tensor.len() as f32;
         let sum: f32 = tensor.iter().sum();
         let mean = sum / n;
-
         let variance = tensor.iter().map(|x| (x - mean).powi(2)).sum::<f32>() / n;
         let std_dev = variance.sqrt();
-
         let min = tensor.iter().fold(f32::INFINITY, |a, &b| a.min(b));
         let max = tensor.iter().fold(f32::NEG_INFINITY, |a, &b| a.max(b));
-
         let energy = tensor.iter().map(|x| x * x).sum::<f32>().sqrt();
         let l1_norm = tensor.iter().map(|x| x.abs()).sum();
-
         let non_zeros = tensor.iter().filter(|&&x| x.abs() > 1e-6).count();
         let sparsity = 1.0 - (non_zeros as f32 / n);
-
         let zero_crossings = tensor
             .iter()
             .zip(tensor.iter().skip(1))
             .filter(|(a, b)| a.signum() != b.signum())
             .count();
-
         // Higher moments
         let skewness = if std_dev > 0.0 {
             tensor
@@ -652,14 +571,12 @@ impl Visualizer {
         } else {
             0.0
         };
-
         // Entropy (Shannon)
         let entropy = if std_dev > 0.0 {
             0.5 * (2.0 * std::f32::consts::PI * std::f32::consts::E * variance).ln()
         } else {
             0.0
         };
-
         TensorStatsDetailed {
             mean,
             std_dev,
@@ -676,7 +593,6 @@ impl Visualizer {
             kurtosis,
         }
     }
-
     fn amplitude_to_unicode(val: f32) -> &'static str {
         // Extended unicode blocks untuk lebih granular
         const BLOCKS: &[&str] = &[
@@ -685,7 +601,6 @@ impl Visualizer {
         let idx = ((val.abs() * 8.0 + 8.0) as usize).min(15).max(0);
         BLOCKS[idx]
     }
-
     fn density_gradient_bar(density: f32, width: usize) -> String {
         const GRADIENT: &[char] = &[' ', '░', '▒', '▓', '█'];
         (0..width)
@@ -699,7 +614,6 @@ impl Visualizer {
             })
             .collect()
     }
-
     fn tensor_to_heatmap(tensor: &Array1<f32>, width: usize) -> String {
         tensor
             .iter()
@@ -721,7 +635,6 @@ impl Visualizer {
             })
             .collect()
     }
-
     fn simulate_fft_magnitude(tensor: &Array1<f32>) -> Vec<f32> {
         // Simulasi sederhana: binning berdasarkan frekuensi spatial
         let mut bins = vec![0.0f32; 20];
@@ -731,7 +644,6 @@ impl Visualizer {
         }
         bins
     }
-
     fn magnitude_bar(mags: &[f32], width: usize) -> String {
         let max = mags.iter().fold(0.0f32, |a, &b| a.max(b)).max(0.001);
         mags.iter()
@@ -742,14 +654,12 @@ impl Visualizer {
             .collect::<Vec<_>>()
             .join("")
     }
-
     fn classify_pattern(tensor: &Array1<f32>) -> String {
         let len = tensor.len().max(4);
         let first_half: f32 = tensor.iter().take(len / 2).sum();
         let second_half: f32 = tensor.iter().skip(len / 2).sum();
         let first_quarter: f32 = tensor.iter().take(len / 4).sum();
         let last_quarter: f32 = tensor.iter().skip(len * 3 / 4).sum();
-
         let patterns = [
             ((first_half - second_half).abs() < 0.1, "Symmetric"),
             (first_half > second_half * 2.0, "Front-loaded"),
@@ -757,7 +667,6 @@ impl Visualizer {
             (first_quarter > last_quarter * 3.0, "Decay"),
             (last_quarter > first_quarter * 3.0, "Growth"),
         ];
-
         patterns
             .iter()
             .filter(|(cond, _)| *cond)
@@ -766,17 +675,14 @@ impl Visualizer {
             .unwrap_or("Random/Uniform")
             .to_string()
     }
-
     fn detect_anomalies(
         tensor: &Array1<f32>,
         stats: &TensorStatsDetailed,
     ) -> Vec<(usize, f32, &'static str, AnomalySeverity)> {
         let mut anomalies = Vec::new();
-
         for (i, &val) in tensor.iter().enumerate() {
             if stats.std_dev > 0.0 {
                 let z_score = (val - stats.mean).abs() / stats.std_dev;
-
                 if z_score > 5.0 {
                     anomalies.push((i, val, "extreme outlier (>5σ)", AnomalySeverity::Critical));
                 } else if z_score > 3.0 {
@@ -789,24 +695,19 @@ impl Visualizer {
                 anomalies.push((i, val, "Infinite value", AnomalySeverity::Critical));
             }
         }
-
         anomalies
     }
-
     fn estimate_spectral_content(tensor: &Array1<f32>) -> SpectralInfo {
         // Approximasi: low-freq = slow variation, high-freq = rapid variation
         let dc = tensor.iter().sum::<f32>().abs() / tensor.len() as f32;
-
         let diffs: Vec<f32> = tensor
             .iter()
             .zip(tensor.iter().skip(1))
             .map(|(a, b)| (b - a).abs())
             .collect();
-
         let avg_diff = diffs.iter().sum::<f32>() / diffs.len().max(1) as f32;
         let high_freq_content = diffs.iter().filter(|&&d| d > avg_diff * 2.0).count() as f32
             / diffs.len().max(1) as f32;
-
         SpectralInfo {
             dc,
             low_freq: 1.0 - high_freq_content,
