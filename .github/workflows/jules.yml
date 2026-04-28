@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Run Jules
-        uses: google-labs-code/jules-action@v1
+        uses: google-labs-code/jules-action@v2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           JULES_AGENT: ${{ secrets.JULES_AGENT }} # 👈 Tambahkan baris ini
