@@ -9,9 +9,7 @@ pub struct TrackingAllocator {
 
 impl TrackingAllocator {
     pub const fn new() -> Self {
-        Self {
-            allocator: System,
-        }
+        Self { allocator: System }
     }
 
     pub fn get_allocated() -> usize {

@@ -448,7 +448,8 @@ impl AsyncWaveSearch {
             // Memindahkan syscall Instant::now ke level batch untuk menghindari overhead OS
             let batch_start_time = std::time::Instant::now();
             let mut batch_total_active_count: usize = 0;
-            let mut batch_iterations: usize = 0; _ = batch_iterations;
+            let mut batch_iterations: usize = 0;
+            _ = batch_iterations;
 
             // Map LSH untuk mendeteksi Cross-Branch Interference
             // Menyimpan hash state manifold ke daftar ID node
@@ -492,7 +493,8 @@ impl AsyncWaveSearch {
                 let mut any_collision = false;
 
                 let mut local_active_count = 0;
-                batch_iterations += 1; _ = batch_iterations;
+                batch_iterations += 1;
+                _ = batch_iterations;
 
                 for manifold in states_mut.iter_mut() {
                     local_active_count += manifold.active_count;

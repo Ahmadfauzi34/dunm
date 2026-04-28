@@ -1141,7 +1141,8 @@ impl RrmAgent {
                                 );
                                 w_node.probability = 1.0;
                                 best_rule = Some(w_node);
-                                max_prob = 1.0; _ = max_prob;
+                                max_prob = 1.0;
+                                _ = max_prob;
                                 self.self_reflection
                                     .update_metrics(0.0, 0.0, FailureMode::None);
                                 break; // Selesai

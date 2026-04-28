@@ -1,30 +1,23 @@
-#![cfg_attr(not(test), warn(
-    clippy::all,
-    clippy::pedantic,
-    clippy::nursery,
-    clippy::cargo,
-    clippy::perf,
-    clippy::complexity,
-    clippy::style,
-))]
-#![cfg_attr(not(test), deny(
-    clippy::correctness,
-    clippy::suspicious,
-))]
-#![allow(
-    clippy::module_name_repetitions,
-    clippy::must_use_candidate,
-    
+#![cfg_attr(
+    not(test),
+    warn(
+        clippy::all,
+        clippy::pedantic,
+        clippy::nursery,
+        clippy::cargo,
+        clippy::perf,
+        clippy::complexity,
+        clippy::style,
+    )
 )]
-
+#![cfg_attr(not(test), deny(clippy::correctness, clippy::suspicious,))]
+#![allow(clippy::module_name_repetitions, clippy::must_use_candidate)]
 
 #[global_allocator]
 static ALLOCATOR: rrm_rust::memory::allocator::TrackingAllocator =
     rrm_rust::memory::allocator::TrackingAllocator::new();
 
-use rrm_rust::{
-    extract_anomalous_quadrant, EntityManifold, KVImmortalEngine, RrmAgent,
-};
+use rrm_rust::{extract_anomalous_quadrant, EntityManifold, KVImmortalEngine, RrmAgent};
 use serde_json::Value;
 use std::fs;
 use std::time::Instant;
@@ -75,7 +68,11 @@ fn distill_yaml_skills() {
             "\n# Tensor Driven Macro: {id}\n\n```yaml\nid: MACRO:{id}\ntier: 6\ndescription: Generated tensor skill\nsequence:\n  - axiom_type: TENSOR_DRIVEN_BIND\n    physics_tier: 6\n    delta_x: {dx:.1}\n    delta_y: {dy:.1}\n    tensor_spatial: [{yaml_arr}]\n```\n"
         );
 
-        fs::write(format!("knowledge/grammar/{}.md", id.to_lowercase()), yaml_doc).unwrap();
+        fs::write(
+            format!("knowledge/grammar/{}.md", id.to_lowercase()),
+            yaml_doc,
+        )
+        .unwrap();
     };
 
     generate_yaml("SHIFT_RIGHT", 1.0, 0.0, false, false);
@@ -190,10 +187,8 @@ fn main() {
             raw_manifold.active_count = raw_idx;
 
             let res_em = extract_anomalous_quadrant(&raw_manifold);
-            let mut fallback_result = vec![
-                vec![0; res_em.global_width as usize];
-                res_em.global_height as usize
-            ];
+            let mut fallback_result =
+                vec![vec![0; res_em.global_width as usize]; res_em.global_height as usize];
             for i in 0..res_em.active_count {
                 if res_em.masses[i] > 0.0 {
                     let cx = res_em.centers_x[i].round() as i32;
