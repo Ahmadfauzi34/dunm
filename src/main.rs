@@ -105,13 +105,13 @@ fn main() {
     let total = tasks.len();
 
     for task_name in tasks {
-        let path = format!("../ARC-AGI-1.0.2/data/training/{}.json", task_name);
+        let path = format!("../ARC-AGI-1.0.2/data/training/{task_name}.json");
         let mut data = fs::read_to_string(&path).unwrap_or_default();
         if data.is_empty() {
-            data = fs::read_to_string(format!("{}.json", task_name)).unwrap_or_default();
+            data = fs::read_to_string(format!("{task_name}.json")).unwrap_or_default();
         }
         if data.is_empty() {
-            println!("Skipping {}, file not found", task_name);
+            println!("Skipping {task_name}, file not found");
             continue;
         }
 
@@ -144,7 +144,7 @@ fn main() {
         let test_out = parse_grid(&test[0]["output"]);
 
         println!("\n\n🌿 ==================================");
-        println!("Solving Task: {}.json", task_name);
+        println!("Solving Task: {task_name}.json");
         println!("🌿 ==================================");
 
         let _start_time = Instant::now();
@@ -152,18 +152,20 @@ fn main() {
 
         let mut success = true;
 
-        if result.len() != test_out.len() {
-            success = false;
-        } else {
+        if result.len() == test_out.len() {
             for (r_row, t_row) in result.iter().zip(test_out.iter()) {
                 if r_row != t_row {
                     success = false;
                     break;
                 }
             }
+        } else {
+            success = false;
         }
 
-        let _final_result = if !success {
+        let _final_result = if success {
+            result
+        } else {
             println!(
                 "MCTS failed. Engaging Generative Synthesized Skill: extract_anomalous_quadrant..."
             );
@@ -204,19 +206,17 @@ fn main() {
             }
             success = true;
 
-            if fallback_result.len() != test_out.len() {
-                success = false;
-            } else {
+            if fallback_result.len() == test_out.len() {
                 for (r_row, t_row) in fallback_result.iter().zip(test_out.iter()) {
                     if r_row != t_row {
                         success = false;
                         break;
                     }
                 }
+            } else {
+                success = false;
             }
             fallback_result
-        } else {
-            result
         };
 
         if success {
@@ -228,7 +228,7 @@ fn main() {
     }
 
     println!("\n\n🏁 BATCH EXECUTION COMPLETE");
-    println!("Score: {} / {}", successes, total);
+    println!("Score: {successes} / {total}");
 
     println!("\n🌿 ==================================");
     println!("🌙 MENGAKTIFKAN SIKLUS TIDUR (MENTAL REPLAY)");
