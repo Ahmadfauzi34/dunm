@@ -152,8 +152,8 @@ impl StructuralAnalyzer {
             {
                 TaskClass::PureGeometry
             }
-            (Smaller, _) | (Larger, _) => TaskClass::StructuralTransform,
-            (_, Added(_)) | (_, Removed(_)) => TaskClass::ObjectManipulation,
+            (Smaller | Larger, _) => TaskClass::StructuralTransform,
+            (_, Added(_) | Removed(_)) => TaskClass::ObjectManipulation,
             (_, SameCount) if delta.signature.topology_in != delta.signature.topology_out => {
                 TaskClass::RelationalRearrangement
             }

@@ -176,9 +176,8 @@ impl RrmAgent {
 
                 promising_axioms.push(axiom);
                 break;
-            } else {
-                println!("    ❌ {} tidak cocok", axiom.name);
             }
+            println!("    ❌ {} tidak cocok", axiom.name);
         }
 
         if !promising_axioms.is_empty() {
@@ -936,13 +935,12 @@ impl RrmAgent {
                         self.self_reflection.iterations_without_improvement = 0;
 
                         continue; // Lewati siklus iterasi ini agar Advanced Pass mendapat manifold terbaru
-                    } else {
-                        // Jika Gestalt juga tidak bisa menemukan bentuk berarti, anggap agen kelelahan.
-                        println!(
-                            "   👁️ [Gestalt Vision] Pandangan tetap buram (Noise Total). Menyerah."
-                        );
-                        self.self_reflection.total_iterations = 9999;
                     }
+                    // Jika Gestalt juga tidak bisa menemukan bentuk berarti, anggap agen kelelahan.
+                    println!(
+                        "   👁️ [Gestalt Vision] Pandangan tetap buram (Noise Total). Menyerah."
+                    );
+                    self.self_reflection.total_iterations = 9999;
                 }
                 Bottleneck::PrecisionError => {
                     println!("🧠 [Metakognisi] Bottleneck::PrecisionError - Meleset sedikit. Menembakkan Counterfactual Engine (Femto Scale)...");

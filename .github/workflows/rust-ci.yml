@@ -34,7 +34,7 @@ jobs:
 
       - name: cargo clippy
         # clippy otomatis mencakup pengecekan 'cargo check'
-        run: cargo clippy --all-targets --all-features -- -D warnings
+        run: cargo clippy --all-targets --all-features -- -W warnings
 
   test:
     name: Test

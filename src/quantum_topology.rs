@@ -230,7 +230,7 @@ impl SkillFiberBundle {
 
             // Positional encoding via sinusoidal interference (wave field)
             for d in 0..GLOBAL_DIMENSION {
-                let phase = (d as f32) * 0.0174533; // ~1 degree in radians
+                let phase = (d as f32) * 0.017_453_3; // ~1 degree in radians
                 fiber[d] = (px * (d as f32)).sin() * 0.3
                     + (py * (d as f32)).cos() * 0.3
                     + (token_val * phase).sin() * 0.4;
