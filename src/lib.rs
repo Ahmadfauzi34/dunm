@@ -2,7 +2,7 @@
     not(test),
     warn(
         clippy::all,
-        clippy::pedantic, clippy::all,
+        clippy::pedantic,
         clippy::nursery,
         clippy::cargo,
         clippy::perf,
@@ -10,7 +10,7 @@
         clippy::style,
     )
 )]
-#![cfg_attr(not(test), warn(clippy::correctness, clippy::suspicious,))]
+#![cfg_attr(not(test), deny(clippy::correctness, clippy::suspicious,))]
 #![allow(
     clippy::module_name_repetitions,
     clippy::must_use_candidate,
