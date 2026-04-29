@@ -115,19 +115,30 @@ fn main() {
             continue;
         }
 
-        let json: Value = serde_json::from_str(&data).expect("Invalid JSON");
-        let train = json["train"].as_array().unwrap();
-        let test = json["test"].as_array().unwrap();
+        let json: Value = match serde_json::from_str(&data) {
+            Ok(v) => v,
+            Err(e) => {
+                println!("Failed to parse JSON for {}: {}", task_name, e);
+                continue;
+            }
+        };
 
-        let parse_grid = |arr: &Value| -> Vec<Vec<i32>> {
-            arr.as_array()
-                .unwrap()
+        let Some(train) = json["train"].as_array() else {
+            println!("'train' is not an array in {}", task_name);
+            continue;
+        };
+        let Some(test) = json["test"].as_array() else {
+            println!("'test' is not an array in {}", task_name);
+            continue;
+        };
+
+        let parse_grid = |arr: &Value| -> Option<Vec<Vec<i32>>> {
+            arr.as_array()?
                 .iter()
                 .map(|row| {
-                    row.as_array()
-                        .unwrap()
+                    row.as_array()?
                         .iter()
-                        .map(|v| v.as_i64().unwrap() as i32)
+                        .map(|v| v.as_i64().map(|i| i as i32))
                         .collect()
                 })
                 .collect()
@@ -135,13 +146,32 @@ fn main() {
 
         let mut train_in = Vec::new();
         let mut train_out = Vec::new();
+        let mut skip_task = false;
         for pair in train {
-            train_in.push(parse_grid(&pair["input"]));
-            train_out.push(parse_grid(&pair["output"]));
+            if let (Some(i), Some(o)) = (parse_grid(&pair["input"]), parse_grid(&pair["output"])) {
+                train_in.push(i);
+                train_out.push(o);
+            } else {
+                println!("Failed to parse training pair in {}", task_name);
+                skip_task = true;
+                break;
+            }
+        }
+        if skip_task {
+            continue;
         }
 
-        let test_in = parse_grid(&test[0]["input"]);
-        let test_out = parse_grid(&test[0]["output"]);
+        let (test_in, test_out) = if let Some(t0) = test.get(0) {
+            if let (Some(i), Some(o)) = (parse_grid(&t0["input"]), parse_grid(&t0["output"])) {
+                (i, o)
+            } else {
+                println!("Failed to parse test pair in {}", task_name);
+                continue;
+            }
+        } else {
+            println!("'test' array is empty in {}", task_name);
+            continue;
+        };
 
         println!("\n\n🌿 ==================================");
         println!("Solving Task: {}.json", task_name);

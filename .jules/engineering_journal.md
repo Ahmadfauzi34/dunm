@@ -12,3 +12,8 @@ This journal serves as a collaborative knowledge base between the architectural 
 
 ## Section 3: Future Ideas (Carbo ⬡)
 
+
+## 2026-04-29 - [⬡ Carbo] - Hardened JSON Parsing in src/main.rs
+**Context:** Unsafe `unwrap()` and `expect()` calls in JSON parsing logic were causing potential panics (DoS vulnerability) when processing malformed ARC-AGI task data.
+**Decision:** Refactored the task processing loop and `parse_grid` closure to use safe Rust patterns (`match`, `Option`, `let-else`).
+**Consequences:** Improved robustness against invalid input data. Minimal performance impact as these changes are outside the primary hot loops.
