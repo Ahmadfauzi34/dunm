@@ -10,6 +10,13 @@
         clippy::style,
     )
 )]
+#![allow(
+    clippy::uninlined_format_args,
+    clippy::missing_const_for_fn,
+    clippy::suboptimal_flops,
+    clippy::similar_names,
+    clippy::explicit_iter_loop,
+)]
 #![cfg_attr(not(test), deny(clippy::correctness, clippy::suspicious,))]
 #![allow(
     clippy::module_name_repetitions,
