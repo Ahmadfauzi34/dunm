@@ -180,7 +180,7 @@ impl AutopoieticSynthesizer {
         let tensor_str = novel_spatial
             .iter()
             .take(5)
-            .map(|v| format!("{:.4}", v))
+            .map(|v| format!("{v:.4}"))
             .collect::<Vec<_>>()
             .join(", ");
 
