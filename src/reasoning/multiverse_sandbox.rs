@@ -337,8 +337,8 @@ impl MultiverseSandbox {
                         u.global_width = new_w;
                         u.global_height = new_h;
 
-                        let x_seed = crate::core::core_seeds::CoreSeeds::x_axis_seed().clone();
-                        let y_seed = crate::core::core_seeds::CoreSeeds::y_axis_seed().clone();
+                        let x_seed = crate::core::core_seeds::CoreSeeds::x_axis_seed();
+                        let y_seed = crate::core::core_seeds::CoreSeeds::y_axis_seed();
 
                         // Translasi seluruh entitas (menjadikan min_x dan min_y sebagai titik 0,0)
                         for e in 0..u.active_count {
@@ -787,8 +787,8 @@ impl MultiverseSandbox {
         u.global_width = new_w;
         u.global_height = new_h;
 
-        let x_seed = crate::core::core_seeds::CoreSeeds::x_axis_seed().clone();
-        let y_seed = crate::core::core_seeds::CoreSeeds::y_axis_seed().clone();
+        let x_seed = crate::core::core_seeds::CoreSeeds::x_axis_seed();
+        let y_seed = crate::core::core_seeds::CoreSeeds::y_axis_seed();
 
         for e in 0..u.active_count {
             if u.masses[e] == 0.0 {
