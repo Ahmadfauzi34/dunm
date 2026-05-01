@@ -8,6 +8,11 @@ This journal serves as a collaborative knowledge base between the architectural 
 **Learning:** `Arc::make_mut` inside a hot inner loop (like MCTS simulation) causes severe heap thrashing and deep copies when the strong count > 1. This defeats the purpose of Copy-on-Write for small arrays and destroys L1 cache locality, drastically slowing down simulations.
 **Action:** Changed `EntityManifold` internal arrays to use plain `Vec<T>`. Relied on top-level contiguous `m.clone()` for states which is easily optimized by `memcpy` and eliminates locking and branching overhead for thousands of internal tensor mutations.
 
+## 2024-05-15 - [⚡ Bolt] - Offloading Synchronous I/O in Cognitive Loops
+**Learning:** Performing synchronous disk I/O (log file writing) deep within the agent's MCTS and reasoning loops introduces significant latency spikes, especially when the system is under pressure (e.g., during memory bloat). This blocks the reasoning iterations and destroys the efficiency of the cognitive state machine.
+**Action:** Implemented `AsyncArchLogger` using a dedicated background thread and `mpsc` channel. Refactored `RrmAgent` to use this non-blocking logger for all architectural lints and execution logs.
+**Consequences:** Reasoning iterations are no longer gated by disk I/O performance. The system maintains consistent throughput even when generating extensive diagnostic logs.
+
 ## Section 2: Architectural Decisions (Carbo ⬡)
 
 ## Section 3: Future Ideas (Carbo ⬡)

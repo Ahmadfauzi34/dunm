@@ -14,6 +14,7 @@ use crate::reasoning::multiverse_sandbox::MultiverseSandbox;
 use crate::reasoning::quantum_search::{AsyncWaveSearch, WaveNode};
 use crate::reasoning::top_down_axiomator::TopDownAxiomator;
 use crate::reasoning::topological_aligner::TopologicalAligner;
+use crate::self_awareness::arch_logger::AsyncArchLogger;
 use crate::self_awareness::self_reflection::{Bottleneck, FailureMode, SelfReflection};
 use crate::self_awareness::skill_ontology::SkillOntology;
 
@@ -29,6 +30,7 @@ pub struct RrmAgent {
     // Self-Awareness Layer
     ontology: SkillOntology,
     self_reflection: SelfReflection,
+    arch_logger: AsyncArchLogger,
 
     // Reasoning
     counterfactual_engine: crate::reasoning::counterfactual_engine::CounterfactualEngine,
@@ -48,6 +50,7 @@ impl RrmAgent {
     pub fn new() -> Self {
         let ontology = SkillOntology::initialize();
         let self_reflection = SelfReflection::new(ontology.clone());
+        let arch_logger = AsyncArchLogger::new();
 
         Self {
             perceiver: UniversalManifold::new(),
@@ -55,6 +58,7 @@ impl RrmAgent {
             seed_bank: LogicSeedBank::new(),
             ontology,
             self_reflection,
+            arch_logger,
             counterfactual_engine:
                 crate::reasoning::counterfactual_engine::CounterfactualEngine::new(),
             causal_reasoner: CausalReasoner::new(),
@@ -617,18 +621,13 @@ impl RrmAgent {
                     println!("🧠 [Metakognisi] Bottleneck::FalseSharing - Amnesia Singkat (Cache Miss) Terdeteksi!");
                     println!("   📝 MENULIS LOG ARCHITECTURE KE SISTEM: Iterasi iterasi EntityManifold lambat rata-rata {} ns per entitas. Kecepatan ini 3x lipat dari limit AVX2.", self.self_reflection.average_iteration_time_ns);
 
-                    if let Ok(mut file) = std::fs::OpenOptions::new()
-                        .create(true)
-                        .append(true)
-                        .open("knowledge/architecture_lint.md")
-                    {
-                        use std::io::Write;
-                        let _ = writeln!(
-                            file,
+                    self.arch_logger.log(
+                        "knowledge/architecture_lint.md",
+                        format!(
                             "ARCHITECTURAL PAIN: Agent detected iteration times of {} ns per entity. This suggests severe L1 cache misses and fragmented memory structures. Please review struct padding, ensure EntityManifold is tightly packed, and reduce pointer indirections during hot loops.",
                             self.self_reflection.average_iteration_time_ns
-                        );
-                    }
+                        )
+                    );
 
                     self.self_reflection.average_iteration_time_ns = 0; // reset
                     self.self_reflection.last_failure_mode = FailureMode::None;
@@ -637,18 +636,13 @@ impl RrmAgent {
                     println!("🧠 [Metakognisi] Bottleneck::CognitiveGarbage - Polusi Dark Matter terdeteksi di memori spasial!");
                     println!("   📝 MENULIS LOG ARCHITECTURE KE SISTEM: Terdeteksi {}% entitas adalah 'Ghost State' dengan mass = 0.0.", (self.self_reflection.dark_matter_ratio * 100.0).round());
 
-                    if let Ok(mut file) = std::fs::OpenOptions::new()
-                        .create(true)
-                        .append(true)
-                        .open("knowledge/architecture_lint.md")
-                    {
-                        use std::io::Write;
-                        let _ = writeln!(
-                            file,
+                    self.arch_logger.log(
+                        "knowledge/architecture_lint.md",
+                        format!(
                             "ARCHITECTURAL PAIN: Agent detected {:.1}% of entities in EntityManifold are inactive (mass = 0.0). Iterating over this 'Dark Matter' destroys CPU branch predictors and cache locality. Please implement swap-remove or periodic array compaction.",
                             self.self_reflection.dark_matter_ratio * 100.0
-                        );
-                    }
+                        )
+                    );
 
                     // Aksi Otonom: Memadatkan (Compacting) Entity Manifold untuk membuang sampah
                     println!("   🧹 [Auto-Fix] Agen secara otonom memadatkan (compacting) array EntityManifold...");
@@ -694,18 +688,13 @@ impl RrmAgent {
                     println!("🧠 [Metakognisi] Bottleneck::AllocationThrashing - Nyeri Alokasi Memori (Heap Thrashing) Terdeteksi!");
                     println!("   📝 MENULIS LOG ARCHITECTURE KE SISTEM: Terjadi {} alokasi dinamis (Vec::push) di hot path MCTS.", self.self_reflection.heap_allocation_count);
 
-                    if let Ok(mut file) = std::fs::OpenOptions::new()
-                        .create(true)
-                        .append(true)
-                        .open("knowledge/architecture_lint.md")
-                    {
-                        use std::io::Write;
-                        let _ = writeln!(
-                            file,
+                    self.arch_logger.log(
+                        "knowledge/architecture_lint.md",
+                        format!(
                             "ARCHITECTURAL PAIN: Agent detected {} dynamic heap allocations exceeding MCTS buffer capacity. This thrashes the OS allocator and destroys SIMD throughput. Please implement a bump allocator (bumpalo) or reuse object pools.",
                             self.self_reflection.heap_allocation_count
-                        );
-                    }
+                        )
+                    );
 
                     // Kita asumsikan agen mentolerirnya untuk saat ini agar tidak crash, reset metriknya
                     self.self_reflection.heap_allocation_count = 0;
@@ -715,19 +704,14 @@ impl RrmAgent {
                     println!("🧠 [Metakognisi] Bottleneck::MemoryBloat - Pelanggaran Copy-on-Write (CoW) Terdeteksi!");
                     println!("   📝 MENULIS LOG ARCHITECTURE KE SISTEM: MCTS melakukan {} Deep Copy dan {} Shallow Clone. Ini menghancurkan cache L1/L2.", self.self_reflection.deep_copy_count, self.self_reflection.shallow_clone_count);
 
-                    if let Ok(mut file) = std::fs::OpenOptions::new()
-                        .create(true)
-                        .append(true)
-                        .open("knowledge/architecture_lint.md")
-                    {
-                        use std::io::Write;
-                        let _ = writeln!(
-                            file,
+                    self.arch_logger.log(
+                        "knowledge/architecture_lint.md",
+                        format!(
                             "ARCHITECTURAL PAIN: Agent observed {} deep copies vs {} shallow clones during MCTS. Please review `Arc::make_mut` usage or consider implementing an Object Pool to prevent heap thrashing.",
                             self.self_reflection.deep_copy_count,
                             self.self_reflection.shallow_clone_count
-                        );
-                    }
+                        )
+                    );
 
                     // Kita asumsikan agen bisa mentolerirnya, kita reset metriknya agar simulasi dapat berlanjut
                     self.self_reflection.deep_copy_count = 0;
@@ -739,17 +723,10 @@ impl RrmAgent {
                     println!("   📝 MENULIS LOG ERROR KE SISTEM: 'SAYA KEKURANGAN ALAT FISIK. Tolong upgrade `apply_axiom` di Sandbox.'");
 
                     // Menulis log manual agar sistem terstruktur (pengembang dapat melihat log dan mengembangkan physics_tier).
-                    if let Ok(mut file) = std::fs::OpenOptions::new()
-                        .create(true)
-                        .append(true)
-                        .open("knowledge/execution_log.md")
-                    {
-                        use std::io::Write;
-                        let _ = writeln!(
-                            file,
-                            "SELF-AWARENESS: Causal reasoning found a highly probable solution tensor, but Sandbox physics engine lacks implementation to move pixels. Please upgrade `apply_axiom`."
-                        );
-                    }
+                    self.arch_logger.log(
+                        "knowledge/execution_log.md",
+                        "SELF-AWARENESS: Causal reasoning found a highly probable solution tensor, but Sandbox physics engine lacks implementation to move pixels. Please upgrade `apply_axiom`.".to_string()
+                    );
 
                     // Kita tidak bisa melanjutkan jika tubuh tidak mendukung. Hentikan simulasi.
                     break;
