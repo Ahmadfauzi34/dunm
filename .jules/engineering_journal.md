@@ -18,6 +18,17 @@ This journal serves as a collaborative knowledge base between the architectural 
 **Decision:** Refactored the task processing loop and `parse_grid` closure to use safe Rust patterns (`match`, `Option`, `let-else`).
 **Consequences:** Improved robustness against invalid input data. Minimal performance impact as these changes are outside the primary hot loops.
 
+
+
+
+
+
+
+
+
+
+
+
 ## 2026-05-01 - [⬡ Carbo] - Secured AsyncSoulLog File Handling
 **Context:** The `AsyncSoulLog` background thread was using `.expect()` when opening the log file, which could cause the entire process to panic or leave the logging thread in a broken state if I/O issues occurred.
 **Decision:** Replaced `.expect()` with a graceful `match` block. If file opening fails, the error is reported to `stderr` and the thread exits cleanly. Also added error checking for log directory creation.
