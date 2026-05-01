@@ -65,7 +65,3 @@ impl Drop for AsyncArchLogger {
         let _ = self.tx.send(LogCommand::Terminate);
     }
 }
-
-// Ensure the logger can be shared across threads if needed (it is by Sender)
-unsafe impl Send for AsyncArchLogger {}
-unsafe impl Sync for AsyncArchLogger {}
