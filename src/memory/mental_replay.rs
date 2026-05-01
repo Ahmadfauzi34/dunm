@@ -195,3 +195,33 @@ impl MentalReplay {
         discovered_skills
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_mental_replay_new() {
+        let replay = MentalReplay::new();
+
+        assert!(replay.solved_tasks.is_empty());
+        assert!(replay.dream_scenarios.is_empty());
+
+        // Ensure SkillComposer is also empty
+        assert!(replay.skill_composer.primitives.is_empty());
+        assert!(replay.skill_composer.composed.is_empty());
+        assert!(replay.skill_composer.composition_history.is_empty());
+    }
+
+    #[test]
+    fn test_mental_replay_default() {
+        let replay = MentalReplay::default();
+
+        assert!(replay.solved_tasks.is_empty());
+        assert!(replay.dream_scenarios.is_empty());
+
+        assert!(replay.skill_composer.primitives.is_empty());
+        assert!(replay.skill_composer.composed.is_empty());
+        assert!(replay.skill_composer.composition_history.is_empty());
+    }
+}
