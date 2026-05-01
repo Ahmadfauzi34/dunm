@@ -16,6 +16,9 @@
     clippy::suboptimal_flops,
     clippy::similar_names,
     clippy::explicit_iter_loop,
+    clippy::cast_possible_truncation,
+    clippy::cast_precision_loss,
+    clippy::cast_sign_loss,
 )]
 #![cfg_attr(not(test), deny(clippy::correctness, clippy::suspicious,))]
 #![allow(clippy::module_name_repetitions, clippy::must_use_candidate)]
@@ -168,7 +171,7 @@ fn main() {
             continue;
         }
 
-        let (test_in, test_out) = if let Some(t0) = test.get(0) {
+        let (test_in, test_out) = if let Some(t0) = test.first() {
             if let (Some(i), Some(o)) = (parse_grid(&t0["input"]), parse_grid(&t0["output"])) {
                 (i, o)
             } else {
@@ -189,18 +192,20 @@ fn main() {
 
         let mut success = true;
 
-        if result.len() != test_out.len() {
-            success = false;
-        } else {
+        if result.len() == test_out.len() {
             for (r_row, t_row) in result.iter().zip(test_out.iter()) {
                 if r_row != t_row {
                     success = false;
                     break;
                 }
             }
+        } else {
+            success = false;
         }
 
-        let _final_result = if !success {
+        let _final_result = if success {
+            result
+        } else {
             println!(
                 "MCTS failed. Engaging Generative Synthesized Skill: extract_anomalous_quadrant..."
             );
@@ -241,19 +246,17 @@ fn main() {
             }
             success = true;
 
-            if fallback_result.len() != test_out.len() {
-                success = false;
-            } else {
+            if fallback_result.len() == test_out.len() {
                 for (r_row, t_row) in fallback_result.iter().zip(test_out.iter()) {
                     if r_row != t_row {
                         success = false;
                         break;
                     }
                 }
+            } else {
+                success = false;
             }
             fallback_result
-        } else {
-            result
         };
 
         if success {
