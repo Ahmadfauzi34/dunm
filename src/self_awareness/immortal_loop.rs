@@ -47,17 +47,24 @@ impl AsyncSoulLog {
 
         // Pastikan direktori log ada
         if !root_dir.exists() {
-            let _ = fs::create_dir_all(&root_dir);
+            if let Err(e) = fs::create_dir_all(&root_dir) {
+                eprintln!("Warning: Failed to create log directory {:?}: {}", root_dir, e);
+            }
         }
 
         // Buat thread terpisah (Dedicated I/O Thread)
         // Thread ini yang akan menangani bottleneck disk, membebaskan CPU utama
         thread::spawn(move || {
-            let mut file = OpenOptions::new()
-                .create(true)
-                .append(true)
-                .open(&log_file)
-                .expect("Failed to open soul_log.md");
+            let mut file = match OpenOptions::new().create(true).append(true).open(&log_file) {
+                Ok(f) => f,
+                Err(e) => {
+                    eprintln!(
+                        "Critical Error: Failed to open soul_log.md at {:?}: {}",
+                        log_file, e
+                    );
+                    return; // Graceful exit of the logging thread
+                }
+            };
 
             while let Ok(batch) = rx.recv() {
                 for event in batch {
