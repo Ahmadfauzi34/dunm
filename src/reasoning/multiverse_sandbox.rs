@@ -19,8 +19,15 @@ impl MultiverseSandbox {
         }
     }
 
-    /// Terapkan Dual-Axiom (Translasi Spasial + Mutasi Semantik + Geometri) ke Universe
-    /// Mengembalikan true jika pergeseran menabrak batas atau entitas lain (Collision)
+    /// Terapkan Dual-Axiom (Translasi Spasial + Mutasi Semantik + Geometri) ke Universe.
+    ///
+    /// Mengembalikan `true` jika pergeseran menabrak batas atau entitas lain (Collision).
+    ///
+    /// # Panics
+    /// Fungsi ini tidak seharusnya panic pada kondisi normal. Namun, parsing string
+    /// operator geometri yang tidak valid dapat menyebabkan early return dengan `false`.
+    #[allow(clippy::too_many_arguments)]
+    #[allow(clippy::too_many_lines)]
     pub fn apply_axiom(
         u: &mut EntityManifold,
         condition_tensor: &Option<Array1<f32>>,
@@ -47,7 +54,11 @@ impl MultiverseSandbox {
                         let end = start + dim;
                         let chunk = ndarray::Array1::from_vec(sp_mut[start..end].to_vec());
                         let new_chunk = FHRR::bind(&chunk, delta_spatial);
-                        sp_mut[start..end].copy_from_slice(new_chunk.as_slice().unwrap());
+                        if let Some(slice) = new_chunk.as_slice() {
+                    sp_mut[start..end].copy_from_slice(slice);
+                } else {
+                    return false;
+                }
                     }
 
                     // Untuk merubah piksel visual, sistem akan mende-bind posisinya
@@ -223,8 +234,8 @@ impl MultiverseSandbox {
 
             // 1. Evaluasi logika Bounding-Box atau Anchor-Window untuk mendapatkan min_x, max_x, dsb.
             if axiom_type.starts_with("CROP_WINDOW_AROUND(") {
-                let start = axiom_type.find('(').unwrap() + 1;
-                let end = axiom_type.find(')').unwrap();
+                let Some(start) = axiom_type.find('(').map(|i| i + 1) else { return false; };
+                let Some(end) = axiom_type.find(')') else { return false; };
                 let anchor_color = axiom_type[start..end].parse::<i32>().unwrap_or(-1);
 
                 // Dikte ukuran (Opsi A) dipatuhi oleh Sandbox dari `delta_x/y`
@@ -297,8 +308,8 @@ impl MultiverseSandbox {
                 Self::crop_to_quadrant(u, anchor_color, mask, mode, 0.0);
                 return false;
             } else if axiom_type.starts_with("CROP_TO_COLOR(") {
-                let start = axiom_type.find('(').unwrap() + 1;
-                let end = axiom_type.find(')').unwrap();
+                let Some(start) = axiom_type.find('(').map(|i| i + 1) else { return false; };
+                let Some(end) = axiom_type.find(')') else { return false; };
                 let target_color = axiom_type[start..end].parse::<i32>().unwrap_or(-1);
 
                 if target_color != -1 {
@@ -352,7 +363,7 @@ impl MultiverseSandbox {
                                     u.centers_y[e] = ny;
 
                                     let new_spatial_tensor =
-                                        FHRR::fractional_bind_2d(&x_seed, nx, &y_seed, ny);
+                                        FHRR::fractional_bind_2d(x_seed, nx, y_seed, ny);
 
                                     let mut sp_tensor_mut = u.get_spatial_tensor_mut(e);
                                     sp_tensor_mut.assign(&new_spatial_tensor);
@@ -549,8 +560,8 @@ impl MultiverseSandbox {
                         }
 
                         // Scaling dilakukan dari pusat universe (Barycenter makro)
-                        let center_x = (min_x + max_x) / 2.0;
-                        let center_y = (min_y + max_y) / 2.0;
+                        let center_x = f32::midpoint(min_x, max_x);
+                        let center_y = f32::midpoint(min_y, max_y);
                         let rx = cx - center_x;
                         let ry = cy - center_y;
                         u.centers_x[e] = center_x + (rx * scale_x);
@@ -566,22 +577,22 @@ impl MultiverseSandbox {
                         u.centers_y[e] = max_y - (cy - min_y);
                     } else if axiom_type.contains("ROTATE_90") {
                         // Asumsi putar kanan terhadap center bbox
-                        let center_x = (min_x + max_x) / 2.0;
-                        let center_y = (min_y + max_y) / 2.0;
+                        let center_x = f32::midpoint(min_x, max_x);
+                        let center_y = f32::midpoint(min_y, max_y);
                         let rx = cx - center_x;
                         let ry = cy - center_y;
                         u.centers_x[e] = center_x - ry;
                         u.centers_y[e] = center_y + rx;
                     } else if axiom_type.contains("ROTATE_180") {
-                        let center_x = (min_x + max_x) / 2.0;
-                        let center_y = (min_y + max_y) / 2.0;
+                        let center_x = f32::midpoint(min_x, max_x);
+                        let center_y = f32::midpoint(min_y, max_y);
                         let rx = cx - center_x;
                         let ry = cy - center_y;
                         u.centers_x[e] = center_x - rx;
                         u.centers_y[e] = center_y - ry;
                     } else if axiom_type.contains("ROTATE_270") {
-                        let center_x = (min_x + max_x) / 2.0;
-                        let center_y = (min_y + max_y) / 2.0;
+                        let center_x = f32::midpoint(min_x, max_x);
+                        let center_y = f32::midpoint(min_y, max_y);
                         let rx = cx - center_x;
                         let ry = cy - center_y;
                         u.centers_x[e] = center_x + ry;
@@ -609,15 +620,15 @@ impl MultiverseSandbox {
                 // 3. Menghubungkan FHRR murni dengan Grid Fisik (Scalar Momentum)
                 if physics_tier != 4 {
                     // Jika Axiom ini merupakan hasil dari Quantum Synthesis (maka akan punya delta_x/delta_y), kita gunakan nilainya:
-                    let real_dx = if delta_x != 0.0 {
-                        delta_x.round()
-                    } else {
+                    let real_dx = if delta_x == 0.0 {
                         apply_dx
-                    };
-                    let real_dy = if delta_y != 0.0 {
-                        delta_y.round()
                     } else {
+                        delta_x.round()
+                    };
+                    let real_dy = if delta_y == 0.0 {
                         apply_dy
+                    } else {
+                        delta_y.round()
                     };
 
                     let new_cx = u.centers_x[e] + real_dx;
@@ -653,6 +664,7 @@ impl MultiverseSandbox {
     }
 
     // === Tier 7.5: QUADRANT CROP SYSTEM (Hukum 2, 4, 5, 6) ===
+    #[allow(clippy::too_many_lines)]
     pub fn crop_to_quadrant(
         u: &mut EntityManifold,
         anchor_color: i32,
@@ -818,7 +830,7 @@ impl MultiverseSandbox {
                 u.centers_y[e] = ny;
 
                 let new_spatial_tensor =
-                    crate::core::fhrr::FHRR::fractional_bind_2d(&x_seed, nx, &y_seed, ny);
+                    crate::core::fhrr::FHRR::fractional_bind_2d(x_seed, nx, y_seed, ny);
                 let mut sp_tensor = u.get_spatial_tensor_mut(e);
                 sp_tensor.assign(&new_spatial_tensor);
             }
