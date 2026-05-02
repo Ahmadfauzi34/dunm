@@ -19,7 +19,7 @@ pub struct AsyncArchLogger {
 }
 
 impl AsyncArchLogger {
-    /// Creates a new AsyncArchLogger and starts the background thread.
+    /// Creates a new `AsyncArchLogger` and starts the background thread.
     pub fn new() -> Self {
         let (tx, rx) = mpsc::channel();
 

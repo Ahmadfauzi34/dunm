@@ -34,7 +34,7 @@ impl EntanglementGraph {
         self.row_ptr[active_count] = active_count;
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn iter_row(&self, row: usize) -> impl Iterator<Item = (usize, f32)> + '_ {
         let start = self.row_ptr[row];
         let end = self.row_ptr[row + 1];

@@ -206,7 +206,7 @@ impl TopologicalAligner {
         let mut source_colors: Vec<i32> = source_manifold
             .tokens
             .iter()
-            .cloned()
+            .copied()
             .filter(|&c| c > 0)
             .collect();
         source_colors.sort_unstable();
@@ -269,7 +269,7 @@ impl TopologicalAligner {
         let mut target_colors: Vec<i32> = target_manifold
             .tokens
             .iter()
-            .cloned()
+            .copied()
             .filter(|&c| c > 0)
             .collect();
         target_colors.sort_unstable();

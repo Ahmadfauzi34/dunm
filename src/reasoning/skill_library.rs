@@ -25,6 +25,9 @@ impl SkillLibrary {
         }
     }
 
+    ///
+    /// # Panics
+    /// Panics if `winning_path` is somehow empty but bypasses the `is_empty` check.
     pub fn register_chunk(&mut self, winning_path: &[WaveNode]) {
         if winning_path.len() <= 1 {
             return;
@@ -34,7 +37,7 @@ impl SkillLibrary {
         // Instead, we use axiom_type (the sequence of strings) of the FINAL winning node!
         // A single WaveNode that won already stores its full history inside `axiom_type: Vec<String>`.
         // So `winning_path` might just be a single node, let's look at its axiom_type path.
-        let final_node = winning_path.last().unwrap();
+        let Some(final_node) = winning_path.last() else { return; };
 
         // Filter out ROOT_START
         let path: Vec<String> = final_node

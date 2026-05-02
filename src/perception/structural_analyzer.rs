@@ -225,8 +225,8 @@ impl StructuralAnalyzer {
         let mut xs: Vec<f32> = positions.iter().map(|p| p.0).collect();
         let mut ys: Vec<f32> = positions.iter().map(|p| p.1).collect();
 
-        xs.sort_by(|a, b| a.total_cmp(b));
-        ys.sort_by(|a, b| a.total_cmp(b));
+        xs.sort_by(f32::total_cmp);
+        ys.sort_by(f32::total_cmp);
 
         xs.dedup_by(|a, b| (*a - *b).abs() < 0.1);
         ys.dedup_by(|a, b| (*a - *b).abs() < 0.1);

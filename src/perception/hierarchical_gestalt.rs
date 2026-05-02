@@ -82,8 +82,8 @@ impl GestaltEngine {
             let cy = manifold.centers_y[idx];
             let color = manifold.tokens[idx];
 
-            for n in 0..manifold.active_count {
-                if visited[n] || manifold.masses[n] == 0.0 || manifold.tokens[n] != color {
+            for (n, &is_visited) in visited.iter().enumerate().take(manifold.active_count) {
+                if is_visited || manifold.masses[n] == 0.0 || manifold.tokens[n] != color {
                     continue;
                 }
 
@@ -247,8 +247,7 @@ impl GestaltEngine {
                     continue;
                 }
 
-                for j in (i + 1)..rel_pos.len() {
-                    let (x2, y2) = rel_pos[j];
+                for &(x2, y2) in rel_pos.iter().skip(i + 1) {
                     if (x1 + x2).abs() < tolerance && (y1 - y2).abs() < tolerance {
                         symmetric_pairs += 2;
                         break;
