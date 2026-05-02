@@ -3,22 +3,47 @@
     warn(
         clippy::all,
         clippy::pedantic,
-        clippy::nursery,
         clippy::cargo,
-        clippy::perf,
-        clippy::complexity,
-        clippy::style,
+        // clippy::nursery, // <- Pindah ke CI-only
     )
 )]
+
+// ==========================================
+// ⛔ STRICT DENY (Keamanan & Anti-Mangkir)
+// ==========================================
+#![cfg_attr(not(test), deny(
+    clippy::correctness, 
+    clippy::suspicious,
+    clippy::unwrap_used,   // Wajib handle error (jangan pakai panics)
+    clippy::expect_used,   // Sama seperti unwrap
+    clippy::todo,          // Cegah AI/Developer meninggalkan placeholder
+    clippy::unimplemented, // Cegah fungsi kosong masuk ke production
+))]
+
+// ==========================================
+// 🚧 TEMPORARY ALLOW (Prioritas Hapus)
+// ==========================================
 #![allow(
-    clippy::uninlined_format_args,
-    clippy::missing_const_for_fn,
-    clippy::suboptimal_flops,
+    clippy::suboptimal_flops,      // 🔴 Paling tinggi: tensor math
+    clippy::missing_const_for_fn,  // 🟡 Medium: compile-time opt
+    clippy::uninlined_format_args, // 🟢 Lowest: ergonomi
     clippy::similar_names,
     clippy::explicit_iter_loop,
 )]
-#![cfg_attr(not(test), deny(clippy::correctness, clippy::suspicious,))]
-#![allow(clippy::module_name_repetitions, clippy::must_use_candidate)]
+
+// ==========================================
+// 🛡️ PERMANENT ALLOW (Domain Tensor)
+// ==========================================
+#![allow(
+    clippy::module_name_repetitions,
+    clippy::must_use_candidate,
+    
+    // [⬡ Carbo] FHRR: i64→f32 cast intentional untuk AVX2 256-bit alignment
+    clippy::cast_possible_truncation,
+    clippy::cast_precision_loss,
+    clippy::cast_sign_loss,
+)]
+
 
 #[global_allocator]
 static ALLOCATOR: rrm_rust::memory::allocator::TrackingAllocator =
