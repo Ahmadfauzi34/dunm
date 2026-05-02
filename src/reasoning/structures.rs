@@ -107,7 +107,7 @@ impl CognitiveAbstractions {
     /// Wrapper API berlevel tinggi untuk interference pattern.
     /// `#[inline(always)]` menjamin bahwa kompiler meratakan panggilan ini menjadi operasi SIMD murni,
     /// sehingga menghilangkan beban `call stack` namun menjaga kode tetap bersih (bebas Cognitive Debt).
-    #[inline(always)]
+    #[inline]
     pub fn optimize_reasoning_paths(
         wave_a: &Array1<f32>,
         wave_b: &Array1<f32>,
@@ -153,10 +153,10 @@ impl OldStructuralDelta {
     }
 
     pub fn classify(&self) -> TaskClass {
-        if self.input_dim != self.output_dim {
-            TaskClass::StructuralTransform
-        } else {
+        if self.input_dim == self.output_dim {
             TaskClass::PureGeometry
+        } else {
+            TaskClass::StructuralTransform
         }
     }
 

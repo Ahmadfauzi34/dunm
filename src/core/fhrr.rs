@@ -18,8 +18,8 @@ fn seeded_random(custom_seed: Option<u64>) -> f32 {
             *seed = cs;
         }
         // Sama dengan JS LCG: seed = (seed * 16807) % 2147483647
-        *seed = (*seed * 16807) % 2147483647;
-        (*seed as f32 - 1.0) / 2147483646.0
+        *seed = (*seed * 16807) % 2_147_483_647;
+        (*seed as f32 - 1.0) / 2_147_483_646.0
     })
 }
 
@@ -104,10 +104,10 @@ impl FHRR {
             fft_fwd.process(&mut cx_a);
         });
 
-        for k in 0..dim {
-            let amp = cx_a[k].norm();
-            let phase = cx_a[k].arg() * power;
-            cx_a[k] = Complex::new(amp * phase.cos(), amp * phase.sin());
+        for cx in cx_a.iter_mut().take(dim) {
+            let amp = cx.norm();
+            let phase = cx.arg() * power;
+            *cx = Complex::new(amp * phase.cos(), amp * phase.sin());
         }
 
         PLANNER.with(|p| {

@@ -61,7 +61,7 @@ impl LshIndex {
 
             // Normalisasi dot product menjadi rentang indeks bucket (0 - bucket_count)
             // Cosine similarity berkisar antara -1.0 dan 1.0
-            let normalized = (dot + 1.0) / 2.0;
+            let normalized = dot.midpoint(1.0);
             let mut bucket_idx = (normalized * self.bucket_count as f32).floor() as usize;
 
             if bucket_idx >= self.bucket_count {
@@ -110,7 +110,7 @@ impl LshIndex {
 
 /// 🌌 THE LOGIC SEED BANK 🌌
 /// Tempat penyimpanan seluruh "Skill" dan "Logika" dalam bentuk Tensor Kontinu.
-/// 100% Menggunakan Arsitektur SoA (Entity Component System style).
+/// 100% Menggunakan Arsitektur `SoA` (Entity Component System style).
 pub struct LogicSeedBank {
     pub active_count: usize,
 
