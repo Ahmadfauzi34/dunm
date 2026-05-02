@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::fmt::Write;
 use std::fs;
 use std::path::{Path, PathBuf};
 
@@ -30,7 +31,10 @@ impl ExecutableWiki {
         }
     }
 
-    /// Scan direktori untuk meload semua file .md ke dalam knowledge base
+    /// Scan direktori untuk meload semua file `.md` ke dalam `knowledge_base`.
+    ///
+    /// # Errors
+    /// Mengembalikan `Err(String)` jika direktori tidak ditemukan atau gagal membaca entri.
     pub fn load_all(&mut self) -> Result<usize, String> {
         let mut count = 0;
         self.scan_dir(&self.base_dir.clone(), &mut count)?;
@@ -39,7 +43,7 @@ impl ExecutableWiki {
 
     fn scan_dir(&mut self, dir: &Path, count: &mut usize) -> Result<(), String> {
         if !dir.exists() || !dir.is_dir() {
-            return Err(format!("Direktori wiki tidak ditemukan: {:?}", dir));
+            return Err(format!("Direktori wiki tidak ditemukan: {}", dir.display()));
         }
 
         for entry in fs::read_dir(dir).map_err(|e| e.to_string())? {
@@ -70,9 +74,9 @@ impl ExecutableWiki {
         let mut body_start_idx = 0;
 
         // Cek frontmatter "---"
-        if content.starts_with("---") {
-            if let Some(end_idx) = content[3..].find("---") {
-                let frontmatter = &content[3..end_idx + 3];
+        if let Some(stripped) = content.strip_prefix("---") {
+            if let Some(end_idx) = stripped.find("---") {
+                let frontmatter = &stripped[..end_idx];
                 body_start_idx = end_idx + 6;
 
                 for line in frontmatter.lines() {
@@ -96,7 +100,10 @@ impl ExecutableWiki {
 
         // Fallback ID dari nama file jika tidak ada di frontmatter
         if id.is_empty() {
-            id = path.file_stem().unwrap().to_string_lossy().to_string();
+            id = path
+                .file_stem()
+                .map(|s| s.to_string_lossy().to_string())
+                .unwrap_or_else(|| "unknown".to_string());
         }
 
         let body = &content[body_start_idx..];
@@ -136,19 +143,22 @@ impl ExecutableWiki {
         self.knowledge_base.get(id)
     }
 
-    /// Menulis (Create/Overwrite) file skill baru berformat .md ke knowledge_base
+    /// Menulis (Create/Overwrite) file skill baru berformat `.md` ke `knowledge_base`.
+    ///
+    /// # Errors
+    /// Mengembalikan `Err(String)` jika gagal menulis ke file system.
     pub fn create_skill(&mut self, page: WikiPage) -> Result<(), String> {
         let file_path = self.base_dir.join(format!("{}.md", page.id));
 
         let mut content = String::new();
         // Generate YAML Frontmatter
         content.push_str("---\n");
-        content.push_str(&format!("id: {}\n", page.id));
-        content.push_str(&format!("type: {}\n", page.page_type));
-        content.push_str(&format!("tier: {}\n", page.tier));
-        content.push_str(&format!("confidence: {:.2}\n", page.confidence));
+        let _ = write!(content, "id: {}\n", page.id);
+        let _ = write!(content, "type: {}\n", page.page_type);
+        let _ = write!(content, "tier: {}\n", page.tier);
+        let _ = write!(content, "confidence: {:.2}\n", page.confidence);
         if let Some(parent) = &page.parent {
-            content.push_str(&format!("parent: {}\n", parent));
+            let _ = write!(content, "parent: {}\n", parent);
         }
         content.push_str("---\n\n");
 
@@ -157,7 +167,7 @@ impl ExecutableWiki {
 
         // Simpan ke disk
         if let Err(e) = fs::write(&file_path, &content) {
-            return Err(format!("Gagal menyimpan skill ke {:?}: {}", file_path, e));
+            return Err(format!("Gagal menyimpan skill ke {}: {}", file_path.display(), e));
         }
 
         // Update knowledge base (hot-swapping)
@@ -165,7 +175,10 @@ impl ExecutableWiki {
         Ok(())
     }
 
-    /// Menambahkan entri ke log metakognisi harian (Append)
+    /// Menambahkan entri ke log metakognisi harian (Append).
+    ///
+    /// # Errors
+    /// Mengembalikan `Err(String)` jika gagal membuka atau menulis file log.
     pub fn append_to_log(&self, log_name: &str, entry: &str) -> Result<(), String> {
         use std::io::Write;
 
@@ -179,7 +192,7 @@ impl ExecutableWiki {
             .create(true)
             .append(true)
             .open(&file_path)
-            .map_err(|e| format!("Gagal membuka log {:?}: {}", file_path, e))?;
+            .map_err(|e| format!("Gagal membuka log {}: {}", file_path.display(), e))?;
 
         let timestamp = chrono::Local::now().format("%Y-%m-%d %H:%M:%S");
         let formatted_entry = format!("### [{}] \n{}\n\n", timestamp, entry);
