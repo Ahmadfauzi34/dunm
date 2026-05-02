@@ -3,35 +3,47 @@
     warn(
         clippy::all,
         clippy::pedantic,
-        clippy::nursery,
         clippy::cargo,
+        // clippy::nursery, // <- Pindah ke CI-only
     )
 )]
+
+// ==========================================
+// ⛔ STRICT DENY (Keamanan & Anti-Mangkir)
+// ==========================================
+#![cfg_attr(not(test), deny(
+    clippy::correctness, 
+    clippy::suspicious,
+    clippy::unwrap_used,   // Wajib handle error (jangan pakai panics)
+    clippy::expect_used,   // Sama seperti unwrap
+    clippy::todo,          // Cegah AI/Developer meninggalkan placeholder
+    clippy::unimplemented, // Cegah fungsi kosong masuk ke production
+))]
+
+// ==========================================
+// 🚧 TEMPORARY ALLOW (Prioritas Hapus)
+// ==========================================
 #![allow(
-    clippy::uninlined_format_args,
+    clippy::suboptimal_flops,      // 🔴 Paling tinggi: tensor math
+    clippy::missing_const_for_fn,  // 🟡 Medium: compile-time opt
+    clippy::uninlined_format_args, // 🟢 Lowest: ergonomi
     clippy::similar_names,
     clippy::explicit_iter_loop,
-    clippy::missing_const_for_fn,
-    // TODO: Hapus allow ini jika refactoring dasar sudah selesai untuk optimasi FMA
-    clippy::suboptimal_flops,
-    // Linter Kerapian & Dokumentasi
-    clippy::unused_self,
-    clippy::use_self,
-    clippy::doc_markdown,
-    clippy::missing_panics_doc,
 )]
-#![cfg_attr(not(test), deny(clippy::correctness, clippy::suspicious))]
+
+// ==========================================
+// 🛡️ PERMANENT ALLOW (Domain Tensor)
+// ==========================================
 #![allow(
     clippy::module_name_repetitions,
     clippy::must_use_candidate,
-    // === DOMAIN-SPECIFIC: Tensor Math ===
-    // FHRR menggunakan f32 untuk SIMD alignment (AVX2 256-bit = 8x f32).
-    // Cast dari i64 (JSON) ke f32 (tensor) adalah intentional dan validated.
-    // Jangan tambah allow baru tanpa signature [⬡ Carbo] di engineering journal.
+    
+    // [⬡ Carbo] FHRR: i64→f32 cast intentional untuk AVX2 256-bit alignment
     clippy::cast_possible_truncation,
     clippy::cast_precision_loss,
     clippy::cast_sign_loss,
 )]
+
 
 
 pub mod core;
