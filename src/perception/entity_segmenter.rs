@@ -22,14 +22,21 @@ impl EntitySegmenter {
         let mut global_width = 1;
         let mut global_height = 1;
 
-        let parse_key = |key: &str| -> ParsedKey {
+        let parse_key = |key: &str| -> Option<ParsedKey> {
             let parts: Vec<&str> = key.split("_t").collect();
-            let coords: Vec<&str> = parts[0].split(",").collect();
-            ParsedKey {
-                x: coords[0].parse().unwrap(),
-                y: coords[1].parse().unwrap(),
-                token: parts[1].parse().unwrap(),
+            if parts.len() < 2 {
+                return None;
             }
+            let coords: Vec<&str> = parts[0].split(',').collect();
+            if coords.len() < 2 {
+                return None;
+            }
+
+            Some(ParsedKey {
+                x: coords[0].parse().ok()?,
+                y: coords[1].parse().ok()?,
+                token: parts[1].parse().ok()?,
+            })
         };
 
         // Tahap 1: Muat raw pixels ke temporary manifold (Swarm Paradigm)
@@ -42,7 +49,9 @@ impl EntitySegmenter {
         temp_manifold.ensure_scalar_capacity(stream.len());
 
         for (key, (spatial_tensor, semantic_tensor)) in stream.iter() {
-            let parsed = parse_key(key);
+            let Some(parsed) = parse_key(key) else {
+                continue;
+            };
             global_width = usize::max(global_width, parsed.x + 1);
             global_height = usize::max(global_height, parsed.y + 1);
 

@@ -22,3 +22,8 @@ This journal serves as a collaborative knowledge base between the architectural 
 **Context:** The `AsyncSoulLog` background thread was using `.expect()` when opening the log file, which could cause the entire process to panic or leave the logging thread in a broken state if I/O issues occurred.
 **Decision:** Replaced `.expect()` with a graceful `match` block. If file opening fails, the error is reported to `stderr` and the thread exits cleanly. Also added error checking for log directory creation.
 **Consequences:** Increased system resilience against I/O failures. Since logging happens in a dedicated thread, this fix preserves the zero-blocking performance characteristics of the main loop while ensuring safety.
+
+## 2026-05-02 - [⬡ Carbo] - Safe Stream Parsing in EntitySegmenter
+**Context:** The `parse_key` closure in `EntitySegmenter::segment_stream` used multiple `.unwrap()` calls when parsing spatial coordinates and tokens from string keys. This posed a risk of runtime panics if malformed data entered the perception stream.
+**Decision:** Refactored `parse_key` to return `Option<ParsedKey>` and used the `ok()?` pattern for safe integer parsing. Added explicit checks for expected string split lengths (`parts` and `coords`). Updated the iteration loop to skip (`continue`) invalid entries using `let-else`.
+**Consequences:** Hardened the perception pipeline against malformed input. This improvement maintains performance as the overhead of `Option` is negligible compared to the robustness gained.
