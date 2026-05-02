@@ -33,6 +33,7 @@ impl HamiltonianPruner {
         }
     }
 
+    #[allow(clippy::too_many_arguments)]
     pub fn inject_hypothesis(
         &mut self,
         desc: &str,
@@ -59,11 +60,12 @@ impl HamiltonianPruner {
                 cond_match = true;
             }
 
+            const EPSILON: f32 = 1e-6;
             if sim_sp > 0.99
                 && sim_sem > 0.99
                 && cond_match
-                && hyp.delta_x == dx
-                && hyp.delta_y == dy
+                && (hyp.delta_x - dx).abs() < EPSILON
+                && (hyp.delta_y - dy).abs() < EPSILON
                 && hyp.physics_tier == physics_tier
             {
                 return; // Sudah ada
@@ -85,7 +87,7 @@ impl HamiltonianPruner {
         self.enforce_dissipation();
     }
 
-    pub fn calculate_free_energy(actual: &Vec<Vec<i32>>, expected: &Vec<Vec<i32>>) -> f32 {
+    pub fn calculate_free_energy(actual: &[Vec<i32>], expected: &[Vec<i32>]) -> f32 {
         let mut energy = 0.0;
 
         if actual.len() != expected.len()
@@ -98,9 +100,9 @@ impl HamiltonianPruner {
         let height = actual.len();
         let width = if height > 0 { actual[0].len() } else { 0 };
 
-        for y in 0..height {
-            for x in 0..width {
-                if actual[y][x] != expected[y][x] {
+        for (y, actual_row) in actual.iter().enumerate().take(height) {
+            for (x, &actual_val) in actual_row.iter().enumerate().take(width) {
+                if actual_val != expected[y][x] {
                     energy += 1.0;
                 }
             }
@@ -111,6 +113,7 @@ impl HamiltonianPruner {
 
     /// Menghitung Energy/Error murni tanpa pernah membuat grid intermediat (Zero-Allocation).
     /// Menggunakan sistem sparse `covered` array di stack atau buffer re-use lokal.
+    #[allow(clippy::too_many_arguments)]
     pub fn calculate_energy_streaming(
         manifold: &EntityManifold,
         expected: &[Vec<i32>],
@@ -154,13 +157,20 @@ impl HamiltonianPruner {
                 continue;
             }
 
-            let cx = manifold.centers_x[e].round() as isize;
-            let cy = manifold.centers_y[e].round() as isize;
+            let cx_f = manifold.centers_x[e].round();
+            let cy_f = manifold.centers_y[e].round();
             let token = manifold.tokens[e];
 
-            if cx >= 0 && cx < expected_width as isize && cy >= 0 && cy < expected_height as isize {
-                let idx = (cy as usize) * expected_width + (cx as usize);
-                let expected_token = expected[cy as usize][cx as usize];
+            let in_bounds = cx_f >= 0.0
+                && cy_f >= 0.0
+                && (cx_f as usize) < expected_width
+                && (cy_f as usize) < expected_height;
+
+            if in_bounds {
+                let cx = cx_f as usize;
+                let cy = cy_f as usize;
+                let idx = cy * expected_width + cx;
+                let expected_token = expected[cy][cx];
 
                 if expected_token != token {
                     energy += 1.0; // Ada benda tapi warnanya beda (Mismatch)
@@ -172,12 +182,12 @@ impl HamiltonianPruner {
         }
 
         // 2. Evaluasi Sisa Ruang Vakum (Apakah ada ruang yang seharusnya berisi objek tapi kita tidak merendernya?)
-        for y in 0..expected_height {
-            for x in 0..expected_width {
+        for (y, expected_row) in expected.iter().enumerate().take(expected_height) {
+            for (x, &expected_val) in expected_row.iter().enumerate().take(expected_width) {
                 let idx = y * expected_width + x;
                 // Jika posisi ini tidak ter-cover oleh partikel universe KITA,
                 // tapi expected-nya BUKAN 0 (artinya seharusnya ada benda di sini!)
-                if !covered[idx] && expected[y][x] != 0 {
+                if !covered[idx] && expected_val != 0 {
                     energy += 1.0; // Pinalti karena hilangnya sebuah objek / partikel
                 }
             }
@@ -186,9 +196,13 @@ impl HamiltonianPruner {
         energy
     }
 
+    /// Menyortir hipotesis berdasarkan free energy dan memotong yang melebihi max_branches.
+    ///
+    /// # Panics
+    /// Fungsi ini tidak seharusnya panic pada kondisi normal.
     pub fn enforce_dissipation(&mut self) {
         self.hypotheses
-            .sort_by(|a, b| a.free_energy.partial_cmp(&b.free_energy).unwrap());
+            .sort_by(|a, b| a.free_energy.total_cmp(&b.free_energy));
         if self.hypotheses.len() > self.max_branches {
             self.hypotheses.truncate(self.max_branches);
         }
@@ -201,4 +215,4 @@ impl HamiltonianPruner {
     pub fn extract_ground_state(&self) -> Option<&Hypothesis> {
         self.hypotheses.first()
     }
-}
+        }
