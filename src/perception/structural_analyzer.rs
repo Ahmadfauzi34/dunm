@@ -125,6 +125,10 @@ impl StructuralAnalyzer {
         }
     }
 
+    /// Menghasilkan consensus delta dari sekumpulan delta.
+    ///
+    /// # Panics
+    /// Panik jika `deltas` kosong (tidak ada elemen untuk dikonsensuskan).
     pub fn consensus(deltas: &[StructuralDelta]) -> StructuralDelta {
         if let Some(first) = deltas.first() {
             // Very simplified consensus
@@ -140,8 +144,8 @@ impl StructuralAnalyzer {
     }
 
     pub fn classify_task_class(delta: &StructuralDelta) -> TaskClass {
-        use DimensionRelation::*;
-        use ObjectDelta::*;
+        use DimensionRelation::{Equal, Larger, Smaller};
+        use ObjectDelta::{Added, Removed, SameCount};
 
         match (&delta.signature.dim_relation, &delta.signature.object_delta) {
             (Equal, SameCount)
@@ -152,8 +156,8 @@ impl StructuralAnalyzer {
             {
                 TaskClass::PureGeometry
             }
-            (Smaller, _) | (Larger, _) => TaskClass::StructuralTransform,
-            (_, Added(_)) | (_, Removed(_)) => TaskClass::ObjectManipulation,
+            (Smaller | Larger, _) => TaskClass::StructuralTransform,
+            (_, Added(_) | Removed(_)) => TaskClass::ObjectManipulation,
             (_, SameCount) if delta.signature.topology_in != delta.signature.topology_out => {
                 TaskClass::RelationalRearrangement
             }
@@ -221,8 +225,8 @@ impl StructuralAnalyzer {
         let mut xs: Vec<f32> = positions.iter().map(|p| p.0).collect();
         let mut ys: Vec<f32> = positions.iter().map(|p| p.1).collect();
 
-        xs.sort_by(|a, b| a.partial_cmp(b).unwrap());
-        ys.sort_by(|a, b| a.partial_cmp(b).unwrap());
+        xs.sort_by(|a, b| a.total_cmp(b));
+        ys.sort_by(|a, b| a.total_cmp(b));
 
         xs.dedup_by(|a, b| (*a - *b).abs() < 0.1);
         ys.dedup_by(|a, b| (*a - *b).abs() < 0.1);
@@ -271,12 +275,14 @@ impl StructuralAnalyzer {
         in_stats: &ObjectStatistics,
         out_stats: &ObjectStatistics,
     ) -> ObjectDelta {
-        if in_stats.count == out_stats.count {
-            ObjectDelta::SameCount
-        } else if out_stats.count > in_stats.count {
-            ObjectDelta::Added(out_stats.count - in_stats.count)
-        } else {
-            ObjectDelta::Removed(in_stats.count - out_stats.count)
+        match in_stats.count.cmp(&out_stats.count) {
+            std::cmp::Ordering::Equal => ObjectDelta::SameCount,
+            std::cmp::Ordering::Less => {
+                ObjectDelta::Added(out_stats.count - in_stats.count)
+            }
+            std::cmp::Ordering::Greater => {
+                ObjectDelta::Removed(in_stats.count - out_stats.count)
+            }
         }
     }
 
