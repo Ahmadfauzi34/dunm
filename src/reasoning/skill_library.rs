@@ -37,7 +37,9 @@ impl SkillLibrary {
         // Instead, we use axiom_type (the sequence of strings) of the FINAL winning node!
         // A single WaveNode that won already stores its full history inside `axiom_type: Vec<String>`.
         // So `winning_path` might just be a single node, let's look at its axiom_type path.
-        let Some(final_node) = winning_path.last() else { return; };
+        let Some(final_node) = winning_path.last() else {
+            return;
+        };
 
         // Filter out ROOT_START
         let path: Vec<String> = final_node

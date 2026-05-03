@@ -79,7 +79,11 @@ impl MaintenanceEngine {
                     let offset_b = j * GLOBAL_DIMENSION;
 
                     let mut sim = 0.0;
-                    for (&a_val, &b_val) in tensors[i].iter().zip(tensors[j].iter()).take(GLOBAL_DIMENSION) {
+                    for (&a_val, &b_val) in tensors[i]
+                        .iter()
+                        .zip(tensors[j].iter())
+                        .take(GLOBAL_DIMENSION)
+                    {
                         sim += a_val * b_val;
                     }
 

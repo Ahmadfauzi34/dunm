@@ -48,7 +48,10 @@ impl AsyncSoulLog {
         // Pastikan direktori log ada
         if !root_dir.exists() {
             if let Err(e) = fs::create_dir_all(&root_dir) {
-                eprintln!("Warning: Failed to create log directory {:?}: {}", root_dir, e);
+                eprintln!(
+                    "Warning: Failed to create log directory {:?}: {}",
+                    root_dir, e
+                );
             }
         }
 

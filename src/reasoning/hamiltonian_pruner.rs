@@ -215,4 +215,4 @@ impl HamiltonianPruner {
     pub fn extract_ground_state(&self) -> Option<&Hypothesis> {
         self.hypotheses.first()
     }
-        }
+}

@@ -277,12 +277,8 @@ impl StructuralAnalyzer {
     ) -> ObjectDelta {
         match in_stats.count.cmp(&out_stats.count) {
             std::cmp::Ordering::Equal => ObjectDelta::SameCount,
-            std::cmp::Ordering::Less => {
-                ObjectDelta::Added(out_stats.count - in_stats.count)
-            }
-            std::cmp::Ordering::Greater => {
-                ObjectDelta::Removed(in_stats.count - out_stats.count)
-            }
+            std::cmp::Ordering::Less => ObjectDelta::Added(out_stats.count - in_stats.count),
+            std::cmp::Ordering::Greater => ObjectDelta::Removed(in_stats.count - out_stats.count),
         }
     }
 

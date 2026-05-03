@@ -1,7 +1,7 @@
 use rrm_rust::KVImmortalEngine;
 use std::path::PathBuf;
-use std::time::Duration;
 use std::thread;
+use std::time::Duration;
 
 #[test]
 fn test_immortal_engine_io_failure_resilience() {
@@ -13,7 +13,9 @@ fn test_immortal_engine_io_failure_resilience() {
 
     // Menambahkan event juga tidak boleh panic meskipun thread I/O mungkin sudah keluar
     use rrm_rust::self_awareness::immortal_loop::SoulEvent;
-    engine.append_event(SoulEvent::TaskAttempted { task_id: "test".to_string() });
+    engine.append_event(SoulEvent::TaskAttempted {
+        task_id: "test".to_string(),
+    });
 
     // Tunggu sebentar untuk memastikan thread I/O sempat berjalan dan mencoba membuka file
     thread::sleep(Duration::from_millis(100));

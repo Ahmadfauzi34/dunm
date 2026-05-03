@@ -167,7 +167,11 @@ impl ExecutableWiki {
 
         // Simpan ke disk
         if let Err(e) = fs::write(&file_path, &content) {
-            return Err(format!("Gagal menyimpan skill ke {}: {}", file_path.display(), e));
+            return Err(format!(
+                "Gagal menyimpan skill ke {}: {}",
+                file_path.display(),
+                e
+            ));
         }
 
         // Update knowledge base (hot-swapping)

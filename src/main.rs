@@ -7,7 +7,6 @@
         // clippy::nursery, // <- Pindah ke CI-only
     )
 )]
-
 // ==========================================
 // ⛔ STRICT DENY (Keamanan & Anti-Mangkir)
 // ==========================================
@@ -19,7 +18,6 @@
     clippy::todo,          // Cegah AI/Developer meninggalkan placeholder
     clippy::unimplemented, // Cegah fungsi kosong masuk ke production
 ))]
-
 // ==========================================
 // 🚧 TEMPORARY ALLOW (Prioritas Hapus)
 // ==========================================
@@ -30,7 +28,6 @@
     clippy::similar_names,
     clippy::explicit_iter_loop,
 )]
-
 // ==========================================
 // 🛡️ PERMANENT ALLOW (Domain Tensor)
 // ==========================================
@@ -43,7 +40,6 @@
     clippy::cast_precision_loss,
     clippy::cast_sign_loss,
 )]
-
 
 #[global_allocator]
 static ALLOCATOR: rrm_rust::memory::allocator::TrackingAllocator =
@@ -100,11 +96,12 @@ fn distill_yaml_skills() {
             "\n# Tensor Driven Macro: {id}\n\n```yaml\nid: MACRO:{id}\ntier: 6\ndescription: Generated tensor skill\nsequence:\n  - axiom_type: TENSOR_DRIVEN_BIND\n    physics_tier: 6\n    delta_x: {dx:.1}\n    delta_y: {dy:.1}\n    tensor_spatial: [{yaml_arr}]\n```\n"
         );
 
-        fs::write(
+        if let Err(e) = fs::write(
             format!("knowledge/grammar/{}.md", id.to_lowercase()),
             yaml_doc,
-        )
-        .unwrap();
+        ) {
+            eprintln!("Gagal menulis YAML grammar: {}", e);
+        }
     };
 
     generate_yaml("SHIFT_RIGHT", 1.0, 0.0, false, false);

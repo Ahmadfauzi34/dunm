@@ -88,7 +88,11 @@ impl SimdEnergyCalculator {
                 let mut out_of_bounds = 0.0;
 
                 for &(x, y, token) in positions.iter() {
-                    if x >= 0 && (x as usize) < expected_width && y >= 0 && (y as usize) < expected_height {
+                    if x >= 0
+                        && (x as usize) < expected_width
+                        && y >= 0
+                        && (y as usize) < expected_height
+                    {
                         let idx = (y as usize) * expected_width + (x as usize);
                         occupancy[idx] = token;
                     } else {
