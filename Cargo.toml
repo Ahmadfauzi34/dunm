@@ -2,11 +2,7 @@
 name = "rrm_rust"
 version = "0.1.0"
 edition = "2021"
-description = "RRM Rust Quantum Sandbox"
-license = "MIT"
-repository = "https://github.com/Ahmadfauzi34/dunm"
-readme = "AGENTS.md"
-categories = ["science", "simulation"]
+publish = false
 
 [dependencies]
 lru = "0.13.0"

@@ -38,7 +38,6 @@
     clippy::module_name_repetitions,
     clippy::must_use_candidate,
     clippy::unreadable_literal, // FHRR random generator constants
-    clippy::cargo_common_metadata, // Membiarkan lib tidak di-publish secara penuh (missing categories, etc)
     
     // [⬡ Carbo] FHRR: i64→f32 cast intentional untuk AVX2 256-bit alignment
     clippy::cast_possible_truncation,
