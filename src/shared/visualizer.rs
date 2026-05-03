@@ -581,12 +581,10 @@ impl Visualizer {
 
         let mut bar = String::with_capacity(width);
         for i in 0..width {
-            if i == pos {
-                bar.push('●');
-            } else if i < pos {
-                bar.push('━');
-            } else {
-                bar.push('┅');
+            match i.cmp(&pos) {
+                std::cmp::Ordering::Equal => bar.push('●'),
+                std::cmp::Ordering::Less => bar.push('━'),
+                std::cmp::Ordering::Greater => bar.push('┅'),
             }
         }
 
@@ -682,7 +680,7 @@ impl Visualizer {
         const BLOCKS: &[&str] = &[
             " ", "▁", "▂", "▃", "▄", "▅", "▆", "▇", "█", "▉", "▊", "▋", "▌", "▍", "▎", "▏",
         ];
-        let idx = ((val.abs() * 8.0 + 8.0) as usize).min(15).max(0);
+        let idx = ((val.abs() * 8.0 + 8.0) as usize).clamp(0, 15);
         BLOCKS[idx]
     }
 
@@ -705,7 +703,7 @@ impl Visualizer {
             .iter()
             .take(width)
             .map(|&v| {
-                let intensity = ((v.tanh() + 1.0) / 2.0 * 255.0) as u8;
+                let intensity = (v.tanh().midpoint(1.0) * 255.0) as u8;
                 // Simplified: gunakan ANSI colors
                 if intensity > 200 {
                     "█"
@@ -739,8 +737,7 @@ impl Visualizer {
                 let filled = ((m / max) * width as f32) as usize;
                 "█".repeat(filled / mags.len().max(1))
             })
-            .collect::<Vec<_>>()
-            .join("")
+            .collect::<String>()
     }
 
     fn classify_pattern(tensor: &Array1<f32>) -> String {

@@ -47,6 +47,7 @@ impl HamiltonianPruner {
         physics_tier: u8,
     ) {
         // Cek duplikasi
+        const EPSILON: f32 = 1e-6;
         for hyp in &self.hypotheses {
             let sim_sp = FHRR::similarity(&hyp.tensor_spatial, t_spatial);
             let sim_sem = FHRR::similarity(&hyp.tensor_semantic, t_semantic);
@@ -60,7 +61,6 @@ impl HamiltonianPruner {
                 cond_match = true;
             }
 
-            const EPSILON: f32 = 1e-6;
             if sim_sp > 0.99
                 && sim_sem > 0.99
                 && cond_match
@@ -196,7 +196,7 @@ impl HamiltonianPruner {
         energy
     }
 
-    /// Menyortir hipotesis berdasarkan free energy dan memotong yang melebihi max_branches.
+    /// Menyortir hipotesis berdasarkan free energy dan memotong yang melebihi `max_branches`.
     ///
     /// # Panics
     /// Fungsi ini tidak seharusnya panic pada kondisi normal.

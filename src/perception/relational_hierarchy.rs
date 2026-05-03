@@ -145,8 +145,8 @@ impl RelationalEngine {
         let mut x_positions: Vec<f32> = atoms.iter().map(|a| a.center_of_mass.0).collect();
         let mut y_positions: Vec<f32> = atoms.iter().map(|a| a.center_of_mass.1).collect();
 
-        x_positions.sort_by(|a, b| a.partial_cmp(b).unwrap());
-        y_positions.sort_by(|a, b| a.partial_cmp(b).unwrap());
+        x_positions.sort_by(f32::total_cmp);
+        y_positions.sort_by(f32::total_cmp);
 
         // Check uniform spacing
         let x_spacings: Vec<f32> = x_positions.windows(2).map(|w| w[1] - w[0]).collect();
@@ -179,7 +179,7 @@ impl RelationalEngine {
                         bounding_box: Self::union_bbox(&a.bounding_box, &b.bounding_box),
                         symmetry_group: Some(SymmetryGroup {
                             axis: SymmetryAxis::Vertical(
-                                (a.center_of_mass.0 + b.center_of_mass.0) / 2.0,
+                                a.center_of_mass.0.midpoint(b.center_of_mass.0),
                             ),
                             members: vec![i, j],
                         }),

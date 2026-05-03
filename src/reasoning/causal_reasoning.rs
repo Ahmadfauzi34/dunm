@@ -101,12 +101,10 @@ impl CausalReasoner {
             DimensionRelation::Equal
         };
 
-        let object_delta = if final_state.active_count > initial.active_count {
-            ObjectDelta::Added
-        } else if final_state.active_count < initial.active_count {
-            ObjectDelta::Removed
-        } else {
-            ObjectDelta::Same // Simplification
+        let object_delta = match final_state.active_count.cmp(&initial.active_count) {
+            std::cmp::Ordering::Greater => ObjectDelta::Added,
+            std::cmp::Ordering::Less => ObjectDelta::Removed,
+            std::cmp::Ordering::Equal => ObjectDelta::Same, // Simplification
         };
 
         StructuralSignature {

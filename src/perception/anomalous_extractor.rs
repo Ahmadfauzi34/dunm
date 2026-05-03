@@ -15,6 +15,9 @@ impl AnomalousExtractor {
         Self
     }
 
+    ///
+    /// # Errors
+    /// Returns a `String` error if extraction fails (though currently it always succeeds).
     pub fn execute(&self, state: &EntityManifold) -> Result<EntityManifold, String> {
         let new_state = extract_anomalous_quadrant(state);
         Ok(new_state)

@@ -34,7 +34,7 @@ impl MaintenanceEngine {
     /// Memastikan semua vektor Seed 100% Ortogonal (Tegak Lurus).
     pub fn anneal_memory(
         &self,
-        tensors: &mut Vec<Array1<f32>>,
+        tensors: &mut [Array1<f32>],
         base_learning_rate: f32,
         epochs: usize,
     ) -> (f32, f32) {
@@ -79,8 +79,8 @@ impl MaintenanceEngine {
                     let offset_b = j * GLOBAL_DIMENSION;
 
                     let mut sim = 0.0;
-                    for d in 0..GLOBAL_DIMENSION {
-                        sim += tensors[i][d] * tensors[j][d];
+                    for (&a_val, &b_val) in tensors[i].iter().zip(tensors[j].iter()).take(GLOBAL_DIMENSION) {
+                        sim += a_val * b_val;
                     }
 
                     if sim.abs() > orthogonal_tolerance {
@@ -108,7 +108,7 @@ impl MaintenanceEngine {
             // C. Terapkan Gaya Tolak
             let temperature = base_learning_rate * (-((epoch as f32) / 5.0)).exp();
 
-            for i in 0..num_seeds {
+            for (i, tensor) in tensors.iter_mut().enumerate().take(num_seeds) {
                 let offset_a = i * GLOBAL_DIMENSION;
                 let mut has_energy = false;
 
@@ -120,7 +120,7 @@ impl MaintenanceEngine {
                 }
 
                 if has_energy {
-                    let mut v_a = tensors[i].view_mut();
+                    let mut v_a = tensor.view_mut();
                     for d in 0..GLOBAL_DIMENSION {
                         v_a[d] += repulsion_fields[offset_a + d] * temperature;
                     }
