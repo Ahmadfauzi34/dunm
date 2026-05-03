@@ -51,9 +51,8 @@ impl SimdEnergyCalculator {
             if dim_diff > 0.0 {
                 // EXTREME PENALTY: FORCE MCTS TO AVOID TRANSLATIONS IF DIMENSIONS ARE WRONG
                 return 10000.0 * dim_diff;
-            } else {
-                return -500.0; // Sukses mutlak di Fase 1! Abaikan piksel berantakan.
             }
+            return -500.0; // Sukses mutlak di Fase 1! Abaikan piksel berantakan.
         }
 
         // 🌟 GERBANG FASE 2: MIKROSKOPIS 🌟
@@ -89,7 +88,7 @@ impl SimdEnergyCalculator {
                 let mut out_of_bounds = 0.0;
 
                 for &(x, y, token) in positions.iter() {
-                    if x >= 0 && x < expected_width as i32 && y >= 0 && y < expected_height as i32 {
+                    if x >= 0 && (x as usize) < expected_width && y >= 0 && (y as usize) < expected_height {
                         let idx = (y as usize) * expected_width + (x as usize);
                         occupancy[idx] = token;
                     } else {
@@ -100,18 +99,12 @@ impl SimdEnergyCalculator {
                 energy += out_of_bounds;
 
                 // Compare with expected using flat layout
-                for y in 0..expected_height {
-                    for x in 0..expected_width {
+                for (y, row) in expected.iter().enumerate().take(expected_height) {
+                    for (x, &exp_val) in row.iter().enumerate().take(expected_width) {
                         let idx = y * expected_width + x;
                         let occ_val = occupancy[idx];
-                        let exp_val = expected[y][x];
 
-                        if occ_val != -1 {
-                            // ada benda di universe kita
-                            if occ_val != exp_val {
-                                energy += 1.0; // mismatch token
-                            }
-                        } else {
+                        if occ_val == -1 {
                             // tidak ada benda di universe kita
                             if exp_val != 0 {
                                 // Cari tetangga terdekat dengan token yang sama (Corong fuzzy)
@@ -136,6 +129,11 @@ impl SimdEnergyCalculator {
                                 } else {
                                     energy += 1.0; // Full missing object
                                 }
+                            }
+                        } else {
+                            // ada benda di universe kita
+                            if occ_val != exp_val {
+                                energy += 1.0; // mismatch token
                             }
                         }
                     }

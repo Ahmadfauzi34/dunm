@@ -24,11 +24,11 @@ impl EntitySegmenter {
 
         let parse_key = |key: &str| -> ParsedKey {
             let parts: Vec<&str> = key.split("_t").collect();
-            let coords: Vec<&str> = parts[0].split(",").collect();
+            let coords: Vec<&str> = parts[0].split(',').collect();
             ParsedKey {
-                x: coords[0].parse().unwrap(),
-                y: coords[1].parse().unwrap(),
-                token: parts[1].parse().unwrap(),
+                x: coords.first().and_then(|c| c.parse().ok()).unwrap_or(0),
+                y: coords.get(1).and_then(|c| c.parse().ok()).unwrap_or(0),
+                token: parts.get(1).and_then(|c| c.parse().ok()).unwrap_or(0),
             }
         };
 

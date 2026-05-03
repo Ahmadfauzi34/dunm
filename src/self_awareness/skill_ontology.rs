@@ -202,25 +202,25 @@ impl SkillOntology {
         match class {
             TaskClass::PureGeometry => {
                 let geom_skills: Vec<_> = available.iter().filter(|c| c.tier_id == 4).collect();
-                if !geom_skills.is_empty() {
+                if geom_skills.is_empty() {
+                    Some(SolutionStrategy::DirectExecution { primary_skill: 4 })
+                } else {
                     Some(SolutionStrategy::DirectExecution {
                         primary_skill: geom_skills[0].tier_id,
                     })
-                } else {
-                    Some(SolutionStrategy::DirectExecution { primary_skill: 4 })
                 }
             }
             TaskClass::StructuralTransform => {
                 let structural: Vec<_> = available.iter().filter(|c| c.tier_id == 7).collect();
-                if !structural.is_empty() {
-                    Some(SolutionStrategy::TemplateDriven {
-                        structural_skill: structural[0].tier_id,
-                        refinement_skills: self.find_compatible_refinements(7, &available),
-                    })
-                } else {
+                if structural.is_empty() {
                     Some(SolutionStrategy::TemplateDriven {
                         structural_skill: 7,
                         refinement_skills: vec![],
+                    })
+                } else {
+                    Some(SolutionStrategy::TemplateDriven {
+                        structural_skill: structural[0].tier_id,
+                        refinement_skills: self.find_compatible_refinements(7, &available),
                     })
                 }
             }
@@ -275,7 +275,7 @@ impl SkillOntology {
         let tier_id = usage.tier_used;
         if let Some(cap) = self.capabilities.get_mut(&tier_id) {
             let n = cap.historical_success_rate;
-            cap.historical_success_rate = (n + if usage.success { 1.0 } else { 0.0 }) / 2.0;
+            cap.historical_success_rate = n.midpoint(if usage.success { 1.0 } else { 0.0 });
             if usage.success {
                 cap.typical_signatures.push(usage.context_signature.clone());
                 if cap.typical_signatures.len() > 100 {
@@ -332,7 +332,7 @@ impl SkillOntology {
     }
 
     fn build_transition_rules(&mut self) {
-        use TransitionCompatibility::*;
+        use TransitionCompatibility::{Always, Conditional, Never, Risky};
         let rules = vec![
             (7, 4, Always, "Crop then Geometry"),
             (0, 0, Always, "Multiple translations"),
@@ -354,7 +354,11 @@ impl SkillOntology {
         }
     }
 
-    fn index_capabilities(&mut self) {}
+    // Consider adding #[allow(clippy::unused_self)] if intended to be an instance method
+    // but right now it's totally empty and not used anywhere safely.
+    // Or just turn it into an associated function if we want to keep it.
+    #[allow(clippy::unused_self)]
+    fn index_capabilities(&self) {}
 
     fn fuzzy_match_capabilities(&self, signature: &StructuralSignature) -> Vec<&TierCapability> {
         let mut scored: Vec<(f32, &TierCapability)> = self
@@ -371,7 +375,7 @@ impl SkillOntology {
             .filter(|(s, _)| *s > 0.5)
             .collect();
 
-        scored.sort_by(|a, b| b.0.partial_cmp(&a.0).unwrap());
+        scored.sort_by(|a, b| b.0.total_cmp(&a.0));
         scored.into_iter().map(|(_, cap)| cap).collect()
     }
 

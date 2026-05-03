@@ -37,6 +37,7 @@
 #![allow(
     clippy::module_name_repetitions,
     clippy::must_use_candidate,
+    clippy::unreadable_literal, // FHRR random generator constants
     
     // [⬡ Carbo] FHRR: i64→f32 cast intentional untuk AVX2 256-bit alignment
     clippy::cast_possible_truncation,
