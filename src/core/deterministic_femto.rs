@@ -14,7 +14,7 @@ impl DeterministicFemto {
     /// Membuat nilai Femto dari angka desimal biasa (f32/f64)
     /// HANYA SAAT INISIALISASI. Setelah masuk sistem, wajib berwujud Integer.
     pub fn from_f32(value: f32) -> Self {
-        DeterministicFemto((value as f64 * FEMTO_MULTIPLIER as f64).round() as i64)
+        DeterministicFemto((f64::from(value) * FEMTO_MULTIPLIER as f64).round() as i64)
     }
 
     pub fn from_f64(value: f64) -> Self {
@@ -31,6 +31,7 @@ impl DeterministicFemto {
         self.0 as f64 / FEMTO_MULTIPLIER as f64
     }
 
+    #[must_use]
     pub fn abs(self) -> Self {
         DeterministicFemto(self.0.abs())
     }
@@ -40,7 +41,7 @@ impl DeterministicFemto {
 
 impl Add for DeterministicFemto {
     type Output = Self;
-    #[inline(always)]
+    #[inline]
     fn add(self, other: Self) -> Self {
         DeterministicFemto(self.0.saturating_add(other.0))
     }
@@ -48,7 +49,7 @@ impl Add for DeterministicFemto {
 
 impl Sub for DeterministicFemto {
     type Output = Self;
-    #[inline(always)]
+    #[inline]
     fn sub(self, other: Self) -> Self {
         DeterministicFemto(self.0.saturating_sub(other.0))
     }
@@ -57,7 +58,7 @@ impl Sub for DeterministicFemto {
 // Pembagian skala Integer (membutuhkan konversi khusus jika mengalikan sesama femto)
 impl Div<i64> for DeterministicFemto {
     type Output = Self;
-    #[inline(always)]
+    #[inline]
     fn div(self, rhs: i64) -> Self {
         if rhs == 0 {
             DeterministicFemto::ZERO

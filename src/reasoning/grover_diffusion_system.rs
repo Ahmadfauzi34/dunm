@@ -62,20 +62,20 @@ impl<'a> GroverDiffusionSystem<'a> {
         self.amplitudes.fill(0.0);
 
         let mut total_initial_energy_sq = 0.0;
-        for i in 0..n {
-            let energy = candidates[i].energy;
+        for candidate in candidates.iter().take(n) {
+            let energy = candidate.energy;
             let base_amp = 0.001_f32.max(energy.sqrt());
             total_initial_energy_sq += base_amp * base_amp;
         }
 
         let normalization_factor = 1.0 / (total_initial_energy_sq + 1e-15).sqrt();
 
-        for i in 0..n {
+        for (i, candidate) in candidates.iter().enumerate().take(n) {
             let base_idx = i * d;
-            let energy = candidates[i].energy;
+            let energy = candidate.energy;
             let amp = energy.sqrt() * normalization_factor;
 
-            let rule_tensor = &candidates[i].tensor_rule;
+            let rule_tensor = &candidate.tensor_rule;
 
             for dim in 0..d {
                 self.amplitudes[base_idx + dim] = rule_tensor[dim] * amp;
@@ -100,8 +100,7 @@ impl<'a> GroverDiffusionSystem<'a> {
         };
 
         // 1. Kalkulasi Energi untuk semua kandidat
-        for i in 0..n {
-            let candidate = &candidates[i];
+        for (i, candidate) in candidates.iter().enumerate().take(n) {
             let mut total_free_energy = 0.0;
 
             for state in train_states {
@@ -214,19 +213,19 @@ impl<'a> GroverDiffusionSystem<'a> {
 
         let mut norms = vec![0.0; n];
 
-        for i in 0..n {
+        for (i, norm_val) in norms.iter_mut().enumerate().take(n) {
             let base_idx = i * d;
             let mut sum_sq = 0.0;
             for dim in 0..d {
                 let a = self.amplitudes[base_idx + dim];
                 sum_sq += a * a;
             }
-            norms[i] = sum_sq.sqrt();
+            *norm_val = sum_sq.sqrt();
         }
 
-        for i in 0..n {
+        for (i, &norm) in norms.iter().enumerate().take(n) {
             let base_idx = i * d;
-            let norm = norms[i] + 1e-10;
+            let norm = norm + 1e-10;
 
             let thermal_factor = (-norm / t).exp();
             let scale = 1.0 / (norm + thermal_factor);
