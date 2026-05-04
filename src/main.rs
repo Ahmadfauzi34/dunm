@@ -27,6 +27,9 @@
     clippy::uninlined_format_args, // 🟢 Lowest: ergonomi
     clippy::similar_names,
     clippy::explicit_iter_loop,
+    clippy::too_many_lines,
+    clippy::too_many_arguments,
+    clippy::unused_self,
 )]
 // ==========================================
 // 🛡️ PERMANENT ALLOW (Domain Tensor)
