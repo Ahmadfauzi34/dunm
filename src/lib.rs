@@ -7,7 +7,6 @@
         // clippy::nursery, // <- Pindah ke CI-only
     )
 )]
-
 // ==========================================
 // ⛔ STRICT DENY (Keamanan & Anti-Mangkir)
 // ==========================================
@@ -19,7 +18,6 @@
     clippy::todo,          // Cegah AI/Developer meninggalkan placeholder
     clippy::unimplemented, // Cegah fungsi kosong masuk ke production
 ))]
-
 // ==========================================
 // 🚧 TEMPORARY ALLOW (Prioritas Hapus)
 // ==========================================
@@ -30,7 +28,6 @@
     clippy::similar_names,
     clippy::explicit_iter_loop,
 )]
-
 // ==========================================
 // 🛡️ PERMANENT ALLOW (Domain Tensor)
 // ==========================================
@@ -44,8 +41,6 @@
     clippy::cast_precision_loss,
     clippy::cast_sign_loss,
 )]
-
-
 
 pub mod core;
 pub mod memory;

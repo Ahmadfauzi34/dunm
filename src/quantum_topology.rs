@@ -154,7 +154,7 @@ impl QuantumCellComplex {
             .enumerate()
             .map(|(idx, &(i, j))| (dist_matrix[[i, j]].sqrt(), idx))
             .collect();
-        edge_filtration.sort_by(|a, b| a.0.partial_cmp(&b.0).unwrap());
+        edge_filtration.sort_by(|a, b| a.0.partial_cmp(&b.0).unwrap_or(std::cmp::Ordering::Equal));
 
         let mut uf = UnionFind::new(dist_matrix.shape()[0]);
 

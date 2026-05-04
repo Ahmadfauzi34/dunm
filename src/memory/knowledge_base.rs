@@ -52,7 +52,9 @@ impl KnowledgeBase {
                                 let mut tensor = Array1::zeros(GLOBAL_DIMENSION);
                                 for (i, chunk) in bytes.chunks(4).enumerate() {
                                     if chunk.len() == 4 {
-                                        tensor[i] = f32::from_ne_bytes(chunk.try_into().unwrap());
+                                if let Ok(arr) = chunk.try_into() {
+                                    tensor[i] = f32::from_ne_bytes(arr);
+                                }
                                     }
                                 }
                                 tensors.push(tensor);
@@ -108,16 +110,23 @@ impl KnowledgeBase {
         };
 
         // Save JSON
-        let json_str = serde_json::to_string_pretty(&trace).unwrap();
-        fs::write(trace_path, json_str).unwrap();
+        if let Ok(json_str) = serde_json::to_string_pretty(&trace) {
+            if let Err(e) = fs::write(&trace_path, json_str) {
+                eprintln!("[Rust KnowledgeBase] Gagal menulis ke {:?}: {}", trace_path, e);
+            }
+        } else {
+            eprintln!("[Rust KnowledgeBase] Gagal serialisasi JSON untuk Axiom '{}'", axiom_type);
+        }
 
         // Save Bin (Float32Array bytes equivalent)
         let bytes: Vec<u8> = tensor.iter().flat_map(|&f| f.to_ne_bytes()).collect();
-        fs::write(bin_path, bytes).unwrap();
-
-        println!(
-            "[Rust KnowledgeBase] Eksport Axiom '{}' berhasil.",
-            axiom_type
-        );
+        if let Err(e) = fs::write(&bin_path, bytes) {
+            eprintln!("[Rust KnowledgeBase] Gagal menulis ke {:?}: {}", bin_path, e);
+        } else {
+            println!(
+                "[Rust KnowledgeBase] Eksport Axiom '{}' berhasil.",
+                axiom_type
+            );
+        }
     }
 }

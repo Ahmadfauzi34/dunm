@@ -257,11 +257,11 @@ impl SelfReflection {
     }
 
     pub fn explain_decision(&self, chosen_skill: u8, rejected: &[u8]) -> String {
-        let chosen = self
-            .ontology
-            .capabilities
-            .get(&chosen_skill)
-            .expect("Invalid skill ID");
+        let chosen = if let Some(skill) = self.ontology.capabilities.get(&chosen_skill) {
+            skill
+        } else {
+            return format!("Skill ID {} tidak valid atau tidak ditemukan.", chosen_skill);
+        };
 
         let mut explanation = format!("Saya memilih {} karena:\n", chosen.name);
 
@@ -293,11 +293,17 @@ impl SelfReflection {
         skill_id: u8,
         current: &EntityManifold,
     ) -> ConsequencePrediction {
-        let skill = self
-            .ontology
-            .capabilities
-            .get(&skill_id)
-            .expect("Invalid skill");
+        let skill = if let Some(s) = self.ontology.capabilities.get(&skill_id) {
+            s
+        } else {
+            // Default prediction if skill is not found to avoid panicking
+            return ConsequencePrediction {
+                guaranteed_effects: vec![],
+                likely_side_effects: vec![],
+                possible_risks: vec!["Skill not found".to_string()],
+                estimated_success_probability: 0.0,
+            };
+        };
 
         ConsequencePrediction {
             guaranteed_effects: skill.postconditions.clone(),

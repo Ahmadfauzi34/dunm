@@ -5,10 +5,7 @@ use std::thread;
 
 /// Command for the background logging thread
 enum LogCommand {
-    Log {
-        file_path: String,
-        message: String,
-    },
+    Log { file_path: String, message: String },
     Terminate,
 }
 

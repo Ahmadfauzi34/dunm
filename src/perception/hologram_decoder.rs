@@ -40,7 +40,10 @@ impl HologramDecoder {
             let center_x = manifold.centers_x[e].round() as i32;
             let center_y = manifold.centers_y[e].round() as i32;
 
-            if center_x >= 0 && (center_x as usize) < width && center_y >= 0 && (center_y as usize) < height
+            if center_x >= 0
+                && (center_x as usize) < width
+                && center_y >= 0
+                && (center_y as usize) < height
             {
                 // Untuk Swarm Kuantum dasar, token warna sudah tersimpan utuh.
                 // Jika ingin ekstraksi Fasa Semantik bisa panggil Probe Warna.

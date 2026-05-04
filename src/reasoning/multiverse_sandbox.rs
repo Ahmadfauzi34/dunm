@@ -55,10 +55,10 @@ impl MultiverseSandbox {
                         let chunk = ndarray::Array1::from_vec(sp_mut[start..end].to_vec());
                         let new_chunk = FHRR::bind(&chunk, delta_spatial);
                         if let Some(slice) = new_chunk.as_slice() {
-                    sp_mut[start..end].copy_from_slice(slice);
-                } else {
-                    return false;
-                }
+                            sp_mut[start..end].copy_from_slice(slice);
+                        } else {
+                            return false;
+                        }
                     }
 
                     // Untuk merubah piksel visual, sistem akan mende-bind posisinya
@@ -234,8 +234,12 @@ impl MultiverseSandbox {
 
             // 1. Evaluasi logika Bounding-Box atau Anchor-Window untuk mendapatkan min_x, max_x, dsb.
             if axiom_type.starts_with("CROP_WINDOW_AROUND(") {
-                let Some(start) = axiom_type.find('(').map(|i| i + 1) else { return false; };
-                let Some(end) = axiom_type.find(')') else { return false; };
+                let Some(start) = axiom_type.find('(').map(|i| i + 1) else {
+                    return false;
+                };
+                let Some(end) = axiom_type.find(')') else {
+                    return false;
+                };
                 let anchor_color = axiom_type[start..end].parse::<i32>().unwrap_or(-1);
 
                 // Dikte ukuran (Opsi A) dipatuhi oleh Sandbox dari `delta_x/y`
@@ -308,8 +312,12 @@ impl MultiverseSandbox {
                 Self::crop_to_quadrant(u, anchor_color, mask, mode, 0.0);
                 return false;
             } else if axiom_type.starts_with("CROP_TO_COLOR(") {
-                let Some(start) = axiom_type.find('(').map(|i| i + 1) else { return false; };
-                let Some(end) = axiom_type.find(')') else { return false; };
+                let Some(start) = axiom_type.find('(').map(|i| i + 1) else {
+                    return false;
+                };
+                let Some(end) = axiom_type.find(')') else {
+                    return false;
+                };
                 let target_color = axiom_type[start..end].parse::<i32>().unwrap_or(-1);
 
                 if target_color != -1 {

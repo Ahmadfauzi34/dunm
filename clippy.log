@@ -1,0 +1,2091 @@
+warning: 6 bindings with single-character names in scope
+   --> src/quantum_topology.rs:514:53
+    |
+514 |     pub fn from_manifold(manifold: &EntityManifold, k: usize) -> Self {
+    |                                                     ^
+515 |         let n = manifold.active_count;
+    |             ^
+...
+525 |         let mut w = Array2::<f32>::zeros((n, n));
+    |                 ^
+526 |         let mut d = Array1::<f32>::zeros(n);
+    |                 ^
+...
+565 |             let mut v = Array1::<f32>::from_vec(
+    |                     ^
+...
+575 |                 let u = embedding.column(prev).to_owned();
+    |                     ^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#many_single_char_names
+note: the lint level is defined here
+   --> src/lib.rs:5:9
+    |
+  5 |         clippy::pedantic,
+    |         ^^^^^^^^^^^^^^^^
+    = note: `#[warn(clippy::many_single_char_names)]` implied by `#[warn(clippy::pedantic)]`
+
+warning: 5 bindings with single-character names in scope
+   --> src/quantum_topology.rs:514:53
+    |
+514 |     pub fn from_manifold(manifold: &EntityManifold, k: usize) -> Self {
+    |                                                     ^
+515 |         let n = manifold.active_count;
+    |             ^
+...
+525 |         let mut w = Array2::<f32>::zeros((n, n));
+    |                 ^
+526 |         let mut d = Array1::<f32>::zeros(n);
+    |                 ^
+...
+565 |             let mut v = Array1::<f32>::from_vec(
+    |                     ^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#many_single_char_names
+
+warning: redundant else block
+   --> src/reasoning/rrm_agent.rs:183:14
+    |
+183 |               } else {
+    |  ______________^
+184 | |                 println!("    ❌ {} tidak cocok", axiom.name);
+185 | |             }
+    | |_____________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#redundant_else
+    = note: `#[warn(clippy::redundant_else)]` implied by `#[warn(clippy::pedantic)]`
+help: remove the `else` block and move the contents out
+    |
+183 ~             }
+184 ~             println!("    ❌ {} tidak cocok", axiom.name);
+    |
+
+warning: redundant else block
+   --> src/reasoning/rrm_agent.rs:918:22
+    |
+918 |   ...   } else {
+    |  ________^
+919 | | ...       // Jika Gestalt juga tidak bisa menemukan bentuk berarti, a...
+920 | | ...       println!(
+921 | | ...           "   👁️ [Gestalt Vision] Pandangan tetap buram (Noise Tot...
+922 | | ...       );
+923 | | ...       self.self_reflection.total_iterations = 9999;
+924 | | ...   }
+    | |_______^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#redundant_else
+help: remove the `else` block and move the contents out
+    |
+918 ~                     }
+919 +                     // Jika Gestalt juga tidak bisa menemukan bentuk berarti, anggap agen kelelahan.
+920 +                     println!(
+921 ~                         "   👁️ [Gestalt Vision] Pandangan tetap buram (Noise Total). Menyerah."
+922 +                     );
+923 +                     self.self_reflection.total_iterations = 9999;
+    |
+
+warning: multiple versions for dependency `hashbrown`: 0.15.5, 0.16.1
+  |
+  = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#multiple_crate_versions
+note: the lint level is defined here
+ --> src/lib.rs:6:9
+  |
+6 |         clippy::cargo,
+  |         ^^^^^^^^^^^^^
+  = note: `#[warn(clippy::multiple_crate_versions)]` implied by `#[warn(clippy::cargo)]`
+
+warning: item in documentation is missing backticks
+ --> src/core/entity_manifold.rs:5:14
+  |
+5 | /// Struktur SoA (Structure of Arrays) untuk Quantum Entity Manifold.
+  |              ^^^
+  |
+  = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#doc_markdown
+  = note: `#[warn(clippy::doc_markdown)]` implied by `#[warn(clippy::pedantic)]`
+help: try
+  |
+5 - /// Struktur SoA (Structure of Arrays) untuk Quantum Entity Manifold.
+5 + /// Struktur `SoA` (Structure of Arrays) untuk Quantum Entity Manifold.
+  |
+
+warning: item in documentation is missing backticks
+  --> src/core/entity_manifold.rs:73:61
+   |
+73 |     /// Dynamic capacity extension for dense array mapping (SparseSet be...
+   |                                                             ^^^^^^^^^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#doc_markdown
+help: try
+   |
+73 -     /// Dynamic capacity extension for dense array mapping (SparseSet behavior fallback)
+73 +     /// Dynamic capacity extension for dense array mapping (`SparseSet` behavior fallback)
+   |
+
+warning: item in documentation is missing backticks
+   --> src/core/entity_manifold.rs:153:42
+    |
+153 |     /// Sinkronisasi Sparse SOA -> Dense CoW Grid.
+    |                                          ^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#doc_markdown
+help: try
+    |
+153 -     /// Sinkronisasi Sparse SOA -> Dense CoW Grid.
+153 +     /// Sinkronisasi Sparse SOA -> Dense `CoW` Grid.
+    |
+
+warning: item in documentation is missing backticks
+   --> src/core/entity_manifold.rs:154:55
+    |
+154 |     /// Fungsi ini mengubah token-token warna 1D dari EntityManifold me...
+    |                                                       ^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#doc_markdown
+help: try
+    |
+154 -     /// Fungsi ini mengubah token-token warna 1D dari EntityManifold menjadi
+154 +     /// Fungsi ini mengubah token-token warna 1D dari `EntityManifold` menjadi
+    |
+
+warning: casting `usize` to `i32` may wrap around the value on targets with 32-bit wide pointers
+   --> src/core/entity_manifold.rs:196:38
+    |
+196 |                     if x >= 0 && x < w as i32 && y >= 0 && y < h as i32 {
+    |                                      ^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#cast_possible_wrap
+    = note: `#[warn(clippy::cast_possible_wrap)]` implied by `#[warn(clippy::pedantic)]`
+
+warning: casting `usize` to `i32` may wrap around the value on targets with 32-bit wide pointers
+   --> src/core/entity_manifold.rs:196:64
+    |
+196 |                     if x >= 0 && x < w as i32 && y >= 0 && y < h as i32 {
+    |                                                                ^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#cast_possible_wrap
+
+warning: item in documentation is missing backticks
+  --> src/memory/knowledge_base.rs:39:50
+   |
+39 |     /// Membaca semua memori yang ada, melakukan anneal_memory, dan meny...
+   |                                                  ^^^^^^^^^^^^^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#doc_markdown
+help: try
+   |
+39 -     /// Membaca semua memori yang ada, melakukan anneal_memory, dan menyimpan kembali hasilnya
+39 +     /// Membaca semua memori yang ada, melakukan `anneal_memory`, dan menyimpan kembali hasilnya
+   |
+
+warning: unnecessary `Debug` formatting in `eprintln!` args
+   --> src/memory/knowledge_base.rs:115:77
+    |
+115 | ... Gagal menulis ke {:?}: {}", trace_path, e);
+    |                                 ^^^^^^^^^^
+    |
+    = help: use `Display` formatting and change this to `trace_path.display()`
+    = note: switching to `Display` formatting will change how the value is shown; escaped characters will no longer be escaped and surrounding quotes will be removed
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#unnecessary_debug_formatting
+    = note: `#[warn(clippy::unnecessary_debug_formatting)]` implied by `#[warn(clippy::pedantic)]`
+
+warning: unnecessary `Debug` formatting in `eprintln!` args
+   --> src/memory/knowledge_base.rs:124:73
+    |
+124 | ...] Gagal menulis ke {:?}: {}", bin_path, e);
+    |                                  ^^^^^^^^
+    |
+    = help: use `Display` formatting and change this to `bin_path.display()`
+    = note: switching to `Display` formatting will change how the value is shown; escaped characters will no longer be escaped and surrounding quotes will be removed
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#unnecessary_debug_formatting
+
+warning: this function has too many lines (241/100)
+  --> src/perception/anomalous_extractor.rs:27:1
+   |
+27 | pub fn extract_anomalous_quadrant(state: &EntityManifold) -> EntityManifold {
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#too_many_lines
+   = note: `#[warn(clippy::too_many_lines)]` implied by `#[warn(clippy::pedantic)]`
+
+warning: casting `usize` to `i32` may wrap around the value on targets with 32-bit wide pointers
+   --> src/perception/anomalous_extractor.rs:242:18
+    |
+242 |         score += colors.len() as i32;
+    |                  ^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#cast_possible_wrap
+
+warning: unused `self` argument
+   --> src/quantum_topology.rs:121:29
+    |
+121 |     fn estimate_eigenvalues(&self, matrix: &Array2<f32>) -> Vec<f32> {
+    |                             ^^^^^
+    |
+    = help: consider refactoring to an associated function
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#unused_self
+    = note: `#[warn(clippy::unused_self)]` implied by `#[warn(clippy::pedantic)]`
+
+warning: unnecessary `!=` operation
+   --> src/quantum_topology.rs:166:13
+    |
+166 | /             if root_i != root_j {
+167 | |                 uf.union(root_i, root_j);
+168 | |             } else {
+169 | |                 self.persistence_barcode.push((0.0, dist));
+170 | |             }
+    | |_____________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#if_not_else
+    = note: `#[warn(clippy::if_not_else)]` implied by `#[warn(clippy::pedantic)]`
+help: try
+    |
+166 ~             if root_i == root_j {
+167 +                 self.persistence_barcode.push((0.0, dist));
+168 +             } else {
+169 +                 uf.union(root_i, root_j);
+170 +             }
+    |
+
+warning: casts from `bool` to `i32` can be expressed infallibly using `From`
+   --> src/quantum_topology.rs:257:51
+    |
+257 | ...   connection[[i, j]] = weight * (weight > 0.01) as i32 as f32;
+    |                                     ^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: an `as` cast can become silently lossy if the types change in the future
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#cast_lossless
+    = note: `#[warn(clippy::cast_lossless)]` implied by `#[warn(clippy::pedantic)]`
+help: use `i32::from` instead
+    |
+257 -                     connection[[i, j]] = weight * (weight > 0.01) as i32 as f32;
+257 +                     connection[[i, j]] = weight * i32::from(weight > 0.01) as f32;
+    |
+
+warning: casts from `bool` to `i32` can be expressed infallibly using `From`
+   --> src/quantum_topology.rs:304:37
+    |
+304 | ...   let is_better = (dist_sq < best_dist_sq) as i32 as f32;
+    |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: an `as` cast can become silently lossy if the types change in the future
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#cast_lossless
+help: use `i32::from` instead
+    |
+304 -                     let is_better = (dist_sq < best_dist_sq) as i32 as f32;
+304 +                     let is_better = i32::from(dist_sq < best_dist_sq) as f32;
+    |
+
+warning: used `cloned` where `copied` could be used instead
+   --> src/quantum_topology.rs:442:22
+    |
+442 |                     .cloned()
+    |                      ^^^^^^ help: try: `copied`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#cloned_instead_of_copied
+    = note: `#[warn(clippy::cloned_instead_of_copied)]` implied by `#[warn(clippy::pedantic)]`
+
+warning: the loop variable `y` is used to index `final_spectral`
+   --> src/quantum_topology.rs:799:18
+    |
+799 |         for y in 0..height {
+    |                  ^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#needless_range_loop
+note: the lint level is defined here
+   --> src/lib.rs:4:9
+    |
+  4 |         clippy::all,
+    |         ^^^^^^^^^^^
+    = note: `#[warn(clippy::needless_range_loop)]` implied by `#[warn(clippy::all)]`
+help: consider using an iterator and enumerate()
+    |
+799 -         for y in 0..height {
+799 +         for (y, <item>) in final_spectral.iter_mut().enumerate().take(height) {
+    |
+
+warning: the loop variable `x` is used to index `final_spectral`
+   --> src/quantum_topology.rs:800:22
+    |
+800 |             for x in 0..width {
+    |                      ^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#needless_range_loop
+help: consider using an iterator and enumerate()
+    |
+800 -             for x in 0..width {
+800 +             for (x, <item>) in final_spectral.iter_mut().enumerate().take(width) {
+    |
+
+warning: clamp-like pattern without using clamp function
+   --> src/quantum_topology.rs:862:17
+    |
+862 | /                 if token < 0 {
+863 | |                     token = 0;
+864 | |                 }
+865 | |                 if token > 9 {
+866 | |                     token = 9;
+867 | |                 }
+    | |_________________^ help: replace with clamp: `token = token.clamp(0, 9);`
+    |
+    = note: clamp will panic if max < min
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#manual_clamp
+    = note: `#[warn(clippy::manual_clamp)]` implied by `#[warn(clippy::all)]`
+
+warning: this function has too many arguments (9/7)
+  --> src/reasoning/quantum_search.rs:47:5
+   |
+47 | /     pub fn new(
+48 | |         axiom_type: String,
+49 | |         condition_tensor: Option<Array1<f32>>,
+50 | |         tensor_spatial: Array1<f32>,
+...  |
+56 | |         _static_background: Option<Arc<crate::core::infinite_detail::C...
+57 | |     ) -> Self {
+   | |_____________^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#too_many_arguments
+   = note: `#[warn(clippy::too_many_arguments)]` implied by `#[warn(clippy::all)]`
+
+warning: called `map(<f>).unwrap_or(<a>)` on an `Option` value
+   --> src/reasoning/quantum_search.rs:230:21
+    |
+230 | ...th = parent.map(|p| self.children_ranges[p].1 + 1).unwrap_or(0);
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#map_unwrap_or
+    = note: `#[warn(clippy::map_unwrap_or)]` implied by `#[warn(clippy::pedantic)]`
+help: use `map_or(<a>, <f>)` instead
+    |
+230 -         let depth = parent.map(|p| self.children_ranges[p].1 + 1).unwrap_or(0);
+230 +         let depth = parent.map_or(0, |p| self.children_ranges[p].1 + 1);
+    |
+
+warning: item in documentation is missing backticks
+   --> src/reasoning/quantum_search.rs:412:51
+    |
+412 |     /// Evaluasi EXPECTED Free Energy menggunakan SoA Fractal Nodes (It...
+    |                                                   ^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#doc_markdown
+help: try
+    |
+412 -     /// Evaluasi EXPECTED Free Energy menggunakan SoA Fractal Nodes (Iteratif, bukan rekursif!)
+412 +     /// Evaluasi EXPECTED Free Energy menggunakan `SoA` Fractal Nodes (Iteratif, bukan rekursif!)
+    |
+
+warning: this function has too many lines (253/100)
+   --> src/reasoning/quantum_search.rs:414:5
+    |
+414 | /     pub fn propagate_wave(
+415 | |         self: Arc<Self>,
+416 | |         wave: WaveNode,
+417 | |         initial_manifolds: Arc<Vec<EntityManifold>>,
+418 | |         all_possible_axioms: Vec<WaveNode>,
+419 | |     ) -> std::pin::Pin<Box<dyn std::future::Future<Output = ()> + Send>> {
+    | |________________________________________________________________________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#too_many_lines
+
+warning: redundant closure
+   --> src/reasoning/quantum_search.rs:424:67
+    |
+424 | ...e().unwrap_or_else(|e| e.into_inner());
+    |                       ^^^^^^^^^^^^^^^^^^ help: replace the closure with the method itself: `std::sync::PoisonError::into_inner`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#redundant_closure_for_method_calls
+    = note: `#[warn(clippy::redundant_closure_for_method_calls)]` implied by `#[warn(clippy::pedantic)]`
+
+warning: assigning the result of `Clone::clone()` may be inefficient
+   --> src/reasoning/quantum_search.rs:437:17
+    |
+437 |                 arena.axiom_path[root_idx] = wave.axiom_type.clone();
+    |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: use `clone_from()`: `arena.axiom_path[root_idx].clone_from(&wave.axiom_type)`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#assigning_clones
+    = note: `#[warn(clippy::assigning_clones)]` implied by `#[warn(clippy::pedantic)]`
+
+warning: assigning the result of `Clone::clone()` may be inefficient
+   --> src/reasoning/quantum_search.rs:438:17
+    |
+438 | ...   arena.action_condition[root_idx] = wave.condition_tensor.clone();
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: use `clone_from()`: `arena.action_condition[root_idx].clone_from(&wave.condition_tensor)`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#assigning_clones
+
+warning: assigning the result of `Clone::clone()` may be inefficient
+   --> src/reasoning/quantum_search.rs:439:17
+    |
+439 | ...   arena.action_spatial[root_idx] = wave.tensor_spatial.clone();
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: use `clone_from()`: `arena.action_spatial[root_idx].clone_from(&wave.tensor_spatial)`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#assigning_clones
+
+warning: assigning the result of `Clone::clone()` may be inefficient
+   --> src/reasoning/quantum_search.rs:440:17
+    |
+440 | ...   arena.action_semantic[root_idx] = wave.tensor_semantic.clone();
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: use `clone_from()`: `arena.action_semantic[root_idx].clone_from(&wave.tensor_semantic)`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#assigning_clones
+
+warning: redundant closure
+   --> src/reasoning/quantum_search.rs:466:62
+    |
+466 | ...d().unwrap_or_else(|e| e.into_inner()).is_empty() {
+    |                       ^^^^^^^^^^^^^^^^^^ help: replace the closure with the method itself: `std::sync::PoisonError::into_inner`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#redundant_closure_for_method_calls
+
+warning: redundant closure
+   --> src/reasoning/quantum_search.rs:470:67
+    |
+470 | ...e().unwrap_or_else(|e| e.into_inner());
+    |                       ^^^^^^^^^^^^^^^^^^ help: replace the closure with the method itself: `std::sync::PoisonError::into_inner`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#redundant_closure_for_method_calls
+
+warning: unnecessary boolean `not` operation
+   --> src/reasoning/quantum_search.rs:616:25
+    |
+616 | / ...   if !sheaf.check_sheaf_condition() {
+617 | | ...       topological_resonance = 0.5; // Redam amplitudo karena kont...
+618 | | ...       println!("   ⚠️ [Topological Resonance] Ground state terdete...
+619 | | ...   } else {
+620 | | ...       topological_resonance = 1.2; // Boost amplitudo
+621 | | ...   }
+    | |_______^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#if_not_else
+help: try
+    |
+616 ~                         if sheaf.check_sheaf_condition() {
+617 +                             topological_resonance = 1.2; // Boost amplitudo
+618 +                         } else {
+619 +                             topological_resonance = 0.5; // Redam amplitudo karena kontradiksi lokal
+620 ~                             println!("   ⚠️ [Topological Resonance] Ground state terdeteksi tetapi Sheaf Gluing gagal. Meredam probabilitas.");
+621 +                         }
+    |
+
+warning: redundant closure
+   --> src/reasoning/quantum_search.rs:644:63
+    |
+644 | ...e().unwrap_or_else(|e| e.into_inner()).push(result_wave);
+    |                       ^^^^^^^^^^^^^^^^^^ help: replace the closure with the method itself: `std::sync::PoisonError::into_inner`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#redundant_closure_for_method_calls
+
+warning: casting `usize` to `i32` may wrap around the value on targets with 32-bit wide pointers
+   --> src/reasoning/quantum_search.rs:667:51
+    |
+667 | ...   pragmatic_error * 0.9f32.powi((self.max_depth as i32) - (current_...
+    |                                     ^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#cast_possible_wrap
+
+warning: casting `usize` to `i32` may wrap around the value on targets with 32-bit wide pointers
+   --> src/reasoning/quantum_search.rs:667:77
+    |
+667 | ...lf.max_depth as i32) - (current_depth as i32));
+    |                           ^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#cast_possible_wrap
+
+warning: assigning the result of `Clone::clone()` may be inefficient
+   --> src/reasoning/quantum_search.rs:715:29
+    |
+715 | ...   arena.axiom_path[child_idx] = arena.axiom_path[current_idx].clone();
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: use `clone_from()`: `arena.axiom_path[child_idx].clone_from(&arena.axiom_path[current_idx])`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#assigning_clones
+
+warning: assigning the result of `Clone::clone()` may be inefficient
+   --> src/reasoning/quantum_search.rs:718:29
+    |
+718 | ...   arena.action_condition[child_idx] = next_axiom.condition_tensor.clone();
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: use `clone_from()`: `arena.action_condition[child_idx].clone_from(&next_axiom.condition_tensor)`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#assigning_clones
+
+warning: assigning the result of `Clone::clone()` may be inefficient
+   --> src/reasoning/quantum_search.rs:719:29
+    |
+719 | ...   arena.action_spatial[child_idx] = next_axiom.tensor_spatial.clone();
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: use `clone_from()`: `arena.action_spatial[child_idx].clone_from(&next_axiom.tensor_spatial)`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#assigning_clones
+
+warning: assigning the result of `Clone::clone()` may be inefficient
+   --> src/reasoning/quantum_search.rs:720:29
+    |
+720 | ...   arena.action_semantic[child_idx] = next_axiom.tensor_semantic.clone();
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: use `clone_from()`: `arena.action_semantic[child_idx].clone_from(&next_axiom.tensor_semantic)`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#assigning_clones
+
+warning: redundant closure
+   --> src/reasoning/quantum_search.rs:734:63
+    |
+734 | ...e().unwrap_or_else(|e| e.into_inner());
+    |                       ^^^^^^^^^^^^^^^^^^ help: replace the closure with the method itself: `std::sync::PoisonError::into_inner`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#redundant_closure_for_method_calls
+
+warning: this function has too many lines (182/100)
+  --> src/reasoning/rrm_agent.rs:69:5
+   |
+69 | /     pub fn solve_task_v2(
+70 | |         &mut self,
+71 | |         train_pairs: &[(EntityManifold, EntityManifold)],
+72 | |         test_input: &EntityManifold,
+73 | |     ) -> Vec<Vec<i32>> {
+   | |______________________^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#too_many_lines
+
+warning: strict comparison of `f32` or `f64`
+   --> src/reasoning/rrm_agent.rs:148:28
+    |
+148 | ...  || test_body.global_width != train_pairs[0].0.global_width
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: consider comparing them within some margin of error: `(test_body.global_width - train_pairs[0].0.global_width).abs() > error_margin`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#float_cmp
+    = note: `#[warn(clippy::float_cmp)]` implied by `#[warn(clippy::pedantic)]`
+
+warning: strict comparison of `f32` or `f64`
+   --> src/reasoning/rrm_agent.rs:149:28
+    |
+149 | ...  || test_body.global_height != train_pairs[0].0.global_height
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: consider comparing them within some margin of error: `(test_body.global_height - train_pairs[0].0.global_height).abs() > error_margin`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#float_cmp
+
+warning: this could be rewritten as `let...else`
+   --> src/reasoning/rrm_agent.rs:214:9
+    |
+214 | / ...   let _strategy = if let Some(strat) = self.ontology.can_solve(&c...
+215 | | ...       strat
+216 | | ...   } else {
+217 | | ...       println!("No strategy available for this task class, fallin...
+218 | | ...       return vec![];
+219 | | ...   };
+    | |________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#manual_let_else
+    = note: `#[warn(clippy::manual_let_else)]` implied by `#[warn(clippy::pedantic)]`
+help: consider writing
+    |
+214 ~         let Some(_strategy) = self.ontology.can_solve(&consensus_delta) else {
+215 +             println!("No strategy available for this task class, falling back or returning empty wave.");
+216 +             return vec![];
+217 +         };
+    |
+
+warning: you seem to be trying to use `match` for destructuring a single pattern. Consider using `if let`
+   --> src/reasoning/rrm_agent.rs:229:9
+    |
+229 | /         match plan {
+230 | |             Some(axioms) => {
+231 | |                 let mut test_state = test_input.clone();
+232 | |                 for axiom in &axioms {
+...   |
+291 | |         }
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#single_match_else
+    = note: `#[warn(clippy::single_match_else)]` implied by `#[warn(clippy::pedantic)]`
+help: try
+    |
+229 ~         if let Some(axioms) = plan {
+230 +             let mut test_state = test_input.clone();
+231 +             for axiom in &axioms {
+232 +                 MultiverseSandbox::apply_axiom(
+233 +                     &mut test_state,
+234 +                     &axiom.condition_tensor,
+235 +                     &axiom.delta_spatial,
+236 +                     &axiom.delta_semantic,
+237 +                     axiom.delta_x,
+238 +                     axiom.delta_y,
+239 +                     axiom.tier,
+240 +                     &axiom.name,
+241 +                 );
+242 +             }
+243 +
+244 +             let wiki = crate::self_awareness::executable_wiki::ExecutableWiki::new(
+245 +                 "rrm_rust/knowledge/skills/",
+246 +             );
+247 +             let _ = wiki.append_to_log(
+248 +                 "Execution_Log",
+249 +                 "Run #X -> SUCCESS via HierarchicalPlanner fallback",
+250 +             );
+251 +
+252 +             self.decoder.collapse_to_grid(
+253 +                 &test_state,
+254 +                 test_state.global_width as usize,
+255 +                 test_state.global_height as usize,
+256 +                 0.5,
+257 +             )
+258 +         } else {
+259 +             self.mental_replay.generate_dreams(10);
+260 +             let _discovered = self
+261 +                 .mental_replay
+262 +                 .practice_in_dreams(&mut self.counterfactual_engine, &self.ontology);
+263 +
+264 +             // MCTS/Planner gagal total. Catat ke log Wiki
+265 +             let mut wiki = crate::self_awareness::executable_wiki::ExecutableWiki::new(
+266 +                 "rrm_rust/knowledge/skills/",
+267 +             );
+268 +             let _ = wiki.append_to_log("Analysis_Log", "Catastrophic Failure Detected. Need to synthesize generative skill via crossover.");
+269 +
+270 +             // Simulasi pembuatan skill baru hasil "crossover"
+271 +             let new_page = crate::self_awareness::executable_wiki::WikiPage {
+272 +                 id: format!("synthesized_{}", chrono::Utc::now().format("%Y%m%d%H%M%S")),
+273 +                 page_type: "synthesized_crossover".to_string(),
+274 +                 tier: 8,
+275 +                 confidence: 0.50,
+276 +                 parent: Some("mcts_fallback".to_string()),
+277 +                 content: "## Origin\nAuto-generated skill from Catastrophic Failure\n\n```rust\n// Novel spatial tensor bound\n```\n".to_string(),
+278 +                 code_blocks: vec![],
+279 +             };
+280 +             let _ = wiki.create_skill(new_page);
+281 +
+282 +             self.decoder.collapse_to_grid(
+283 +                 test_input,
+284 +                 test_input.global_width as usize,
+285 +                 test_input.global_height as usize,
+286 +                 0.5,
+287 +             )
+288 +         }
+    |
+
+warning: adding items after statements is confusing, since items exist from the start of the scope
+   --> src/reasoning/rrm_agent.rs:296:9
+    |
+296 |         use crate::self_awareness::executable_wiki::ExecutableWiki;
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#items_after_statements
+    = note: `#[warn(clippy::items_after_statements)]` implied by `#[warn(clippy::pedantic)]`
+
+warning: unnecessary boolean `not` operation
+   --> src/reasoning/rrm_agent.rs:318:9
+    |
+318 | / ...   if !discovered_skills.is_empty() {
+319 | | ...       println!(
+320 | | ...           "✨ [Eureka!] RRM menemukan {} komposisi skill baru di ...
+321 | | ...           discovered_skills.len()
+...   |
+337 | | ...       );
+338 | | ...   }
+    | |_______^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#if_not_else
+help: try
+    |
+318 ~         if discovered_skills.is_empty() {
+319 +             println!("   -> Mimpi selesai. Sistem telah melatih otot kognitifnya.");
+320 +             let _ = wiki.append_to_log(
+321 +                 "soul_log",
+322 +                 "### [tX] Mimpi Selesai: Otot kognitif tensor telah direkalibrasi.",
+323 +             );
+324 +         } else {
+325 +             println!(
+326 ~                 "✨ [Eureka!] RRM menemukan {} komposisi skill baru di alam mimpinya!",
+327 +                 discovered_skills.len()
+328 +             );
+329 +             for _skill in discovered_skills {
+330 +                 // println!("  - Discovered Rule: {:?}", skill.emergence_properties);
+331 +                 let axiom_name = String::from("DreamAxiom_Unknown");
+332 +                 self.seed_bank.add_seed(
+333 +                     &axiom_name,
+334 +                     9999,
+335 +                     &ndarray::Array1::ones(crate::core::config::GLOBAL_DIMENSION),
+336 +                 );
+337 +             }
+338 +         }
+    |
+
+warning: this function has too many lines (997/100)
+   --> src/reasoning/rrm_agent.rs:341:5
+    |
+341 | /     pub fn solve_task(
+342 | |         &mut self,
+343 | |         train_in: &Vec<Vec<Vec<i32>>>,
+344 | |         train_out: &Vec<Vec<Vec<i32>>>,
+345 | |         test_in: &Vec<Vec<i32>>,
+346 | |     ) -> Vec<Vec<i32>> {
+    | |______________________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#too_many_lines
+
+warning: writing `&Vec` instead of `&[_]` involves a new object where a slice will do
+   --> src/reasoning/rrm_agent.rs:343:19
+    |
+343 |         train_in: &Vec<Vec<Vec<i32>>>,
+    |                   ^^^^^^^^^^^^^^^^^^^ help: change this to: `&[Vec<Vec<i32>>]`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#ptr_arg
+    = note: `#[warn(clippy::ptr_arg)]` implied by `#[warn(clippy::all)]`
+
+warning: writing `&Vec` instead of `&[_]` involves a new object where a slice will do
+   --> src/reasoning/rrm_agent.rs:344:20
+    |
+344 |         train_out: &Vec<Vec<Vec<i32>>>,
+    |                    ^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#ptr_arg
+help: change this to
+    |
+344 ~         train_out: &[Vec<Vec<i32>>],
+345 |         test_in: &Vec<Vec<i32>>,
+...
+369 |
+370 ~         let expected_grids: Vec<Vec<Vec<i32>>> = train_out.to_owned();
+    |
+
+warning: this `continue` expression is redundant
+   --> src/reasoning/rrm_agent.rs:687:21
+    |
+687 | ...   continue; // Skip siklus untuk me-restart dengan memori yang lebi...
+    |       ^^^^^^^^
+    |
+    = help: consider dropping the `continue` expression
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#needless_continue
+    = note: `#[warn(clippy::needless_continue)]` implied by `#[warn(clippy::pedantic)]`
+
+warning: this `continue` expression is redundant
+   --> src/reasoning/rrm_agent.rs:782:21
+    |
+782 | ...   continue; // Skip ke iterasi berikutnya agar Advanced Pass meneri...
+    |       ^^^^^^^^
+    |
+    = help: consider dropping the `continue` expression
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#needless_continue
+
+warning: this `continue` expression is redundant
+   --> src/reasoning/rrm_agent.rs:838:21
+    |
+838 | ...   continue; // Sama seperti ObstacleStuck, lanjutkan ke siklus beri...
+    |       ^^^^^^^^
+    |
+    = help: consider dropping the `continue` expression
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#needless_continue
+
+warning: this `continue` expression is redundant
+   --> src/reasoning/rrm_agent.rs:917:25
+    |
+917 | ...   continue; // Lewati siklus iterasi ini agar Advanced Pass mendapa...
+    |       ^^^^^^^^
+    |
+    = help: consider dropping the `continue` expression
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#needless_continue
+
+warning: this `continue` expression is redundant
+    --> src/reasoning/rrm_agent.rs:1034:21
+     |
+1034 | ...   continue; // Skip the rest of the loop to restart search with ne...
+     |       ^^^^^^^^
+     |
+     = help: consider dropping the `continue` expression
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#needless_continue
+
+warning: adding items after statements is confusing, since items exist from the start of the scope
+   --> src/reasoning/rrm_agent.rs:851:21
+    |
+851 | ...   use crate::perception::hierarchical_gestalt::GestaltEngine;
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#items_after_statements
+
+warning: assigning the result of `Clone::clone()` may be inefficient
+   --> src/reasoning/rrm_agent.rs:941:25
+    |
+941 | ...   temp_axiom.condition_tensor = rule.condition_tensor.clone();
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: use `clone_from()`: `temp_axiom.condition_tensor.clone_from(&rule.condition_tensor)`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#assigning_clones
+
+warning: assigning the result of `Clone::clone()` may be inefficient
+   --> src/reasoning/rrm_agent.rs:942:25
+    |
+942 | ...     temp_axiom.delta_spatial = rule.tensor_spatial.clone();
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: use `clone_from()`: `temp_axiom.delta_spatial.clone_from(&rule.tensor_spatial)`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#assigning_clones
+
+warning: assigning the result of `Clone::clone()` may be inefficient
+   --> src/reasoning/rrm_agent.rs:943:25
+    |
+943 | ...     temp_axiom.delta_semantic = rule.tensor_semantic.clone();
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: use `clone_from()`: `temp_axiom.delta_semantic.clone_from(&rule.tensor_semantic)`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#assigning_clones
+
+warning: assigning the result of `Clone::clone()` may be inefficient
+   --> src/reasoning/rrm_agent.rs:965:53
+    |
+965 | ...     rule.tensor_spatial = correction.delta_spatial.clone();
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: use `clone_from()`: `rule.tensor_spatial.clone_from(&correction.delta_spatial)`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#assigning_clones
+
+warning: used underscore-prefixed binding
+    --> src/reasoning/rrm_agent.rs:1037:59
+     |
+1037 | ...   if bottleneck == Bottleneck::FastFail(_stuck_energy) {
+     |                                             ^^^^^^^^^^^^^
+     |
+note: binding is defined here
+    --> src/reasoning/rrm_agent.rs:1036:38
+     |
+1036 | ...   Bottleneck::FastFail(_stuck_energy) | Bottleneck::LocalOptimum(_...
+     |                            ^^^^^^^^^^^^^
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#used_underscore_binding
+     = note: `#[warn(clippy::used_underscore_binding)]` implied by `#[warn(clippy::pedantic)]`
+
+warning: empty String is being created manually
+    --> src/reasoning/rrm_agent.rs:1070:56
+     |
+1070 | ...                   .unwrap_or_else(|| "".to_string()),
+     |                                          ^^^^^^^^^^^^^^ help: consider using: `String::new()`
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#manual_string_new
+     = note: `#[warn(clippy::manual_string_new)]` implied by `#[warn(clippy::pedantic)]`
+
+warning: called `map(<f>).unwrap_or(<a>)` on an `Option` value
+    --> src/reasoning/rrm_agent.rs:1169:62
+     |
+1169 |   ...   let (test_target_h, test_target_w) = expected_grids
+     |  ____________________________________________^
+1170 | | ...       .first()
+1171 | | ...       .map(|grid| {
+...    |
+1180 | | ...       })
+1181 | | ...       .unwrap_or((0.0, 0.0));
+     | |________________________________^
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#map_unwrap_or
+help: use `map_or(<a>, <f>)` instead
+     |
+1171 ~                             .map_or((0.0, 0.0), |grid| {
+1172 |                                 (
+ ...
+1179 |                                 )
+1180 ~                             });
+     |
+
+warning: redundant closure
+    --> src/reasoning/rrm_agent.rs:1223:88
+     |
+1223 | ...d().unwrap_or_else(|e| e.into_inner());
+     |                       ^^^^^^^^^^^^^^^^^^ help: replace the closure with the method itself: `std::sync::PoisonError::into_inner`
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#redundant_closure_for_method_calls
+
+warning: redundant closure
+    --> src/reasoning/rrm_agent.rs:1231:72
+     |
+1231 | ...d().unwrap_or_else(|e| e.into_inner());
+     |                       ^^^^^^^^^^^^^^^^^^ help: replace the closure with the method itself: `std::sync::PoisonError::into_inner`
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#redundant_closure_for_method_calls
+
+warning: unnecessary boolean `not` operation
+    --> src/reasoning/rrm_agent.rs:1261:41
+     |
+1261 | / ...   if !is_consistent {
+1262 | | ...       println!("   ⚠️ [Topologi Kuantum] Sheaf Gluing Error: Solu...
+1263 | | ...   } else {
+1264 | | ...       println!("   🧠 [Topologi Kuantum] Sheaf Gluing Valid! Sol...
+1265 | | ...   }
+     | |_______^
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#if_not_else
+help: try
+     |
+1261 ~                                         if is_consistent {
+1262 ~                                             println!("   🧠 [Topologi Kuantum] Sheaf Gluing Valid! Solusi stabil di seluruh patch lokal.");
+1263 +                                         } else {
+1264 ~                                             println!("   ⚠️ [Topologi Kuantum] Sheaf Gluing Error: Solusi ini mungkin tidak konsisten di berbagai area lokal (overfitting). Menerima dengan hati-hati.");
+1265 +                                         }
+     |
+
+warning: redundant closure
+    --> src/reasoning/rrm_agent.rs:1343:84
+     |
+1343 | ...d().unwrap_or_else(|e| e.into_inner());
+     |                       ^^^^^^^^^^^^^^^^^^ help: replace the closure with the method itself: `std::sync::PoisonError::into_inner`
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#redundant_closure_for_method_calls
+
+warning: redundant closure
+    --> src/reasoning/rrm_agent.rs:1351:68
+     |
+1351 | ...d().unwrap_or_else(|e| e.into_inner());
+     |                       ^^^^^^^^^^^^^^^^^^ help: replace the closure with the method itself: `std::sync::PoisonError::into_inner`
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#redundant_closure_for_method_calls
+
+warning: called `map(<f>).unwrap_or(<a>)` on an `Option` value
+    --> src/reasoning/rrm_agent.rs:1404:37
+     |
+1404 |               let current_axiom_str = rule
+     |  _____________________________________^
+1405 | |                 .axiom_type
+1406 | |                 .last()
+1407 | |                 .map(|s: &String| s.as_str())
+1408 | |                 .unwrap_or("IDENTITY_STATIC");
+     | |_____________________________________________^
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#map_unwrap_or
+help: use `map_or(<a>, <f>)` instead
+     |
+1407 -                 .map(|s: &String| s.as_str())
+1408 -                 .unwrap_or("IDENTITY_STATIC");
+1407 +                 .map_or("IDENTITY_STATIC", |s: &String| s.as_str());
+     |
+
+warning: adding items after statements is confusing, since items exist from the start of the scope
+    --> src/reasoning/rrm_agent.rs:1447:13
+     |
+1447 |             use crate::reasoning::quantum_search::WaveNode;
+     |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#items_after_statements
+
+warning: `format!(..)` appended to existing `String`
+    --> src/reasoning/rrm_agent.rs:1544:21
+     |
+1544 | ...   yaml_arr.push_str(&format!("{:.6}", spatial_tensor[i]));
+     |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+     = note: you may need to import the `std::fmt::Write` trait
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#format_push_string
+     = note: `#[warn(clippy::format_push_string)]` implied by `#[warn(clippy::pedantic)]`
+help: consider using `write!` to avoid the extra allocation
+     |
+1544 -                     yaml_arr.push_str(&format!("{:.6}", spatial_tensor[i]));
+1544 +                     let _ = write!(yaml_arr, "{:.6}", spatial_tensor[i]);
+     |
+
+warning: writing `&Vec` instead of `&[_]` involves a new object where a slice will do
+    --> src/reasoning/rrm_agent.rs:1582:15
+     |
+1582 |         grid: &Vec<Vec<i32>>,
+     |               ^^^^^^^^^^^^^^ help: change this to: `&[Vec<i32>]`
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#ptr_arg
+
+warning: the loop variable `y` is used to index `grid`
+    --> src/reasoning/rrm_agent.rs:1588:18
+     |
+1588 |         for y in 0..height {
+     |                  ^^^^^^^^^
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#needless_range_loop
+help: consider using an iterator and enumerate()
+     |
+1588 -         for y in 0..height {
+1588 +         for (y, <item>) in grid.iter().enumerate().take(height) {
+     |
+
+warning: the loop variable `x` is used to index `grid`
+    --> src/reasoning/rrm_agent.rs:1589:22
+     |
+1589 |             for x in 0..width {
+     |                      ^^^^^^^^
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#needless_range_loop
+help: consider using an iterator and enumerate()
+     |
+1589 -             for x in 0..width {
+1589 +             for (x, <item>) in grid.iter().enumerate().take(width) {
+     |
+
+warning: item in documentation is missing backticks
+  --> src/reasoning/top_down_axiomator.rs:56:66
+   |
+56 | ...ecil secara makroskopis" -> CROP_TO_COLOR
+   |                                ^^^^^^^^^^^^^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#doc_markdown
+help: try
+   |
+56 -     /// Deteksi: "Dimensi kanvas mengecil secara makroskopis" -> CROP_TO_COLOR
+56 +     /// Deteksi: "Dimensi kanvas mengecil secara makroskopis" -> `CROP_TO_COLOR`
+   |
+
+warning: item in documentation is missing backticks
+   --> src/reasoning/top_down_axiomator.rs:163:51
+    |
+163 |     /// Deteksi: "Kotak berongga menjadi solid" → FILL_HOLE
+    |                                                   ^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#doc_markdown
+help: try
+    |
+163 -     /// Deteksi: "Kotak berongga menjadi solid" → FILL_HOLE
+163 +     /// Deteksi: "Kotak berongga menjadi solid" → `FILL_HOLE`
+    |
+
+warning: item in documentation is missing backticks
+   --> src/reasoning/top_down_axiomator.rs:204:54
+    |
+204 |     /// Deteksi: "Kontainer dengan konten berbeda" → RECOLOR_CONTENT
+    |                                                      ^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#doc_markdown
+help: try
+    |
+204 -     /// Deteksi: "Kontainer dengan konten berbeda" → RECOLOR_CONTENT
+204 +     /// Deteksi: "Kontainer dengan konten berbeda" → `RECOLOR_CONTENT`
+    |
+
+warning: item in documentation is missing backticks
+   --> src/reasoning/top_down_axiomator.rs:238:50
+    |
+238 |     /// Deteksi: "Simetri tidak lagi simetris" → BREAK_SYMMETRY atau EN...
+    |                                                  ^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#doc_markdown
+help: try
+    |
+238 -     /// Deteksi: "Simetri tidak lagi simetris" → BREAK_SYMMETRY atau ENFORCE_SYMMETRY
+238 +     /// Deteksi: "Simetri tidak lagi simetris" → `BREAK_SYMMETRY` atau ENFORCE_SYMMETRY
+    |
+
+warning: item in documentation is missing backticks
+   --> src/reasoning/top_down_axiomator.rs:238:70
+    |
+238 | ...is" → BREAK_SYMMETRY atau ENFORCE_SYMMETRY
+    |                              ^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#doc_markdown
+help: try
+    |
+238 -     /// Deteksi: "Simetri tidak lagi simetris" → BREAK_SYMMETRY atau ENFORCE_SYMMETRY
+238 +     /// Deteksi: "Simetri tidak lagi simetris" → BREAK_SYMMETRY atau `ENFORCE_SYMMETRY`
+    |
+
+warning: item in documentation is missing backticks
+   --> src/reasoning/top_down_axiomator.rs:282:42
+    |
+282 |     /// Deteksi: "Grid berubah ukuran" → EXTEND_GRID atau CROP_GRID
+    |                                          ^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#doc_markdown
+help: try
+    |
+282 -     /// Deteksi: "Grid berubah ukuran" → EXTEND_GRID atau CROP_GRID
+282 +     /// Deteksi: "Grid berubah ukuran" → `EXTEND_GRID` atau CROP_GRID
+    |
+
+warning: item in documentation is missing backticks
+   --> src/reasoning/top_down_axiomator.rs:282:59
+    |
+282 |     /// Deteksi: "Grid berubah ukuran" → EXTEND_GRID atau CROP_GRID
+    |                                                           ^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#doc_markdown
+help: try
+    |
+282 -     /// Deteksi: "Grid berubah ukuran" → EXTEND_GRID atau CROP_GRID
+282 +     /// Deteksi: "Grid berubah ukuran" → EXTEND_GRID atau `CROP_GRID`
+    |
+
+warning: item in documentation is missing backticks
+   --> src/reasoning/top_down_axiomator.rs:332:48
+    |
+332 |     /// Deteksi pergerakan objek (sudah ada di TopologicalAligner, tapi...
+    |                                                ^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#doc_markdown
+help: try
+    |
+332 -     /// Deteksi pergerakan objek (sudah ada di TopologicalAligner, tapi dengan confidence lebih tinggi)
+332 +     /// Deteksi pergerakan objek (sudah ada di `TopologicalAligner`, tapi dengan confidence lebih tinggi)
+    |
+
+warning: this function has too many lines (223/100)
+  --> src/reasoning/topological_aligner.rs:24:5
+   |
+24 | /     pub fn align(
+25 | |         source_manifold: &EntityManifold,
+26 | |         target_manifold: &EntityManifold,
+27 | |     ) -> Vec<TopologicalMatch> {
+   | |______________________________^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#too_many_lines
+
+warning: large size difference between variants
+  --> src/reasoning/counterfactual_engine.rs:40:1
+   |
+40 | /   pub enum SequenceResult {
+41 | | /     Success {
+42 | | |         final_state: EntityManifold,
+43 | | |     },
+   | | |_____- the largest variant contains at least 368 bytes
+...  |
+48 | | /     FailedEarly {
+49 | | |         at_step: usize,
+50 | | |         remaining_energy: f32,
+51 | | |     },
+   | | |_____- the second-largest variant contains at least 12 bytes
+52 | |   }
+   | |___^ the entire enum is at least 368 bytes
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#large_enum_variant
+   = note: `#[warn(clippy::large_enum_variant)]` implied by `#[warn(clippy::all)]`
+help: consider boxing the large fields or introducing indirection in some other way to reduce the total size of the enum
+   |
+42 -         final_state: EntityManifold,
+42 +         final_state: Box<EntityManifold>,
+   |
+
+warning: used underscore-prefixed binding
+   --> src/reasoning/counterfactual_engine.rs:121:41
+    |
+121 |                 if !self.are_compatible(_prev_result, axiom) {
+    |                                         ^^^^^^^^^^^^
+    |
+note: binding is defined here
+   --> src/reasoning/counterfactual_engine.rs:120:25
+    |
+120 |             if let Some(_prev_result) = intermediate_results.last() {
+    |                         ^^^^^^^^^^^^
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#used_underscore_binding
+
+warning: unused `self` argument
+   --> src/reasoning/counterfactual_engine.rs:153:9
+    |
+153 |         &self,
+    |         ^^^^^
+    |
+    = help: consider refactoring to an associated function
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#unused_self
+
+warning: strict comparison of `f32` or `f64`
+   --> src/reasoning/counterfactual_engine.rs:168:12
+    |
+168 |         if sim_w != exp_w || sim_h != exp_h {
+    |            ^^^^^^^^^^^^^^ help: consider comparing them within some margin of error: `(sim_w - exp_w).abs() > error_margin`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#float_cmp
+
+warning: strict comparison of `f32` or `f64`
+   --> src/reasoning/counterfactual_engine.rs:168:30
+    |
+168 |         if sim_w != exp_w || sim_h != exp_h {
+    |                              ^^^^^^^^^^^^^^ help: consider comparing them within some margin of error: `(sim_h - exp_h).abs() > error_margin`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#float_cmp
+
+warning: casting `usize` to `i64` may wrap around the value on targets with 64-bit wide pointers
+   --> src/reasoning/counterfactual_engine.rs:228:43
+    |
+228 |                 avg_dx = total_dx_fixed / (matched_entities as i64);
+    |                                           ^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#cast_possible_wrap
+
+warning: casting `usize` to `i64` may wrap around the value on targets with 64-bit wide pointers
+   --> src/reasoning/counterfactual_engine.rs:229:43
+    |
+229 |                 avg_dy = total_dy_fixed / (matched_entities as i64);
+    |                                           ^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#cast_possible_wrap
+
+warning: unused `self` argument
+   --> src/reasoning/counterfactual_engine.rs:265:26
+    |
+265 |     fn extract_signature(&self) -> StructuralSignature {
+    |                          ^^^^^
+    |
+    = help: consider refactoring to an associated function
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#unused_self
+
+warning: unused `self` argument
+   --> src/reasoning/counterfactual_engine.rs:311:23
+    |
+311 |     fn are_compatible(&self, _prev: &EntityManifold, _next: &Axiom) -> ...
+    |                       ^^^^^
+    |
+    = help: consider refactoring to an associated function
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#unused_self
+
+warning: unused `self` argument
+   --> src/reasoning/counterfactual_engine.rs:316:9
+    |
+316 |         &self,
+    |         ^^^^^
+    |
+    = help: consider refactoring to an associated function
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#unused_self
+
+warning: unused `self` argument
+   --> src/reasoning/counterfactual_engine.rs:324:33
+    |
+324 |     fn estimate_remaining_error(&self, _state: &EntityManifold, _expect...
+    |                                 ^^^^^
+    |
+    = help: consider refactoring to an associated function
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#unused_self
+
+warning: this could be rewritten as `let...else`
+  --> src/reasoning/hierarchical_planner.rs:72:13
+   |
+72 | /             let subg_type = match graph.node_weight(node) {
+73 | |                 Some(PlanningNode::Subgoal(ref st)) => st,
+74 | |                 _ => unreachable!(),
+75 | |             };
+   | |______________^ help: consider writing: `let Some(PlanningNode::Subgoal(ref subg_type)) = graph.node_weight(node) else { unreachable!() };`
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#manual_let_else
+
+warning: binding to `_` prefixed variable with no side-effect
+  --> src/reasoning/hierarchical_planner.rs:89:21
+   |
+89 |                 let _op_node = op;
+   |                     ^^^^^^^^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#no_effect_underscore_binding
+   = note: `#[warn(clippy::no_effect_underscore_binding)]` implied by `#[warn(clippy::pedantic)]`
+
+warning: this function has too many arguments (8/7)
+   --> src/reasoning/hierarchical_planner.rs:128:5
+    |
+128 | /     fn dfs_with_pruning(
+129 | |         &self,
+130 | |         node: NodeIndex,
+131 | |         path: Vec<Axiom>,
+...   |
+136 | |         expected: &EntityManifold,
+137 | |     ) {
+    | |_____^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#too_many_arguments
+
+warning: this argument is passed by value, but not consumed in the function body
+   --> src/reasoning/hierarchical_planner.rs:132:16
+    |
+132 |         state: EntityManifold,
+    |                ^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#needless_pass_by_value
+    = note: `#[warn(clippy::needless_pass_by_value)]` implied by `#[warn(clippy::pedantic)]`
+help: consider taking a reference instead
+    |
+132 |         state: &EntityManifold,
+    |                +
+
+warning: these match arms have identical bodies
+   --> src/reasoning/skill_composer.rs:93:13
+    |
+ 93 |             (7, 4) => true,
+    |             ^^^^^^^^^^^^^^
+...
+ 97 |             (6, 7) => true,
+    |             ^^^^^^^^^^^^^^
+ 98 |             (7, 6) => true,
+    |             ^^^^^^^^^^^^^^
+ 99 |             (4, 4) => self.are_commutative(a, b),
+100 |             _ => true,
+    |             ^^^^^^^^^ the wildcard arm
+    |
+    = help: if this is unintentional make the arms return different values
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#match_same_arms
+    = note: `#[warn(clippy::match_same_arms)]` implied by `#[warn(clippy::pedantic)]`
+help: otherwise remove the non-wildcard arms
+    |
+ 93 ~             (4, 7) => a
+ 94 |                 .output_guarantees
+ 95 |                 .contains(&PropertyGuarantee::ObjectsPreserved),
+ 96 ~             (4, 4) => self.are_commutative(a, b),
+    |
+
+warning: unused `self` argument
+   --> src/reasoning/skill_composer.rs:104:25
+    |
+104 |     fn detect_emergence(&self, a: &PrimitiveSkill, b: &PrimitiveSkill) ...
+    |                         ^^^^^
+    |
+    = help: consider refactoring to an associated function
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#unused_self
+
+warning: unused `self` argument
+   --> src/reasoning/skill_composer.rs:115:24
+    |
+115 |     fn are_commutative(&self, _a: &PrimitiveSkill, _b: &PrimitiveSkill)...
+    |                        ^^^^^
+    |
+    = help: consider refactoring to an associated function
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#unused_self
+
+warning: unused `self` argument
+   --> src/reasoning/skill_composer.rs:120:9
+    |
+120 |         &self,
+    |         ^^^^^
+    |
+    = help: consider refactoring to an associated function
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#unused_self
+
+warning: unused `self` argument
+   --> src/reasoning/skill_composer.rs:128:9
+    |
+128 |         &self,
+    |         ^^^^^
+    |
+    = help: consider refactoring to an associated function
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#unused_self
+
+warning: unnecessary `Debug` formatting in `println!` args
+   --> src/reasoning/skill_composer.rs:244:125
+    |
+244 | ...li tanpa menulis file baru.", out_path);
+    |                                  ^^^^^^^^
+    |
+    = help: use `Display` formatting and change this to `out_path.display()`
+    = note: switching to `Display` formatting will change how the value is shown; escaped characters will no longer be escaped and surrounding quotes will be removed
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#unnecessary_debug_formatting
+
+warning: unnecessary `Debug` formatting in `println!` args
+   --> src/reasoning/skill_composer.rs:249:17
+    |
+249 |                 out_path
+    |                 ^^^^^^^^
+    |
+    = help: use `Display` formatting and change this to `out_path.display()`
+    = note: switching to `Display` formatting will change how the value is shown; escaped characters will no longer be escaped and surrounding quotes will be removed
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#unnecessary_debug_formatting
+
+warning: called `map(<f>).unwrap_or_else(<g>)` on an `Option` value
+   --> src/self_awareness/executable_wiki.rs:103:18
+    |
+103 |               id = path
+    |  __________________^
+104 | |                 .file_stem()
+105 | |                 .map(|s| s.to_string_lossy().to_string())
+106 | |                 .unwrap_or_else(|| "unknown".to_string());
+    | |_________________________________________________________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#map_unwrap_or
+help: try
+    |
+103 ~             id = path
+104 ~                 .file_stem().map_or_else(|| "unknown".to_string(), |s| s.to_string_lossy().to_string());
+    |
+
+warning: using `write!()` with a format string that ends in a single newline
+   --> src/self_awareness/executable_wiki.rs:156:17
+    |
+156 |         let _ = write!(content, "id: {}\n", page.id);
+    |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#write_with_newline
+    = note: `#[warn(clippy::write_with_newline)]` implied by `#[warn(clippy::all)]`
+help: use `writeln!` instead
+    |
+156 -         let _ = write!(content, "id: {}\n", page.id);
+156 +         let _ = writeln!(content, "id: {}", page.id);
+    |
+
+warning: using `write!()` with a format string that ends in a single newline
+   --> src/self_awareness/executable_wiki.rs:157:17
+    |
+157 |         let _ = write!(content, "type: {}\n", page.page_type);
+    |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#write_with_newline
+help: use `writeln!` instead
+    |
+157 -         let _ = write!(content, "type: {}\n", page.page_type);
+157 +         let _ = writeln!(content, "type: {}", page.page_type);
+    |
+
+warning: using `write!()` with a format string that ends in a single newline
+   --> src/self_awareness/executable_wiki.rs:158:17
+    |
+158 |         let _ = write!(content, "tier: {}\n", page.tier);
+    |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#write_with_newline
+help: use `writeln!` instead
+    |
+158 -         let _ = write!(content, "tier: {}\n", page.tier);
+158 +         let _ = writeln!(content, "tier: {}", page.tier);
+    |
+
+warning: using `write!()` with a format string that ends in a single newline
+   --> src/self_awareness/executable_wiki.rs:159:17
+    |
+159 |         let _ = write!(content, "confidence: {:.2}\n", page.confidence);
+    |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#write_with_newline
+help: use `writeln!` instead
+    |
+159 -         let _ = write!(content, "confidence: {:.2}\n", page.confidence);
+159 +         let _ = writeln!(content, "confidence: {:.2}", page.confidence);
+    |
+
+warning: using `write!()` with a format string that ends in a single newline
+   --> src/self_awareness/executable_wiki.rs:161:21
+    |
+161 |             let _ = write!(content, "parent: {}\n", parent);
+    |                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#write_with_newline
+help: use `writeln!` instead
+    |
+161 -             let _ = write!(content, "parent: {}\n", parent);
+161 +             let _ = writeln!(content, "parent: {}", parent);
+    |
+
+warning: this argument is passed by value, but not consumed in the function body
+  --> src/self_awareness/immortal_loop.rs:44:69
+   |
+44 | ..._interval: Duration, root_dir: PathBuf) -> Self {
+   |                                   ^^^^^^^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#needless_pass_by_value
+help: consider taking a reference instead
+   |
+44 |     pub fn new(capacity: usize, flush_interval: Duration, root_dir: &PathBuf) -> Self {
+   |                                                                     +
+
+warning: unnecessary `Debug` formatting in `eprintln!` args
+  --> src/self_awareness/immortal_loop.rs:53:21
+   |
+53 |                     root_dir, e
+   |                     ^^^^^^^^
+   |
+   = help: use `Display` formatting and change this to `root_dir.display()`
+   = note: switching to `Display` formatting will change how the value is shown; escaped characters will no longer be escaped and surrounding quotes will be removed
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#unnecessary_debug_formatting
+
+warning: unnecessary `Debug` formatting in `eprintln!` args
+  --> src/self_awareness/immortal_loop.rs:66:25
+   |
+66 |                         log_file, e
+   |                         ^^^^^^^^
+   |
+   = help: use `Display` formatting and change this to `log_file.display()`
+   = note: switching to `Display` formatting will change how the value is shown; escaped characters will no longer be escaped and surrounding quotes will be removed
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#unnecessary_debug_formatting
+
+warning: you have declared `#[inline(always)]` on `append`. This is usually a bad idea
+  --> src/self_awareness/immortal_loop.rs:91:5
+   |
+91 |     #[inline(always)]
+   |     ^^^^^^^^^^^^^^^^^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#inline_always
+   = note: `#[warn(clippy::inline_always)]` implied by `#[warn(clippy::pedantic)]`
+
+warning: you have declared `#[inline(always)]` on `should_flush`. This is usually a bad idea
+   --> src/self_awareness/immortal_loop.rs:102:5
+    |
+102 |     #[inline(always)]
+    |     ^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#inline_always
+
+warning: missing `#[must_use]` attribute on a method returning `Self`
+   --> src/self_awareness/immortal_loop.rs:142:5
+    |
+142 | /     pub fn branch(&self, name: &str) -> Self {
+143 | |         Self::new(&self.root_dir, name)
+144 | |     }
+    | |_____^
+    |
+    = help: consider adding the `#[must_use]` attribute to the method or directly to the `Self` type
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#return_self_not_must_use
+    = note: `#[warn(clippy::return_self_not_must_use)]` implied by `#[warn(clippy::pedantic)]`
+
+warning: docs for function returning `Result` missing `# Errors` section
+   --> src/self_awareness/immortal_loop.rs:161:5
+    |
+161 |     pub fn resurrect(&mut self) -> Result<(), String> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#missing_errors_doc
+    = note: `#[warn(clippy::missing_errors_doc)]` implied by `#[warn(clippy::pedantic)]`
+
+warning: usage of wildcard import
+ --> src/self_awareness/self_reflection.rs:2:5
+  |
+2 | use crate::perception::structural_analyzer::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: try: `crate::perception::structural_analyzer::{StructuralSignature, StructuralDelta, StructuralAnalyzer, TaskClass, DimensionRelation, ObjectDelta}`
+  |
+  = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#wildcard_imports
+  = note: `#[warn(clippy::wildcard_imports)]` implied by `#[warn(clippy::pedantic)]`
+
+warning: usage of wildcard import
+ --> src/self_awareness/self_reflection.rs:3:5
+  |
+3 | use crate::self_awareness::skill_ontology::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: try: `crate::self_awareness::skill_ontology::{SkillOntology, Postcondition, SideEffect, TierCapability, ActivationTrigger, SolutionStrategy}`
+  |
+  = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#wildcard_imports
+
+warning: this could be rewritten as `let...else`
+   --> src/self_awareness/self_reflection.rs:260:9
+    |
+260 | / ...   let chosen = if let Some(skill) = self.ontology.capabilities.ge...
+261 | | ...       skill
+262 | | ...   } else {
+263 | | ...       return format!("Skill ID {} tidak valid atau tidak ditemuka...
+264 | | ...   };
+    | |________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#manual_let_else
+help: consider writing
+    |
+260 ~         let Some(chosen) = self.ontology.capabilities.get(&chosen_skill) else {
+261 +             return format!("Skill ID {} tidak valid atau tidak ditemukan.", chosen_skill);
+262 +         };
+    |
+
+warning: `format!(..)` appended to existing `String`
+   --> src/self_awareness/self_reflection.rs:270:13
+    |
+270 | ...   explanation.push_str(&format!("  • {}\n", self.describe_trigger(trigger)));
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: you may need to import the `std::fmt::Write` trait
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#format_push_string
+help: consider using `write!` to avoid the extra allocation
+    |
+270 -             explanation.push_str(&format!("  • {}\n", self.describe_trigger(trigger)));
+270 +             let _ = write!(explanation, "  • {}\n", self.describe_trigger(trigger));
+    |
+
+warning: `format!(..)` appended to existing `String`
+   --> src/self_awareness/self_reflection.rs:278:21
+    |
+278 | ...   explanation.push_str(&format!("- {}: {}\n", rej.name, reason));
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: you may need to import the `std::fmt::Write` trait
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#format_push_string
+help: consider using `write!` to avoid the extra allocation
+    |
+278 -                     explanation.push_str(&format!("- {}: {}\n", rej.name, reason));
+278 +                     let _ = write!(explanation, "- {}: {}\n", rej.name, reason);
+    |
+
+warning: `format!(..)` appended to existing `String`
+   --> src/self_awareness/self_reflection.rs:283:9
+    |
+283 | /         explanation.push_str(&format!(
+284 | |             "\nPerforma historis skill ini: {:.0}% sukses",
+285 | |             chosen.historical_success_rate * 100.0
+286 | |         ));
+    | |__________^
+    |
+    = note: you may need to import the `std::fmt::Write` trait
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#format_push_string
+help: consider using `write!` to avoid the extra allocation
+    |
+283 ~         let _ = write!(explanation, "\nPerforma historis skill ini: {:.0}% sukses",
+284 ~             chosen.historical_success_rate * 100.0);
+    |
+
+warning: this could be rewritten as `let...else`
+   --> src/self_awareness/self_reflection.rs:296:9
+    |
+296 | / ...   let skill = if let Some(s) = self.ontology.capabilities.get(&sk...
+297 | | ...       s
+298 | | ...   } else {
+...   |
+305 | | ...       };
+306 | | ...   };
+    | |________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#manual_let_else
+help: consider writing
+    |
+296 ~         let Some(skill) = self.ontology.capabilities.get(&skill_id) else {
+297 +             // Default prediction if skill is not found to avoid panicking
+298 +             return ConsequencePrediction {
+299 +                 guaranteed_effects: vec![],
+300 +                 likely_side_effects: vec![],
+301 +                 possible_risks: vec!["Skill not found".to_string()],
+302 +                 estimated_success_probability: 0.0,
+303 +             };
+304 +         };
+    |
+
+warning: used underscore-prefixed binding
+   --> src/self_awareness/self_reflection.rs:345:75
+    |
+345 | ...gers(&cap.activation_triggers, _delta),
+    |                                   ^^^^^^
+    |
+note: binding is defined here
+   --> src/self_awareness/self_reflection.rs:342:51
+    |
+342 |     fn explain_skill(&self, cap: &TierCapability, _delta: &StructuralDe...
+    |                                                   ^^^^^^
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#used_underscore_binding
+
+warning: unused `self` argument
+   --> src/self_awareness/self_reflection.rs:356:23
+    |
+356 |     fn identify_risks(&self, skill: &TierCapability, current: &EntityMa...
+    |                       ^^^^^
+    |
+    = help: consider refactoring to an associated function
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#unused_self
+
+warning: wildcard matches only a single variant and will also match any future added variants
+   --> src/self_awareness/self_reflection.rs:379:17
+    |
+379 |                 _ => {}
+    |                 ^ help: try: `SideEffect::BoundingBoxChanged`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#match_wildcard_for_single_variants
+    = note: `#[warn(clippy::match_wildcard_for_single_variants)]` implied by `#[warn(clippy::pedantic)]`
+
+warning: unused `self` argument
+   --> src/self_awareness/self_reflection.rs:386:19
+    |
+386 |     fn class_name(&self, class: &TaskClass) -> String {
+    |                   ^^^^^
+    |
+    = help: consider refactoring to an associated function
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#unused_self
+
+warning: unused `self` argument
+   --> src/self_awareness/self_reflection.rs:390:28
+    |
+390 |     fn describe_dim_change(&self, change: &DimensionRelation) -> String {
+    |                            ^^^^^
+    |
+    = help: consider refactoring to an associated function
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#unused_self
+
+warning: this argument (1 byte) is passed by reference, but would be more efficient if passed by value (limit: 8 byte)
+   --> src/self_awareness/self_reflection.rs:390:43
+    |
+390 |     fn describe_dim_change(&self, change: &DimensionRelation) -> String {
+    |                                           ^^^^^^^^^^^^^^^^^^ help: consider passing by value instead: `DimensionRelation`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#trivially_copy_pass_by_ref
+    = note: `#[warn(clippy::trivially_copy_pass_by_ref)]` implied by `#[warn(clippy::pedantic)]`
+
+warning: unused `self` argument
+   --> src/self_awareness/self_reflection.rs:394:31
+    |
+394 |     fn describe_object_change(&self, change: &ObjectDelta) -> String {
+    |                               ^^^^^
+    |
+    = help: consider refactoring to an associated function
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#unused_self
+
+warning: unused `self` argument
+   --> src/self_awareness/self_reflection.rs:398:23
+    |
+398 |     fn match_triggers(&self, _triggers: &[ActivationTrigger], _delta: &...
+    |                       ^^^^^
+    |
+    = help: consider refactoring to an associated function
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#unused_self
+
+warning: unused `self` argument
+   --> src/self_awareness/self_reflection.rs:402:32
+    |
+402 |     fn describe_postconditions(&self, _posts: &[Postcondition]) -> Stri...
+    |                                ^^^^^
+    |
+    = help: consider refactoring to an associated function
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#unused_self
+
+warning: unused `self` argument
+   --> src/self_awareness/self_reflection.rs:406:29
+    |
+406 |     fn describe_side_effect(&self, effect: &SideEffect) -> String {
+    |                             ^^^^^
+    |
+    = help: consider refactoring to an associated function
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#unused_self
+
+warning: unused `self` argument
+   --> src/self_awareness/self_reflection.rs:415:26
+    |
+415 |     fn describe_strategy(&self, strategy: &Option<SolutionStrategy>) ->...
+    |                          ^^^^^
+    |
+    = help: consider refactoring to an associated function
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#unused_self
+
+warning: it is more idiomatic to use `Option<&T>` instead of `&Option<T>`
+   --> src/self_awareness/self_reflection.rs:415:5
+    |
+415 |       fn describe_strategy(&self, strategy: &Option<SolutionStrategy>) -...
+    |       ^                                     ------------------------- help: change this to: `Option<&SolutionStrategy>`
+    |  _____|
+    | |
+416 | |         if strategy.is_some() {
+417 | |             "Available".to_string()
+418 | |         } else {
+...   |
+421 | |     }
+    | |_____^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#ref_option
+    = note: `#[warn(clippy::ref_option)]` implied by `#[warn(clippy::pedantic)]`
+
+warning: unused `self` argument
+   --> src/self_awareness/self_reflection.rs:424:9
+    |
+424 |         &self,
+    |         ^^^^^
+    |
+    = help: consider refactoring to an associated function
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#unused_self
+
+warning: it is more idiomatic to use `Option<&T>` instead of `&Option<T>`
+   --> src/self_awareness/self_reflection.rs:423:5
+    |
+423 | /     fn explain_confidence(
+424 | |         &self,
+425 | |         _strategy: &Option<SolutionStrategy>,
+    | |                    ------------------------- help: change this to: `Option<&SolutionStrategy>`
+426 | |         _available: &[&TierCapability],
+427 | |     ) -> String {
+428 | |         "Estimated via heuristic".to_string()
+429 | |     }
+    | |_____^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#ref_option
+
+warning: unused `self` argument
+   --> src/self_awareness/self_reflection.rs:432:9
+    |
+432 |         &self,
+    |         ^^^^^
+    |
+    = help: consider refactoring to an associated function
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#unused_self
+
+warning: it is more idiomatic to use `Option<&T>` instead of `&Option<T>`
+   --> src/self_awareness/self_reflection.rs:431:5
+    |
+431 | /     fn suggest_alternatives(
+432 | |         &self,
+433 | |         _delta: &StructuralDelta,
+434 | |         _strategy: &Option<SolutionStrategy>,
+    | |                    ------------------------- help: change this to: `Option<&SolutionStrategy>`
+435 | |     ) -> Vec<String> {
+436 | |         vec![]
+437 | |     }
+    | |_____^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#ref_option
+
+warning: unused `self` argument
+   --> src/self_awareness/self_reflection.rs:439:25
+    |
+439 |     fn describe_trigger(&self, _trigger: &ActivationTrigger) -> String {
+    |                         ^^^^^
+    |
+    = help: consider refactoring to an associated function
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#unused_self
+
+warning: unused `self` argument
+   --> src/self_awareness/self_reflection.rs:443:26
+    |
+443 |     fn explain_rejection(&self, _rej: &TierCapability, _chosen: &TierCa...
+    |                          ^^^^^
+    |
+    = help: consider refactoring to an associated function
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#unused_self
+
+warning: the loop variable `y` is used to index `final_spectral`
+   --> src/quantum_topology.rs:799:18
+    |
+799 |         for y in 0..height {
+    |                  ^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#needless_range_loop
+    = note: `#[warn(clippy::needless_range_loop)]` on by default
+help: consider using an iterator and enumerate()
+    |
+799 -         for y in 0..height {
+799 +         for (y, <item>) in final_spectral.iter_mut().enumerate().take(height) {
+    |
+
+warning: clamp-like pattern without using clamp function
+   --> src/quantum_topology.rs:862:17
+    |
+862 | /                 if token < 0 {
+863 | |                     token = 0;
+864 | |                 }
+865 | |                 if token > 9 {
+866 | |                     token = 9;
+867 | |                 }
+    | |_________________^ help: replace with clamp: `token = token.clamp(0, 9);`
+    |
+    = note: clamp will panic if max < min
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#manual_clamp
+    = note: `#[warn(clippy::manual_clamp)]` on by default
+
+warning: this function has too many arguments (9/7)
+  --> src/reasoning/quantum_search.rs:47:5
+   |
+47 | /     pub fn new(
+48 | |         axiom_type: String,
+49 | |         condition_tensor: Option<Array1<f32>>,
+50 | |         tensor_spatial: Array1<f32>,
+...  |
+56 | |         _static_background: Option<Arc<crate::core::infinite_detail::C...
+57 | |     ) -> Self {
+   | |_____________^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#too_many_arguments
+   = note: `#[warn(clippy::too_many_arguments)]` on by default
+
+warning: writing `&Vec` instead of `&[_]` involves a new object where a slice will do
+   --> src/reasoning/rrm_agent.rs:343:19
+    |
+343 |         train_in: &Vec<Vec<Vec<i32>>>,
+    |                   ^^^^^^^^^^^^^^^^^^^ help: change this to: `&[Vec<Vec<i32>>]`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#ptr_arg
+    = note: `#[warn(clippy::ptr_arg)]` on by default
+
+warning: large size difference between variants
+  --> src/reasoning/counterfactual_engine.rs:40:1
+   |
+40 | /   pub enum SequenceResult {
+41 | | /     Success {
+42 | | |         final_state: EntityManifold,
+43 | | |     },
+   | | |_____- the largest variant contains at least 368 bytes
+...  |
+48 | | /     FailedEarly {
+49 | | |         at_step: usize,
+50 | | |         remaining_energy: f32,
+51 | | |     },
+   | | |_____- the second-largest variant contains at least 12 bytes
+52 | |   }
+   | |___^ the entire enum is at least 368 bytes
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#large_enum_variant
+   = note: `#[warn(clippy::large_enum_variant)]` on by default
+help: consider boxing the large fields or introducing indirection in some other way to reduce the total size of the enum
+   |
+42 -         final_state: EntityManifold,
+42 +         final_state: Box<EntityManifold>,
+   |
+
+warning: using `write!()` with a format string that ends in a single newline
+   --> src/self_awareness/executable_wiki.rs:156:17
+    |
+156 |         let _ = write!(content, "id: {}\n", page.id);
+    |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#write_with_newline
+    = note: `#[warn(clippy::write_with_newline)]` on by default
+help: use `writeln!` instead
+    |
+156 -         let _ = write!(content, "id: {}\n", page.id);
+156 +         let _ = writeln!(content, "id: {}", page.id);
+    |
+
+warning: `rrm_rust` (lib) generated 147 warnings (run `cargo clippy --fix --lib -p rrm_rust` to apply 45 suggestions)
+warning: `rrm_rust` (lib test) generated 16 warnings (10 duplicates) (run `cargo clippy --fix --lib -p rrm_rust --tests` to apply 1 suggestion)
+    Checking rrm_rust v0.1.0 (/app)
+warning: accessing first element with `test.get(0)`
+   --> src/main.rs:193:53
+    |
+193 |         let (test_in, test_out) = if let Some(t0) = test.get(0) {
+    |                                                     ^^^^^^^^^^^ help: try: `test.first()`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#get_first
+    = note: `#[warn(clippy::get_first)]` on by default
+
+warning: `rrm_rust` (bin "rrm_rust" test) generated 1 warning (run `cargo clippy --fix --bin "rrm_rust" -p rrm_rust --tests` to apply 1 suggestion)
+warning: multiple versions for dependency `hashbrown`: 0.15.5, 0.16.1
+  |
+  = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#multiple_crate_versions
+note: the lint level is defined here
+ --> src/main.rs:6:9
+  |
+6 |         clippy::cargo,
+  |         ^^^^^^^^^^^^^
+  = note: `#[warn(clippy::multiple_crate_versions)]` implied by `#[warn(clippy::cargo)]`
+
+warning: `format!(..)` appended to existing `String`
+  --> src/main.rs:89:13
+   |
+89 |             yaml_arr.push_str(&format!("{:.6}", skill_tensor[i]));
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: you may need to import the `std::fmt::Write` trait
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#format_push_string
+note: the lint level is defined here
+  --> src/main.rs:5:9
+   |
+ 5 |         clippy::pedantic,
+   |         ^^^^^^^^^^^^^^^^
+   = note: `#[warn(clippy::format_push_string)]` implied by `#[warn(clippy::pedantic)]`
+help: consider using `write!` to avoid the extra allocation
+   |
+89 -             yaml_arr.push_str(&format!("{:.6}", skill_tensor[i]));
+89 +             let _ = write!(yaml_arr, "{:.6}", skill_tensor[i]);
+   |
+
+warning: this function has too many lines (155/100)
+   --> src/main.rs:121:1
+    |
+121 | fn main() {
+    | ^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#too_many_lines
+    = note: `#[warn(clippy::too_many_lines)]` implied by `#[warn(clippy::pedantic)]`
+
+warning: accessing first element with `test.get(0)`
+   --> src/main.rs:193:53
+    |
+193 |         let (test_in, test_out) = if let Some(t0) = test.get(0) {
+    |                                                     ^^^^^^^^^^^ help: try: `test.first()`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#get_first
+note: the lint level is defined here
+   --> src/main.rs:4:9
+    |
+  4 |         clippy::all,
+    |         ^^^^^^^^^^^
+    = note: `#[warn(clippy::get_first)]` implied by `#[warn(clippy::all)]`
+
+warning: unnecessary `!=` operation
+   --> src/main.rs:214:9
+    |
+214 | /         if result.len() != test_out.len() {
+215 | |             success = false;
+216 | |         } else {
+217 | |             for (r_row, t_row) in result.iter().zip(test_out.iter()) {
+...   |
+223 | |         }
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#if_not_else
+    = note: `#[warn(clippy::if_not_else)]` implied by `#[warn(clippy::pedantic)]`
+help: try
+    |
+214 ~         if result.len() == test_out.len() {
+215 +             for (r_row, t_row) in result.iter().zip(test_out.iter()) {
+216 +                 if r_row != t_row {
+217 +                     success = false;
+218 +                     break;
+219 +                 }
+220 +             }
+221 +         } else {
+222 +             success = false;
+223 +         }
+    |
+
+warning: unnecessary boolean `not` operation
+   --> src/main.rs:225:29
+    |
+225 |   ...   let _final_result = if !success {
+    |  ___________________________^
+226 | | ...       println!(
+227 | | ...           "MCTS failed. Engaging Generative Synthesized Skill: ex...
+228 | | ...       );
+...   |
+278 | | ...       result
+279 | | ...   };
+    | |_______^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#if_not_else
+help: try
+    |
+225 ~         let _final_result = if success {
+226 +             result
+227 +         } else {
+228 +             println!(
+229 +                 "MCTS failed. Engaging Generative Synthesized Skill: extract_anomalous_quadrant..."
+230 +             );
+231 +
+232 +             let mut raw_manifold = EntityManifold::new();
+233 +             raw_manifold.global_width = test_in[0].len() as f32;
+234 +             raw_manifold.global_height = test_in.len() as f32;
+235 +             let mut raw_idx = 0;
+236 +             for (y, row) in test_in.iter().enumerate() {
+237 +                 for (x, &val) in row.iter().enumerate() {
+238 +                     raw_manifold.ensure_scalar_capacity(raw_idx + 1);
+239 +                     raw_manifold.masses[raw_idx] = 1.0;
+240 +                     raw_manifold.tokens[raw_idx] = val;
+241 +                     raw_manifold.centers_x[raw_idx] = x as f32;
+242 +                     raw_manifold.centers_y[raw_idx] = y as f32;
+243 +                     raw_manifold.spans_x[raw_idx] = 1.0;
+244 +                     raw_manifold.spans_y[raw_idx] = 1.0;
+245 +                     raw_idx += 1;
+246 +                 }
+247 +             }
+248 +             raw_manifold.active_count = raw_idx;
+249 +
+250 +             let res_em = extract_anomalous_quadrant(&raw_manifold);
+251 +             let mut fallback_result =
+252 +                 vec![vec![0; res_em.global_width as usize]; res_em.global_height as usize];
+253 +             for i in 0..res_em.active_count {
+254 +                 if res_em.masses[i] > 0.0 {
+255 +                     let cx = res_em.centers_x[i].round() as i32;
+256 +                     let cy = res_em.centers_y[i].round() as i32;
+257 +                     if cx >= 0
+258 +                         && cx < res_em.global_width as i32
+259 +                         && cy >= 0
+260 +                         && cy < res_em.global_height as i32
+261 +                     {
+262 +                         fallback_result[cy as usize][cx as usize] = res_em.tokens[i];
+263 +                     }
+264 +                 }
+265 +             }
+266 +             success = true;
+267 +
+268 +             if fallback_result.len() != test_out.len() {
+269 +                 success = false;
+270 +             } else {
+271 +                 for (r_row, t_row) in fallback_result.iter().zip(test_out.iter()) {
+272 +                     if r_row != t_row {
+273 +                         success = false;
+274 +                         break;
+275 +                     }
+276 +                 }
+277 +             }
+278 +             fallback_result
+279 ~         };
+    |
+
+warning: unnecessary `!=` operation
+   --> src/main.rs:266:13
+    |
+266 | / ...   if fallback_result.len() != test_out.len() {
+267 | | ...       success = false;
+268 | | ...   } else {
+269 | | ...       for (r_row, t_row) in fallback_result.iter().zip(test_out.i...
+...   |
+275 | | ...   }
+    | |_______^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#if_not_else
+help: try
+    |
+266 ~             if fallback_result.len() == test_out.len() {
+267 +                 for (r_row, t_row) in fallback_result.iter().zip(test_out.iter()) {
+268 +                     if r_row != t_row {
+269 +                         success = false;
+270 +                         break;
+271 +                     }
+272 +                 }
+273 +             } else {
+274 +                 success = false;
+275 +             }
+    |
+
+warning: `rrm_rust` (bin "rrm_rust") generated 7 warnings (run `cargo clippy --fix --bin "rrm_rust" -p rrm_rust` to apply 4 suggestions)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.40s

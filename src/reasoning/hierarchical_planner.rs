@@ -69,8 +69,8 @@ impl HierarchicalPlanner {
             let node_for_cap = node; // it's just an index
 
             // Re-fetch subgoal to avoid move issues
-            let subg_type = match graph.node_weight(node).unwrap() {
-                PlanningNode::Subgoal(ref st) => st,
+            let subg_type = match graph.node_weight(node) {
+                Some(PlanningNode::Subgoal(ref st)) => st,
                 _ => unreachable!(),
             };
 

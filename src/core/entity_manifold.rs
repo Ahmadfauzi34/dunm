@@ -185,17 +185,17 @@ impl EntityManifold {
         // tapi dalam praktiknya, cow_grid idealnya sudah menjadi the source of truth suatu saat nanti.
         // Untuk "cicilan", kita akan asumsikan kita replace dengan grid baru atau bersihkan.
 
-        let grid = self.cow_grid.as_mut().unwrap();
-
-        // Warning: Jika kita bersihkan seluruh grid lama, kita merusak Copy-on-Write sharing
-        // dengan mutasi massal. Idealnya, sync ini cuma dipanggil SEKALI saat inisialisasi awal.
-        // Setelah MCTS berjalan, MCTS cukup mengubah grid via modify_cell.
-        for i in 0..self.active_count {
-            if self.masses[i] > 0.0 {
-                let x = self.centers_x[i].round() as i32;
-                let y = self.centers_y[i].round() as i32;
-                if x >= 0 && x < w as i32 && y >= 0 && y < h as i32 {
-                    grid.modify_cell(x as usize, y as usize, self.tokens[i] as f32);
+        if let Some(ref mut grid) = self.cow_grid {
+            // Warning: Jika kita bersihkan seluruh grid lama, kita merusak Copy-on-Write sharing
+            // dengan mutasi massal. Idealnya, sync ini cuma dipanggil SEKALI saat inisialisasi awal.
+            // Setelah MCTS berjalan, MCTS cukup mengubah grid via modify_cell.
+            for i in 0..self.active_count {
+                if self.masses[i] > 0.0 {
+                    let x = self.centers_x[i].round() as i32;
+                    let y = self.centers_y[i].round() as i32;
+                    if x >= 0 && x < w as i32 && y >= 0 && y < h as i32 {
+                        grid.modify_cell(x as usize, y as usize, self.tokens[i] as f32);
+                    }
                 }
             }
         }

@@ -211,10 +211,12 @@ impl RrmAgent {
         // Fallback ke Hierarchical Planner
         println!("  🔄 Fallback ke hierarchical planning...");
 
-        let _strategy = self
-            .ontology
-            .can_solve(&consensus_delta)
-            .expect("No strategy available for this task class");
+        let _strategy = if let Some(strat) = self.ontology.can_solve(&consensus_delta) {
+            strat
+        } else {
+            println!("No strategy available for this task class, falling back or returning empty wave.");
+            return vec![];
+        };
 
         let planner = HierarchicalPlanner::from_delta(&consensus_delta, &self.ontology);
 
@@ -518,7 +520,7 @@ impl RrmAgent {
                         matches.push(hist_match_2);
                     }
                     matches.extend(TopologicalAligner::align(man_in, man_out));
-                    matches.sort_by(|a, b| b.similarity.partial_cmp(&a.similarity).unwrap());
+                    matches.sort_by(|a, b| b.similarity.partial_cmp(&a.similarity).unwrap_or(std::cmp::Ordering::Equal));
 
                     // Zero-Shot Context Pruning:
                     // Jika klasifikasi masalah BUKAN RelationalRearrangement, kurangi aksioma geometri (seperti mirror/rotate).
@@ -1218,7 +1220,7 @@ impl RrmAgent {
                                 .await;
                         });
 
-                        let ground_states = search.ground_states.read().unwrap();
+                        let ground_states = search.ground_states.read().unwrap_or_else(|e| e.into_inner());
                         for state in ground_states.iter() {
                             if state.probability > max_prob {
                                 max_prob = state.probability;
@@ -1226,7 +1228,7 @@ impl RrmAgent {
                             }
                         }
 
-                        let arena = search.arena.read().unwrap();
+                        let arena = search.arena.read().unwrap_or_else(|e| e.into_inner());
                         self.self_reflection.deep_copy_count += arena.tracked_deep_copies;
                         self.self_reflection.shallow_clone_count += arena.tracked_shallow_clones;
                         self.self_reflection.heap_allocation_count +=
@@ -1338,7 +1340,7 @@ impl RrmAgent {
                         });
                     }
 
-                    let ground_states = search.ground_states.read().unwrap();
+                    let ground_states = search.ground_states.read().unwrap_or_else(|e| e.into_inner());
                     for state in ground_states.iter() {
                         if state.probability > max_prob {
                             max_prob = state.probability;
@@ -1346,7 +1348,7 @@ impl RrmAgent {
                         }
                     }
 
-                    let arena = search.arena.read().unwrap();
+                    let arena = search.arena.read().unwrap_or_else(|e| e.into_inner());
                     self.self_reflection.deep_copy_count += arena.tracked_deep_copies;
                     self.self_reflection.shallow_clone_count += arena.tracked_shallow_clones;
                     self.self_reflection.heap_allocation_count += arena.tracked_heap_allocations;
