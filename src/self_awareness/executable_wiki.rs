@@ -101,9 +101,7 @@ impl ExecutableWiki {
         // Fallback ID dari nama file jika tidak ada di frontmatter
         if id.is_empty() {
             id = path
-                .file_stem()
-                .map(|s| s.to_string_lossy().to_string())
-                .unwrap_or_else(|| "unknown".to_string());
+                .file_stem().map_or_else(|| "unknown".to_string(), |s| s.to_string_lossy().to_string());
         }
 
         let body = &content[body_start_idx..];
@@ -153,12 +151,12 @@ impl ExecutableWiki {
         let mut content = String::new();
         // Generate YAML Frontmatter
         content.push_str("---\n");
-        let _ = write!(content, "id: {}\n", page.id);
-        let _ = write!(content, "type: {}\n", page.page_type);
-        let _ = write!(content, "tier: {}\n", page.tier);
-        let _ = write!(content, "confidence: {:.2}\n", page.confidence);
+        let _ = writeln!(content, "id: {}", page.id);
+        let _ = writeln!(content, "type: {}", page.page_type);
+        let _ = writeln!(content, "tier: {}", page.tier);
+        let _ = writeln!(content, "confidence: {:.2}", page.confidence);
         if let Some(parent) = &page.parent {
-            let _ = write!(content, "parent: {}\n", parent);
+            let _ = writeln!(content, "parent: {}", parent);
         }
         content.push_str("---\n\n");
 

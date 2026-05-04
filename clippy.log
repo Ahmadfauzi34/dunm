@@ -1897,7 +1897,6 @@ help: use `writeln!` instead
 
 warning: `rrm_rust` (lib) generated 147 warnings (run `cargo clippy --fix --lib -p rrm_rust` to apply 45 suggestions)
 warning: `rrm_rust` (lib test) generated 16 warnings (10 duplicates) (run `cargo clippy --fix --lib -p rrm_rust --tests` to apply 1 suggestion)
-    Checking rrm_rust v0.1.0 (/app)
 warning: accessing first element with `test.get(0)`
    --> src/main.rs:193:53
     |
@@ -2088,4 +2087,4 @@ help: try
     |
 
 warning: `rrm_rust` (bin "rrm_rust") generated 7 warnings (run `cargo clippy --fix --bin "rrm_rust" -p rrm_rust` to apply 4 suggestions)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.40s
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.82s

@@ -36,7 +36,7 @@ impl KnowledgeBase {
         }
     }
 
-    /// Membaca semua memori yang ada, melakukan anneal_memory, dan menyimpan kembali hasilnya
+    /// Membaca semua memori yang ada, melakukan `anneal_memory`, dan menyimpan kembali hasilnya
     pub fn anneal_all_memories(&self) {
         let mut base_names = Vec::new();
         let mut tensors = Vec::new();
