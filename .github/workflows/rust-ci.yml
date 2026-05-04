@@ -65,18 +65,19 @@ jobs:
     needs: test
     steps:
       - uses: actions/checkout@v4
-
+      
       - uses: dtolnay/rust-toolchain@nightly
         with:
           toolchain: nightly-2026-04-15
-
+          
       - uses: Swatinem/rust-cache@v2
-
+      
       - name: Run topology benchmark
         run: |
           cargo run --release --bin bench_topology | tee benchmark_output.txt
-
+          
       - name: Check regression
         run: |
           CURRENT=$(grep "Average time for n=500:" benchmark_output.txt | awk '{print $5}')
           # Script pembanding baseline letakkan di sini
+
