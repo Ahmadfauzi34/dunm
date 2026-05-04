@@ -165,7 +165,7 @@ impl CounterfactualEngine {
         let exp_h = expected.global_height;
 
         let mut dim_mismatch = false;
-        if sim_w != exp_w || sim_h != exp_h {
+        if (sim_w - exp_w).abs() > f32::EPSILON || (sim_h - exp_h).abs() > f32::EPSILON {
             energy += ((sim_w - exp_w).powi(2) + (sim_h - exp_h).powi(2)).sqrt() * 1000.0;
             dim_mismatch = true;
         }
