@@ -1,6 +1,6 @@
 use crate::core::entity_manifold::EntityManifold;
-use crate::perception::structural_analyzer::*;
-use crate::self_awareness::skill_ontology::*;
+use crate::perception::structural_analyzer::{StructuralSignature, StructuralDelta, StructuralAnalyzer, TaskClass, DimensionRelation, ObjectDelta};
+use crate::self_awareness::skill_ontology::{SkillOntology, Postcondition, SideEffect, TierCapability, ActivationTrigger, SolutionStrategy};
 use std::time::Instant;
 
 /// Kategori Kegagalan yang dialami agen (untuk membantu routing)

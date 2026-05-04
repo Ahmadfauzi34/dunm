@@ -163,10 +163,10 @@ impl QuantumCellComplex {
             let root_i = uf.find(i);
             let root_j = uf.find(j);
 
-            if root_i != root_j {
-                uf.union(root_i, root_j);
-            } else {
+            if root_i == root_j {
                 self.persistence_barcode.push((0.0, dist));
+            } else {
+                uf.union(root_i, root_j);
             }
         }
     }
@@ -254,7 +254,7 @@ impl SkillFiberBundle {
                     let dist_sq = dx * dx + dy * dy;
                     // Gaussian kernel: local connection
                     let weight = (-dist_sq / 2.0).exp();
-                    connection[[i, j]] = weight * (weight > 0.01) as i32 as f32;
+                    connection[[i, j]] = weight * i32::from(weight > 0.01) as f32;
                 }
             }
         }
@@ -301,7 +301,7 @@ impl SkillFiberBundle {
                     let dy = self.base.centers_y[end] - self.base.centers_y[next];
                     let dist_sq = dx * dx + dy * dy;
                     // Branchless min selection
-                    let is_better = (dist_sq < best_dist_sq) as i32 as f32;
+                    let is_better = i32::from(dist_sq < best_dist_sq) as f32;
                     best_dist_sq = best_dist_sq * (1.0 - is_better) + dist_sq * is_better;
                     best_next = ((best_next as f32) * (1.0 - is_better) + (next as f32) * is_better)
                         as usize;
@@ -439,7 +439,7 @@ impl ReasoningSheaf {
                 let overlap: Vec<usize> = set_i
                     .iter()
                     .filter(|x| set_j.contains(x))
-                    .cloned()
+                    .copied()
                     .collect();
 
                 if !overlap.is_empty() {

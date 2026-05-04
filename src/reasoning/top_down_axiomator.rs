@@ -53,7 +53,7 @@ impl TopDownAxiomator {
         axioms
     }
 
-    /// Deteksi: "Dimensi kanvas mengecil secara makroskopis" -> CROP_TO_COLOR
+    /// Deteksi: "Dimensi kanvas mengecil secara makroskopis" -> `CROP_TO_COLOR`
     fn generate_macroscopic_crop_axioms(
         input_manifold: &EntityManifold,
         output_manifold: &EntityManifold,
@@ -160,7 +160,7 @@ impl TopDownAxiomator {
         axioms
     }
 
-    /// Deteksi: "Kotak berongga menjadi solid" → FILL_HOLE
+    /// Deteksi: "Kotak berongga menjadi solid" → `FILL_HOLE`
     fn generate_fill_axioms(
         input_atoms: &[GestaltAtom],
         output_atoms: &[GestaltAtom],
@@ -201,7 +201,7 @@ impl TopDownAxiomator {
         axioms
     }
 
-    /// Deteksi: "Kontainer dengan konten berbeda" → RECOLOR_CONTENT
+    /// Deteksi: "Kontainer dengan konten berbeda" → `RECOLOR_CONTENT`
     fn generate_container_axioms(
         input_structs: &[RelationalStructure],
         output_structs: &[RelationalStructure],
@@ -235,7 +235,7 @@ impl TopDownAxiomator {
         axioms
     }
 
-    /// Deteksi: "Simetri tidak lagi simetris" → BREAK_SYMMETRY atau ENFORCE_SYMMETRY
+    /// Deteksi: "Simetri tidak lagi simetris" → `BREAK_SYMMETRY` atau `ENFORCE_SYMMETRY`
     fn generate_symmetry_axioms(
         input_atoms: &[GestaltAtom],
         output_atoms: &[GestaltAtom],
@@ -279,7 +279,7 @@ impl TopDownAxiomator {
         axioms
     }
 
-    /// Deteksi: "Grid berubah ukuran" → EXTEND_GRID atau CROP_GRID
+    /// Deteksi: "Grid berubah ukuran" → `EXTEND_GRID` atau `CROP_GRID`
     fn generate_grid_axioms(
         input_structs: &[RelationalStructure],
         output_structs: &[RelationalStructure],
@@ -329,7 +329,7 @@ impl TopDownAxiomator {
         axioms
     }
 
-    /// Deteksi pergerakan objek (sudah ada di TopologicalAligner, tapi dengan confidence lebih tinggi)
+    /// Deteksi pergerakan objek (sudah ada di `TopologicalAligner`, tapi dengan confidence lebih tinggi)
     fn generate_movement_axioms(
         input_atoms: &[GestaltAtom],
         output_atoms: &[GestaltAtom],

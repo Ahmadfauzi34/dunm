@@ -2,7 +2,7 @@ use crate::core::config::GLOBAL_DIMENSION;
 use crate::core::cow_memory::SmartMultiverseState;
 use ndarray::{Array1, ArrayViewMut1};
 
-/// Struktur SoA (Structure of Arrays) untuk Quantum Entity Manifold.
+/// Struktur `SoA` (Structure of Arrays) untuk Quantum Entity Manifold.
 /// Didesain untuk Zero-GC dan cache locality di L1/L2 secara dinamis.
 /// Menggunakan sistem Tri-Tensor: Spatial (Pusat Global), Shape (Pola Lokal), dan Semantic (Warna).
 #[derive(Clone)]
@@ -70,7 +70,7 @@ impl EntityManifold {
         }
     }
 
-    /// Dynamic capacity extension for dense array mapping (SparseSet behavior fallback)
+    /// Dynamic capacity extension for dense array mapping (`SparseSet` behavior fallback)
     pub fn ensure_scalar_capacity(&mut self, required_len: usize) {
         if self.masses.len() < required_len {
             let add = required_len - self.masses.len();
@@ -150,8 +150,8 @@ impl EntityManifold {
 }
 
 impl EntityManifold {
-    /// Sinkronisasi Sparse SOA -> Dense CoW Grid.
-    /// Fungsi ini mengubah token-token warna 1D dari EntityManifold menjadi
+    /// Sinkronisasi Sparse SOA -> Dense `CoW` Grid.
+    /// Fungsi ini mengubah token-token warna 1D dari `EntityManifold` menjadi
     /// representasi dense `SmartMultiverseState` 2D.
     pub fn sync_to_cow(&mut self) {
         if self.global_width <= 0.0 || self.global_height <= 0.0 {

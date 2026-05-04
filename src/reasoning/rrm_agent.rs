@@ -180,9 +180,8 @@ impl RrmAgent {
 
                 promising_axioms.push(axiom);
                 break;
-            } else {
-                println!("    ❌ {} tidak cocok", axiom.name);
             }
+            println!("    ❌ {} tidak cocok", axiom.name);
         }
 
         if !promising_axioms.is_empty() {
@@ -226,68 +225,65 @@ impl RrmAgent {
             &train_pairs[0].1,
         );
 
-        match plan {
-            Some(axioms) => {
-                let mut test_state = test_input.clone();
-                for axiom in &axioms {
-                    MultiverseSandbox::apply_axiom(
-                        &mut test_state,
-                        &axiom.condition_tensor,
-                        &axiom.delta_spatial,
-                        &axiom.delta_semantic,
-                        axiom.delta_x,
-                        axiom.delta_y,
-                        axiom.tier,
-                        &axiom.name,
-                    );
-                }
-
-                let wiki = crate::self_awareness::executable_wiki::ExecutableWiki::new(
-                    "rrm_rust/knowledge/skills/",
+        if let Some(axioms) = plan {
+            let mut test_state = test_input.clone();
+            for axiom in &axioms {
+                MultiverseSandbox::apply_axiom(
+                    &mut test_state,
+                    &axiom.condition_tensor,
+                    &axiom.delta_spatial,
+                    &axiom.delta_semantic,
+                    axiom.delta_x,
+                    axiom.delta_y,
+                    axiom.tier,
+                    &axiom.name,
                 );
-                let _ = wiki.append_to_log(
-                    "Execution_Log",
-                    "Run #X -> SUCCESS via HierarchicalPlanner fallback",
-                );
-
-                self.decoder.collapse_to_grid(
-                    &test_state,
-                    test_state.global_width as usize,
-                    test_state.global_height as usize,
-                    0.5,
-                )
             }
-            None => {
-                self.mental_replay.generate_dreams(10);
-                let _discovered = self
-                    .mental_replay
-                    .practice_in_dreams(&mut self.counterfactual_engine, &self.ontology);
 
-                // MCTS/Planner gagal total. Catat ke log Wiki
-                let mut wiki = crate::self_awareness::executable_wiki::ExecutableWiki::new(
-                    "rrm_rust/knowledge/skills/",
-                );
-                let _ = wiki.append_to_log("Analysis_Log", "Catastrophic Failure Detected. Need to synthesize generative skill via crossover.");
+            let wiki = crate::self_awareness::executable_wiki::ExecutableWiki::new(
+                "rrm_rust/knowledge/skills/",
+            );
+            let _ = wiki.append_to_log(
+                "Execution_Log",
+                "Run #X -> SUCCESS via HierarchicalPlanner fallback",
+            );
 
-                // Simulasi pembuatan skill baru hasil "crossover"
-                let new_page = crate::self_awareness::executable_wiki::WikiPage {
-                    id: format!("synthesized_{}", chrono::Utc::now().format("%Y%m%d%H%M%S")),
-                    page_type: "synthesized_crossover".to_string(),
-                    tier: 8,
-                    confidence: 0.50,
-                    parent: Some("mcts_fallback".to_string()),
-                    content: "## Origin\nAuto-generated skill from Catastrophic Failure\n\n```rust\n// Novel spatial tensor bound\n```\n".to_string(),
-                    code_blocks: vec![],
-                };
-                let _ = wiki.create_skill(new_page);
+            self.decoder.collapse_to_grid(
+                &test_state,
+                test_state.global_width as usize,
+                test_state.global_height as usize,
+                0.5,
+            )
+        } else {
+            self.mental_replay.generate_dreams(10);
+            let _discovered = self
+                .mental_replay
+                .practice_in_dreams(&mut self.counterfactual_engine, &self.ontology);
 
-                self.decoder.collapse_to_grid(
-                    test_input,
-                    test_input.global_width as usize,
-                    test_input.global_height as usize,
-                    0.5,
-                )
-            }
+            // MCTS/Planner gagal total. Catat ke log Wiki
+            let mut wiki = crate::self_awareness::executable_wiki::ExecutableWiki::new(
+                "rrm_rust/knowledge/skills/",
+            );
+            let _ = wiki.append_to_log("Analysis_Log", "Catastrophic Failure Detected. Need to synthesize generative skill via crossover.");
+
+            // Simulasi pembuatan skill baru hasil "crossover"
+            let new_page = crate::self_awareness::executable_wiki::WikiPage {
+                id: format!("synthesized_{}", chrono::Utc::now().format("%Y%m%d%H%M%S")),
+                page_type: "synthesized_crossover".to_string(),
+                tier: 8,
+                confidence: 0.50,
+                parent: Some("mcts_fallback".to_string()),
+                content: "## Origin\nAuto-generated skill from Catastrophic Failure\n\n```rust\n// Novel spatial tensor bound\n```\n".to_string(),
+                code_blocks: vec![],
+            };
+            let _ = wiki.create_skill(new_page);
+
+            self.decoder.collapse_to_grid(
+                test_input,
+                test_input.global_width as usize,
+                test_input.global_height as usize,
+                0.5,
+            )
         }
     }
 
@@ -315,7 +311,13 @@ impl RrmAgent {
             .mental_replay
             .practice_in_dreams(&mut self.counterfactual_engine, &self.ontology);
 
-        if !discovered_skills.is_empty() {
+        if discovered_skills.is_empty() {
+            println!("   -> Mimpi selesai. Sistem telah melatih otot kognitifnya.");
+            let _ = wiki.append_to_log(
+                "soul_log",
+                "### [tX] Mimpi Selesai: Otot kognitif tensor telah direkalibrasi.",
+            );
+        } else {
             println!(
                 "✨ [Eureka!] RRM menemukan {} komposisi skill baru di alam mimpinya!",
                 discovered_skills.len()
@@ -329,12 +331,6 @@ impl RrmAgent {
                     &ndarray::Array1::ones(crate::core::config::GLOBAL_DIMENSION),
                 );
             }
-        } else {
-            println!("   -> Mimpi selesai. Sistem telah melatih otot kognitifnya.");
-            let _ = wiki.append_to_log(
-                "soul_log",
-                "### [tX] Mimpi Selesai: Otot kognitif tensor telah direkalibrasi.",
-            );
         }
     }
 
@@ -915,13 +911,12 @@ impl RrmAgent {
                         self.self_reflection.iterations_without_improvement = 0;
 
                         continue; // Lewati siklus iterasi ini agar Advanced Pass mendapat manifold terbaru
-                    } else {
-                        // Jika Gestalt juga tidak bisa menemukan bentuk berarti, anggap agen kelelahan.
-                        println!(
-                            "   👁️ [Gestalt Vision] Pandangan tetap buram (Noise Total). Menyerah."
-                        );
-                        self.self_reflection.total_iterations = 9999;
                     }
+                    // Jika Gestalt juga tidak bisa menemukan bentuk berarti, anggap agen kelelahan.
+                    println!(
+                        "   👁️ [Gestalt Vision] Pandangan tetap buram (Noise Total). Menyerah."
+                    );
+                    self.self_reflection.total_iterations = 9999;
                 }
                 Bottleneck::PrecisionError => {
                     println!("🧠 [Metakognisi] Bottleneck::PrecisionError - Meleset sedikit. Menembakkan Counterfactual Engine (Femto Scale)...");
@@ -1067,7 +1062,7 @@ impl RrmAgent {
                                     .axiom_type
                                     .last()
                                     .cloned()
-                                    .unwrap_or_else(|| "".to_string()),
+                                    .unwrap_or_else(String::new),
                             });
                         }
 
@@ -1168,7 +1163,7 @@ impl RrmAgent {
 
                         let (test_target_h, test_target_w) = expected_grids
                             .first()
-                            .map(|grid| {
+                            .map_or((0.0, 0.0), |grid| {
                                 (
                                     grid.len() as f32,
                                     if grid.is_empty() {
@@ -1177,8 +1172,7 @@ impl RrmAgent {
                                         grid[0].len() as f32
                                     },
                                 )
-                            })
-                            .unwrap_or((0.0, 0.0));
+                            });
 
                         for c in all_clone.iter_mut() {
                             let probability_boost = match c.physics_tier {
@@ -1220,7 +1214,7 @@ impl RrmAgent {
                                 .await;
                         });
 
-                        let ground_states = search.ground_states.read().unwrap_or_else(|e| e.into_inner());
+                        let ground_states = search.ground_states.read().unwrap_or_else(std::sync::PoisonError::into_inner);
                         for state in ground_states.iter() {
                             if state.probability > max_prob {
                                 max_prob = state.probability;
@@ -1228,7 +1222,7 @@ impl RrmAgent {
                             }
                         }
 
-                        let arena = search.arena.read().unwrap_or_else(|e| e.into_inner());
+                        let arena = search.arena.read().unwrap_or_else(std::sync::PoisonError::into_inner);
                         self.self_reflection.deep_copy_count += arena.tracked_deep_copies;
                         self.self_reflection.shallow_clone_count += arena.tracked_shallow_clones;
                         self.self_reflection.heap_allocation_count +=
@@ -1258,10 +1252,10 @@ impl RrmAgent {
                                                 man_in, 3,
                                             );
                                         let is_consistent = sheaf.check_sheaf_condition();
-                                        if !is_consistent {
-                                            println!("   ⚠️ [Topologi Kuantum] Sheaf Gluing Error: Solusi ini mungkin tidak konsisten di berbagai area lokal (overfitting). Menerima dengan hati-hati.");
-                                        } else {
+                                        if is_consistent {
                                             println!("   🧠 [Topologi Kuantum] Sheaf Gluing Valid! Solusi stabil di seluruh patch lokal.");
+                                        } else {
+                                            println!("   ⚠️ [Topologi Kuantum] Sheaf Gluing Error: Solusi ini mungkin tidak konsisten di berbagai area lokal (overfitting). Menerima dengan hati-hati.");
                                         }
 
                                         // Evaluasi Curvature Topologi (Membantu Pruning di MCTS)
@@ -1340,7 +1334,7 @@ impl RrmAgent {
                         });
                     }
 
-                    let ground_states = search.ground_states.read().unwrap_or_else(|e| e.into_inner());
+                    let ground_states = search.ground_states.read().unwrap_or_else(std::sync::PoisonError::into_inner);
                     for state in ground_states.iter() {
                         if state.probability > max_prob {
                             max_prob = state.probability;
@@ -1348,7 +1342,7 @@ impl RrmAgent {
                         }
                     }
 
-                    let arena = search.arena.read().unwrap_or_else(|e| e.into_inner());
+                    let arena = search.arena.read().unwrap_or_else(std::sync::PoisonError::into_inner);
                     self.self_reflection.deep_copy_count += arena.tracked_deep_copies;
                     self.self_reflection.shallow_clone_count += arena.tracked_shallow_clones;
                     self.self_reflection.heap_allocation_count += arena.tracked_heap_allocations;
@@ -1404,8 +1398,7 @@ impl RrmAgent {
             let current_axiom_str = rule
                 .axiom_type
                 .last()
-                .map(|s: &String| s.as_str())
-                .unwrap_or("IDENTITY_STATIC");
+                .map_or("IDENTITY_STATIC", |s: &String| s.as_str());
 
             // Simpan ke LogicSeedBank agar bisa dipanggil lebih cepat di task selanjutnya
             self.seed_bank
