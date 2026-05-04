@@ -144,9 +144,10 @@ impl RrmAgent {
                     );
 
                     let mut is_body_changed = false;
+                    // Hapus perbandingan absolut (!=) untuk variabel float
                     if test_body.active_count != train_pairs[0].0.active_count
-                        || (test_body.global_width - train_pairs[0].0.global_width).abs() > f32::EPSILON
-                        || (test_body.global_height - train_pairs[0].0.global_height).abs() > f32::EPSILON
+                        || (test_body.global_width - train_pairs[0].0.global_width).abs() > 1e-5
+                        || (test_body.global_height - train_pairs[0].0.global_height).abs() > 1e-5
                     {
                         is_body_changed = true;
                     }
