@@ -100,7 +100,6 @@ impl LshIndex {
         result
     }
 
-    #[allow(dead_code)]
     pub fn clear(&mut self) {
         for bucket in &mut self.buckets {
             bucket.clear();
@@ -176,5 +175,42 @@ impl LogicSeedBank {
     pub fn query_similar(&self, target_tensor: &Array1<f32>, max_results: usize) -> Vec<usize> {
         let view = target_tensor.view();
         self.lsh_index.query(&view, max_results)
+    }
+
+    pub fn clear(&mut self) {
+        self.active_count = 0;
+        self.lsh_index.clear();
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::core::config::GLOBAL_DIMENSION;
+    use ndarray::Array1;
+
+    #[test]
+    fn test_logic_seed_bank_clear() {
+        let mut bank = LogicSeedBank::new();
+        let name = "test_rule";
+        let seed = 42;
+        let tensor = Array1::<f32>::zeros(GLOBAL_DIMENSION);
+
+        // Add a seed
+        let idx = bank.add_seed(name, seed, &tensor).expect("Failed to add seed");
+        assert_eq!(bank.active_count, 1);
+
+        // Verify query returns the seed
+        let results = bank.query_similar(&tensor, 10);
+        assert!(!results.is_empty());
+        assert!(results.contains(&idx));
+
+        // Clear the bank
+        bank.clear();
+        assert_eq!(bank.active_count, 0);
+
+        // Verify query returns no results
+        let results_after = bank.query_similar(&tensor, 10);
+        assert!(results_after.is_empty());
     }
 }
