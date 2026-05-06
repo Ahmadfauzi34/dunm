@@ -933,9 +933,9 @@ impl RrmAgent {
                             .last()
                             .cloned()
                             .unwrap_or_else(|| "TempAxiom".to_string());
-                        temp_axiom.condition_tensor = rule.condition_tensor.clone();
-                        temp_axiom.delta_spatial = rule.tensor_spatial.clone();
-                        temp_axiom.delta_semantic = rule.tensor_semantic.clone();
+                        temp_axiom.condition_tensor.clone_from(&rule.condition_tensor);
+                        temp_axiom.delta_spatial.clone_from(&rule.tensor_spatial);
+                        temp_axiom.delta_semantic.clone_from(&rule.tensor_semantic);
                         temp_axiom.delta_x = rule.delta_x;
                         temp_axiom.delta_y = rule.delta_y;
                         temp_axiom.tier = rule.physics_tier;
@@ -957,7 +957,7 @@ impl RrmAgent {
                                                     println!("   🎯 [Femto Surgeon] Memutar fasa tensor secara analitis ke target eksak!");
 
                                                     // Perbarui WaveNode terbaik kita dengan tensor koreksi
-                                                    rule.tensor_spatial = correction.delta_spatial.clone();
+                                                    rule.tensor_spatial.clone_from(&correction.delta_spatial);
                                                     rule.delta_x = correction.delta_x;
                                                     rule.delta_y = correction.delta_y;
                                                     rule.axiom_type.push("FEMTO_CORRECTION".to_string());

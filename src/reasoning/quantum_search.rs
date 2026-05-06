@@ -434,10 +434,10 @@ impl AsyncWaveSearch {
                 }
 
                 // Sync initial state dari Legacy WaveNode
-                arena.axiom_path[root_idx] = wave.axiom_type.clone();
-                arena.action_condition[root_idx] = wave.condition_tensor.clone();
-                arena.action_spatial[root_idx] = wave.tensor_spatial.clone();
-                arena.action_semantic[root_idx] = wave.tensor_semantic.clone();
+                arena.axiom_path[root_idx].clone_from(&wave.axiom_type);
+                arena.action_condition[root_idx].clone_from(&wave.condition_tensor);
+                arena.action_spatial[root_idx].clone_from(&wave.tensor_spatial);
+                arena.action_semantic[root_idx].clone_from(&wave.tensor_semantic);
                 arena.action_dx[root_idx] = wave.delta_x;
                 arena.action_dy[root_idx] = wave.delta_y;
                 arena.action_tier[root_idx] = wave.physics_tier;
@@ -712,12 +712,15 @@ impl AsyncWaveSearch {
                             arena.spawn_node(Some(current_idx), child_tolerance, parent_state)
                         {
                             // Populate child aksioma
-                            arena.axiom_path[child_idx] = arena.axiom_path[current_idx].clone();
+                            #[allow(clippy::assigning_clones)]
+                            {
+                                arena.axiom_path[child_idx] = arena.axiom_path[current_idx].clone();
+                            }
                             arena.axiom_path[child_idx].push(next_axiom.axiom_type[0].clone());
 
-                            arena.action_condition[child_idx] = next_axiom.condition_tensor.clone();
-                            arena.action_spatial[child_idx] = next_axiom.tensor_spatial.clone();
-                            arena.action_semantic[child_idx] = next_axiom.tensor_semantic.clone();
+                            arena.action_condition[child_idx].clone_from(&next_axiom.condition_tensor);
+                            arena.action_spatial[child_idx].clone_from(&next_axiom.tensor_spatial);
+                            arena.action_semantic[child_idx].clone_from(&next_axiom.tensor_semantic);
                             arena.action_dx[child_idx] = next_axiom.delta_x;
                             arena.action_dy[child_idx] = next_axiom.delta_y;
                             arena.action_tier[child_idx] = next_axiom.physics_tier;
