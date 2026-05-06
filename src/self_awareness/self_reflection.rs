@@ -1,6 +1,11 @@
 use crate::core::entity_manifold::EntityManifold;
-use crate::perception::structural_analyzer::{StructuralSignature, StructuralDelta, StructuralAnalyzer, TaskClass, DimensionRelation, ObjectDelta};
-use crate::self_awareness::skill_ontology::{SkillOntology, Postcondition, SideEffect, TierCapability, ActivationTrigger, SolutionStrategy};
+use crate::perception::structural_analyzer::{
+    DimensionRelation, ObjectDelta, StructuralAnalyzer, StructuralDelta, StructuralSignature,
+    TaskClass,
+};
+use crate::self_awareness::skill_ontology::{
+    ActivationTrigger, Postcondition, SideEffect, SkillOntology, SolutionStrategy, TierCapability,
+};
 use std::time::Instant;
 
 /// Kategori Kegagalan yang dialami agen (untuk membantu routing)
@@ -260,7 +265,10 @@ impl SelfReflection {
         let chosen = if let Some(skill) = self.ontology.capabilities.get(&chosen_skill) {
             skill
         } else {
-            return format!("Skill ID {} tidak valid atau tidak ditemukan.", chosen_skill);
+            return format!(
+                "Skill ID {} tidak valid atau tidak ditemukan.",
+                chosen_skill
+            );
         };
 
         let mut explanation = format!("Saya memilih {} karena:\n", chosen.name);

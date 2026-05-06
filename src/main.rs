@@ -11,7 +11,7 @@
 // ⛔ STRICT DENY (Keamanan & Anti-Mangkir)
 // ==========================================
 #![cfg_attr(not(test), deny(
-    clippy::correctness, 
+    clippy::correctness,
     clippy::suspicious,
     clippy::unwrap_used,   // Wajib handle error (jangan pakai panics)
     clippy::expect_used,   // Sama seperti unwrap
@@ -36,7 +36,7 @@
 #![allow(
     clippy::module_name_repetitions,
     clippy::must_use_candidate,
-    
+
     // [⬡ Carbo] FHRR: i64→f32 cast intentional untuk AVX2 256-bit alignment
     clippy::cast_possible_truncation,
     clippy::cast_precision_loss,
