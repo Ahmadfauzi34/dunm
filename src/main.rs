@@ -4,9 +4,9 @@
         clippy::all,
         clippy::pedantic,
         clippy::cargo,
-        // clippy::nursery, // <- Pindah ke CI-only
     )
 )]
+
 // ==========================================
 // ⛔ STRICT DENY (Keamanan & Anti-Mangkir)
 // ==========================================
@@ -18,19 +18,18 @@
     clippy::todo,          // Cegah AI/Developer meninggalkan placeholder
     clippy::unimplemented, // Cegah fungsi kosong masuk ke production
 ))]
+
 // ==========================================
-// 🚧 TEMPORARY ALLOW (Prioritas Hapus)
+// 🚧 TEMPORARY ALLOW (Tersisa Prioritas Merah & Struktural)
 // ==========================================
 #![allow(
-    clippy::suboptimal_flops,      // 🔴 Paling tinggi: tensor math
-    clippy::missing_const_for_fn,  // 🟡 Medium: compile-time opt
-    clippy::uninlined_format_args, // 🟢 Lowest: ergonomi
-    clippy::similar_names,
-    clippy::explicit_iter_loop,
+    clippy::suboptimal_flops,      // 🔴 Paling tinggi: tensor math (Belum dioptimasi)
+    
+    // ⚠️ STRUKTURAL: Dipertahankan agar AI tidak merusak arsitektur hot-path SoA
     clippy::too_many_lines,
     clippy::too_many_arguments,
-    clippy::unused_self,
 )]
+
 // ==========================================
 // 🛡️ PERMANENT ALLOW (Domain Tensor)
 // ==========================================
@@ -43,6 +42,7 @@
     clippy::cast_precision_loss,
     clippy::cast_sign_loss,
 )]
+
 
 #[global_allocator]
 static ALLOCATOR: rrm_rust::memory::allocator::TrackingAllocator =
