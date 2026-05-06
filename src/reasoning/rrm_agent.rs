@@ -145,8 +145,10 @@ impl RrmAgent {
 
                     let mut is_body_changed = false;
                     if test_body.active_count != train_pairs[0].0.active_count
-                        || (test_body.global_width - train_pairs[0].0.global_width).abs() > f32::EPSILON
-                        || (test_body.global_height - train_pairs[0].0.global_height).abs() > f32::EPSILON
+                        || (test_body.global_width - train_pairs[0].0.global_width).abs()
+                            > f32::EPSILON
+                        || (test_body.global_height - train_pairs[0].0.global_height).abs()
+                            > f32::EPSILON
                     {
                         is_body_changed = true;
                     }
@@ -213,7 +215,9 @@ impl RrmAgent {
         let _strategy = if let Some(strat) = self.ontology.can_solve(&consensus_delta) {
             strat
         } else {
-            println!("No strategy available for this task class, falling back or returning empty wave.");
+            println!(
+                "No strategy available for this task class, falling back or returning empty wave."
+            );
             return vec![];
         };
 
@@ -264,7 +268,10 @@ impl RrmAgent {
             let mut wiki = crate::self_awareness::executable_wiki::ExecutableWiki::new(
                 "rrm_rust/knowledge/skills/",
             );
-            let _ = wiki.append_to_log("Analysis_Log", "Catastrophic Failure Detected. Need to synthesize generative skill via crossover.");
+            let _ = wiki.append_to_log(
+                "Analysis_Log",
+                "Catastrophic Failure Detected. Need to synthesize generative skill via crossover.",
+            );
 
             // Simulasi pembuatan skill baru hasil "crossover"
             let new_page = crate::self_awareness::executable_wiki::WikiPage {
@@ -516,7 +523,11 @@ impl RrmAgent {
                         matches.push(hist_match_2);
                     }
                     matches.extend(TopologicalAligner::align(man_in, man_out));
-                    matches.sort_by(|a, b| b.similarity.partial_cmp(&a.similarity).unwrap_or(std::cmp::Ordering::Equal));
+                    matches.sort_by(|a, b| {
+                        b.similarity
+                            .partial_cmp(&a.similarity)
+                            .unwrap_or(std::cmp::Ordering::Equal)
+                    });
 
                     // Zero-Shot Context Pruning:
                     // Jika klasifikasi masalah BUKAN RelationalRearrangement, kurangi aksioma geometri (seperti mirror/rotate).
@@ -933,7 +944,9 @@ impl RrmAgent {
                             .last()
                             .cloned()
                             .unwrap_or_else(|| "TempAxiom".to_string());
-                        temp_axiom.condition_tensor.clone_from(&rule.condition_tensor);
+                        temp_axiom
+                            .condition_tensor
+                            .clone_from(&rule.condition_tensor);
                         temp_axiom.delta_spatial.clone_from(&rule.tensor_spatial);
                         temp_axiom.delta_semantic.clone_from(&rule.tensor_semantic);
                         temp_axiom.delta_x = rule.delta_x;
@@ -1161,9 +1174,8 @@ impl RrmAgent {
                         let mut all_clone: Vec<WaveNode> = high_confidence_axioms.clone();
                         all_clone.dedup_by(|a, b| a.axiom_type == b.axiom_type);
 
-                        let (test_target_h, test_target_w) = expected_grids
-                            .first()
-                            .map_or((0.0, 0.0), |grid| {
+                        let (test_target_h, test_target_w) =
+                            expected_grids.first().map_or((0.0, 0.0), |grid| {
                                 (
                                     grid.len() as f32,
                                     if grid.is_empty() {
@@ -1214,7 +1226,10 @@ impl RrmAgent {
                                 .await;
                         });
 
-                        let ground_states = search.ground_states.read().unwrap_or_else(std::sync::PoisonError::into_inner);
+                        let ground_states = search
+                            .ground_states
+                            .read()
+                            .unwrap_or_else(std::sync::PoisonError::into_inner);
                         for state in ground_states.iter() {
                             if state.probability > max_prob {
                                 max_prob = state.probability;
@@ -1222,7 +1237,10 @@ impl RrmAgent {
                             }
                         }
 
-                        let arena = search.arena.read().unwrap_or_else(std::sync::PoisonError::into_inner);
+                        let arena = search
+                            .arena
+                            .read()
+                            .unwrap_or_else(std::sync::PoisonError::into_inner);
                         self.self_reflection.deep_copy_count += arena.tracked_deep_copies;
                         self.self_reflection.shallow_clone_count += arena.tracked_shallow_clones;
                         self.self_reflection.heap_allocation_count +=
@@ -1334,7 +1352,10 @@ impl RrmAgent {
                         });
                     }
 
-                    let ground_states = search.ground_states.read().unwrap_or_else(std::sync::PoisonError::into_inner);
+                    let ground_states = search
+                        .ground_states
+                        .read()
+                        .unwrap_or_else(std::sync::PoisonError::into_inner);
                     for state in ground_states.iter() {
                         if state.probability > max_prob {
                             max_prob = state.probability;
@@ -1342,7 +1363,10 @@ impl RrmAgent {
                         }
                     }
 
-                    let arena = search.arena.read().unwrap_or_else(std::sync::PoisonError::into_inner);
+                    let arena = search
+                        .arena
+                        .read()
+                        .unwrap_or_else(std::sync::PoisonError::into_inner);
                     self.self_reflection.deep_copy_count += arena.tracked_deep_copies;
                     self.self_reflection.shallow_clone_count += arena.tracked_shallow_clones;
                     self.self_reflection.heap_allocation_count += arena.tracked_heap_allocations;

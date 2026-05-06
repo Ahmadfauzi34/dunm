@@ -421,13 +421,18 @@ impl AsyncWaveSearch {
             // 1. Inisiasi Root Fractal Node
             let root_idx;
             {
-                let mut arena = self.arena.write().unwrap_or_else(std::sync::PoisonError::into_inner);
+                let mut arena = self
+                    .arena
+                    .write()
+                    .unwrap_or_else(std::sync::PoisonError::into_inner);
                 let root_tolerance = EnergyTolerance {
                     precision_width: 1e-6, // Mulai dari Micro / Fuzzy (Semantic level)
                     max_branching_factor: 20,
                 };
 
-                if let Some(idx) = arena.spawn_node(None, root_tolerance, wave.state_manifolds.clone()) {
+                if let Some(idx) =
+                    arena.spawn_node(None, root_tolerance, wave.state_manifolds.clone())
+                {
                     root_idx = idx;
                 } else {
                     return; // Fail gracefully if we cannot spawn root
@@ -463,11 +468,19 @@ impl AsyncWaveSearch {
                 future::yield_now().await;
 
                 // Cek jika Ground State sudah ditemukan
-                if !self.ground_states.read().unwrap_or_else(std::sync::PoisonError::into_inner).is_empty() {
+                if !self
+                    .ground_states
+                    .read()
+                    .unwrap_or_else(std::sync::PoisonError::into_inner)
+                    .is_empty()
+                {
                     break;
                 }
 
-                let mut arena = self.arena.write().unwrap_or_else(std::sync::PoisonError::into_inner);
+                let mut arena = self
+                    .arena
+                    .write()
+                    .unwrap_or_else(std::sync::PoisonError::into_inner);
 
                 // Copy-On-Write State sebelum modifikasi
                 arena.ensure_unique_state(current_idx);
@@ -641,7 +654,10 @@ impl AsyncWaveSearch {
                         probability: amplitude,
                         depth: current_depth,
                     };
-                    self.ground_states.write().unwrap_or_else(std::sync::PoisonError::into_inner).push(result_wave);
+                    self.ground_states
+                        .write()
+                        .unwrap_or_else(std::sync::PoisonError::into_inner)
+                        .push(result_wave);
 
                     println!("\n🌟 === GROUND STATE DITEMUKAN (Zero Error) === 🌟");
                     let debug_manifold = &arena.states[current_idx][0];
@@ -718,9 +734,11 @@ impl AsyncWaveSearch {
                             }
                             arena.axiom_path[child_idx].push(next_axiom.axiom_type[0].clone());
 
-                            arena.action_condition[child_idx].clone_from(&next_axiom.condition_tensor);
+                            arena.action_condition[child_idx]
+                                .clone_from(&next_axiom.condition_tensor);
                             arena.action_spatial[child_idx].clone_from(&next_axiom.tensor_spatial);
-                            arena.action_semantic[child_idx].clone_from(&next_axiom.tensor_semantic);
+                            arena.action_semantic[child_idx]
+                                .clone_from(&next_axiom.tensor_semantic);
                             arena.action_dx[child_idx] = next_axiom.delta_x;
                             arena.action_dy[child_idx] = next_axiom.delta_y;
                             arena.action_tier[child_idx] = next_axiom.physics_tier;
@@ -734,7 +752,10 @@ impl AsyncWaveSearch {
 
             // Hitung rata-rata waktu eksekusi batch per entitas manifold
             let elapsed_batch_ns = batch_start_time.elapsed().as_nanos() as u64;
-            let mut arena = self.arena.write().unwrap_or_else(std::sync::PoisonError::into_inner);
+            let mut arena = self
+                .arena
+                .write()
+                .unwrap_or_else(std::sync::PoisonError::into_inner);
             if batch_total_active_count > 0 {
                 let avg_ns = elapsed_batch_ns / batch_total_active_count as u64;
                 if arena.average_iteration_time_ns == 0 {

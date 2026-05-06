@@ -100,8 +100,10 @@ impl ExecutableWiki {
 
         // Fallback ID dari nama file jika tidak ada di frontmatter
         if id.is_empty() {
-            id = path
-                .file_stem().map_or_else(|| "unknown".to_string(), |s| s.to_string_lossy().to_string());
+            id = path.file_stem().map_or_else(
+                || "unknown".to_string(),
+                |s| s.to_string_lossy().to_string(),
+            );
         }
 
         let body = &content[body_start_idx..];

@@ -48,7 +48,11 @@ impl TopDownAxiomator {
         ));
 
         // Prioritize: sort by structural confidence
-        axioms.sort_by(|a, b| b.similarity.partial_cmp(&a.similarity).unwrap_or(std::cmp::Ordering::Equal));
+        axioms.sort_by(|a, b| {
+            b.similarity
+                .partial_cmp(&a.similarity)
+                .unwrap_or(std::cmp::Ordering::Equal)
+        });
 
         axioms
     }
