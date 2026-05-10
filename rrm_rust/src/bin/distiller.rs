@@ -4,7 +4,7 @@ use rrm_rust::core::core_seeds::CoreSeeds;
 use ndarray::Array1;
 use std::fs;
 
-fn main() {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("--- TENSOR DISTILLATION STARTED ---");
 
     let mut in_agg_spatial = Array1::<f32>::zeros(GLOBAL_DIMENSION);
@@ -53,7 +53,7 @@ fn main() {
     }
     spatial_str.push_str("]");
 
-    fs::write("anomaly_spatial.json", spatial_str).unwrap();
+    fs::write("anomaly_spatial.json", spatial_str)?;
 
     let mut semantic_str = String::from("[");
     for i in 0..GLOBAL_DIMENSION {
@@ -64,7 +64,8 @@ fn main() {
     }
     semantic_str.push_str("]");
 
-    fs::write("anomaly_semantic.json", semantic_str).unwrap();
+    fs::write("anomaly_semantic.json", semantic_str)?;
 
     println!("--- TENSOR DISTILLATION COMPLETED ---");
+    Ok(())
 }
