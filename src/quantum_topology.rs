@@ -95,6 +95,35 @@ impl QuantumCellComplex {
         complex
     }
 
+    /// Adds the combinatorial Laplacian contribution from 2-simplices (triangles) to the
+    /// edge Laplacian. By exploiting the domain invariant that each triangle bounds exactly
+    /// 3 edges, we can accumulate outer products (3-cliques) in O(Triangles) time,
+    /// rather than the standard O(Edges^3) dense matrix multiplication `d2.dot(&d2.t())`.
+    fn add_triangle_clique_laplacian(l1: &mut Array2<f32>, d2: &Array2<f32>) {
+        let num_edges = d2.shape()[0];
+        let num_triangles = d2.shape()[1];
+
+        let mut edges = Vec::with_capacity(3);
+
+        for t_idx in 0..num_triangles {
+            edges.clear();
+            // Collect the non-zero edge indices for this triangle
+            for e_idx in 0..num_edges {
+                let sign = d2[[e_idx, t_idx]];
+                if sign != 0.0 {
+                    edges.push((e_idx, sign));
+                }
+            }
+
+            // Add outer product of the triangle's boundary to the Laplacian
+            for &(e_i, sign_i) in &edges {
+                for &(e_j, sign_j) in &edges {
+                    l1[[e_i, e_j]] += sign_i * sign_j;
+                }
+            }
+        }
+    }
+
     fn compute_laplacians_and_betti(&mut self) {
         if self.boundary_operators.is_empty() {
             self.betti_numbers.push(0);
@@ -107,7 +136,9 @@ impl QuantumCellComplex {
 
         if self.boundary_operators.len() >= 2 {
             let d2 = &self.boundary_operators[1];
-            let l1 = d1.t().dot(d1) + d2.dot(&d2.t());
+            let mut l1 = d1.t().dot(d1);
+
+            Self::add_triangle_clique_laplacian(&mut l1, d2);
             self.laplacians.push(l1);
         }
 
