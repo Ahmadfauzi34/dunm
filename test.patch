@@ -1,0 +1,55 @@
+--- src/quantum_topology.rs
++++ src/quantum_topology.rs
+@@ -124,10 +124,35 @@
+
+     fn compute_laplacians_and_betti(&mut self) {
+         if self.boundary_operators.is_empty() {
+             self.betti_numbers.push(0);
+             return;
+         }
+
+         let d1 = &self.boundary_operators[0];
+-        let l0 = d1.dot(&d1.t());
++        let num_vertices = d1.shape()[0];
++        let num_edges = d1.shape()[1];
++
++        let mut l0 = Array2::<f32>::zeros((num_vertices, num_vertices));
++        for e in 0..num_edges {
++            let mut endpoints = Vec::with_capacity(2);
++            for v in 0..num_vertices {
++                let sign = d1[[v, e]];
++                if sign != 0.0 {
++                    endpoints.push((v, sign));
++                }
++            }
++            for &(v1, s1) in &endpoints {
++                for &(v2, s2) in &endpoints {
++                    l0[[v1, v2]] += s1 * s2;
++                }
++            }
++        }
++
+         self.laplacians.push(l0);
+
+         if self.boundary_operators.len() >= 2 {
+             let d2 = &self.boundary_operators[1];
+-            let mut l1 = d1.t().dot(d1);
++
++            let mut l1 = Array2::<f32>::zeros((num_edges, num_edges));
++            for v in 0..num_vertices {
++                let mut incident_edges = Vec::with_capacity(8);
++                for e in 0..num_edges {
++                    let sign = d1[[v, e]];
++                    if sign != 0.0 {
++                        incident_edges.push((e, sign));
++                    }
++                }
++                for &(e1, s1) in &incident_edges {
++                    for &(e2, s2) in &incident_edges {
++                        l1[[e1, e2]] += s1 * s2;
++                    }
++                }
++            }
+
+             Self::add_triangle_clique_laplacian(&mut l1, d2);
+             self.laplacians.push(l1);
