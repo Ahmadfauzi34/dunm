@@ -95,6 +95,35 @@ impl QuantumCellComplex {
         complex
     }
 
+    /// Adds the combinatorial Laplacian contribution from 2-simplices (triangles) to the
+    /// edge Laplacian. By exploiting the domain invariant that each triangle bounds exactly
+    /// 3 edges, we can accumulate outer products (3-cliques) in O(Triangles) time,
+    /// rather than the standard O(Edges^3) dense matrix multiplication `d2.dot(&d2.t())`.
+    fn add_triangle_clique_laplacian(l1: &mut Array2<f32>, d2: &Array2<f32>) {
+        let num_edges = d2.shape()[0];
+        let num_triangles = d2.shape()[1];
+
+        let mut edges = Vec::with_capacity(3);
+
+        for t_idx in 0..num_triangles {
+            edges.clear();
+            // Collect the non-zero edge indices for this triangle
+            for e_idx in 0..num_edges {
+                let sign = d2[[e_idx, t_idx]];
+                if sign != 0.0 {
+                    edges.push((e_idx, sign));
+                }
+            }
+
+            // Add outer product of the triangle's boundary to the Laplacian
+            for &(e_i, sign_i) in &edges {
+                for &(e_j, sign_j) in &edges {
+                    l1[[e_i, e_j]] += sign_i * sign_j;
+                }
+            }
+        }
+    }
+
     fn compute_laplacians_and_betti(&mut self) {
         if self.boundary_operators.is_empty() {
             self.betti_numbers.push(0);
@@ -102,32 +131,14 @@ impl QuantumCellComplex {
         }
 
         let d1 = &self.boundary_operators[0];
-        let num_vertices = d1.shape()[0];
-        let num_edges = d1.shape()[1];
-
-        // Fast construction of 0-Laplacian (vertices) from edges (d1)
-        // d1.dot(&d1.t()) corresponds to graph laplacian: Degree matrix - Adjacency matrix
-        let mut l0 = Array2::<f32>::zeros((num_vertices, num_vertices));
-        for e in 0..num_edges {
-            let mut v1 = usize::MAX;
-            let mut v2 = usize::MAX;
-            for v in 0..num_vertices {
-                let val = d1[[v, e]];
-                if val > 0.0 { v1 = v; }
-                else if val < 0.0 { v2 = v; }
-            }
-            if v1 != usize::MAX && v2 != usize::MAX {
-                l0[[v1, v1]] += 1.0;
-                l0[[v2, v2]] += 1.0;
-                l0[[v1, v2]] -= 1.0;
-                l0[[v2, v1]] -= 1.0;
-            }
-        }
+        let l0 = d1.dot(&d1.t());
         self.laplacians.push(l0);
 
         if self.boundary_operators.len() >= 2 {
             let d2 = &self.boundary_operators[1];
-            let l1 = d1.t().dot(d1) + d2.dot(&d2.t());
+            let mut l1 = d1.t().dot(d1);
+
+            Self::add_triangle_clique_laplacian(&mut l1, d2);
             self.laplacians.push(l1);
         }
 
