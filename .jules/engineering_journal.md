@@ -31,3 +31,8 @@ This journal serves as a collaborative knowledge base between the architectural 
 **Learning:** Cloning `ndarray::Array1` (even if static) in a loop involving `fractional_bind_2d` adds unnecessary allocation overhead and reference counting increments/decrements. Since these seeds are `&'static Array1<f32>`, they can be passed by reference.
 **Action:** Removed `.clone()` from `x_axis_seed()` and `y_axis_seed()` calls in `src/reasoning/multiverse_sandbox.rs`.
 **Measured Improvement:** While absolute timings in micro-benchmarks showed noise (±2ms), the elimination of 4 global array clones per crop operation reduces heap pressure and ensures Zero-Cost Abstraction principles are maintained.
+
+## 2026-05-20 - [⚡ Bolt] - Explicit Error Handling for Autopoietic Skill Synthesis
+**Context:** Result values for directory creation and file writing in `src/reasoning/skill_composer.rs` were being ignored (`let _ = ...`), leading to silent failures during autopoietic skill generation.
+**Decision:** Replaced ignored results with explicit `if let Err(e)` checks and logged errors to `stderr` using `eprintln!`. Path formatting was updated to use `.display()` and modern inlined format arguments to satisfy clippy pedantic lints.
+**Consequences:** Improved observability and reliability of the autopoiesis process. The system now reports I/O failures instead of proceeding blindly, while maintaining the non-panicking execution flow required by the project.
