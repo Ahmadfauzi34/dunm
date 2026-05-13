@@ -129,7 +129,17 @@ impl SkillLibrary {
                             }
 
                             let node = WaveNode {
-                                axiom_type: vec![axiom_type],
+                                axiom_type: vec![axiom_type.clone()],
+                                axiom_history: vec![crate::reasoning::structures::Axiom {
+                                    name: axiom_type.clone(),
+                                    tier,
+                                    condition_tensor: None,
+                                    delta_spatial: t_spatial.clone(),
+                                    delta_semantic: t_semantic.clone(),
+                                    delta_x: dx,
+                                    delta_y: dy,
+                                    _state: std::marker::PhantomData,
+                                }],
                                 condition_tensor: None,
                                 tensor_spatial: t_spatial,
                                 tensor_semantic: t_semantic,
@@ -178,6 +188,18 @@ impl SkillLibrary {
                     tensor_semantic: first_axiom.tensor_semantic.clone(),
                     probability: 10.0, // VIP Pass: Sangat memprioritaskan prosedur yang sudah terbukti
                     axiom_type: vec![macro_skill.id.clone()],
+                    axiom_history: macro_skill.sequence.iter().map(|n| {
+                        crate::reasoning::structures::Axiom {
+                            name: n.axiom_type[0].clone(),
+                            tier: n.physics_tier,
+                            condition_tensor: n.condition_tensor.clone(),
+                            delta_spatial: n.tensor_spatial.clone(),
+                            delta_semantic: n.tensor_semantic.clone(),
+                            delta_x: n.delta_x,
+                            delta_y: n.delta_y,
+                            _state: std::marker::PhantomData,
+                        }
+                    }).collect(),
                     delta_x: 0.0,
                     delta_y: 0.0,
                     depth: 0,
