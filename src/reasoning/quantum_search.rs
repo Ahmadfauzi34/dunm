@@ -2,6 +2,7 @@ use ndarray::Array1;
 use std::sync::{Arc, RwLock};
 
 use crate::core::config::GLOBAL_DIMENSION;
+use crate::reasoning::structures::{Axiom, Unverified};
 use crate::core::entity_manifold::EntityManifold;
 use crate::reasoning::multiverse_sandbox::MultiverseSandbox;
 use crate::reasoning::quantum_search_simd::{CognitivePhase, SimdEnergyCalculator};
@@ -24,6 +25,7 @@ pub struct EnergyTolerance {
 #[derive(Clone)]
 pub struct WaveNode {
     pub axiom_type: Vec<String>, // Now tracks the path of axioms applied
+    pub axiom_history: Vec<Axiom<Unverified>>,
     pub condition_tensor: Option<Array1<f32>>,
     pub tensor_spatial: Array1<f32>,
     pub tensor_semantic: Array1<f32>,
@@ -55,8 +57,20 @@ impl WaveNode {
         initial_manifolds: Arc<Vec<EntityManifold>>,
         _static_background: Option<Arc<crate::core::infinite_detail::CoarseData>>,
     ) -> Self {
+        let name = axiom_type.clone();
+        let history = vec![Axiom {
+            name: name.clone(),
+            tier: physics_tier,
+            condition_tensor: condition_tensor.clone(),
+            delta_spatial: tensor_spatial.clone(),
+            delta_semantic: tensor_semantic.clone(),
+            delta_x,
+            delta_y,
+            _state: std::marker::PhantomData,
+        }];
         Self {
             axiom_type: vec![axiom_type],
+            axiom_history: history,
             condition_tensor,
             tensor_spatial,
             tensor_semantic,
@@ -134,6 +148,7 @@ pub struct FractalArena {
     pub action_tier: Vec<u8>,
 
     pub axiom_path: Vec<Vec<String>>,
+    pub axiom_history: Vec<Vec<Axiom<Unverified>>>,
 
     pub free_indices: Vec<usize>,
     pub active_count: usize,
@@ -171,6 +186,7 @@ impl FractalArena {
             action_tier: Vec::with_capacity(capacity),
 
             axiom_path: Vec::with_capacity(capacity),
+            axiom_history: Vec::with_capacity(capacity),
 
             free_indices: Vec::new(),
             active_count: 0,
@@ -214,6 +230,7 @@ impl FractalArena {
             self.action_tier[idx] = 0;
 
             self.axiom_path[idx].clear();
+            self.axiom_history[idx].clear();
 
             return Some(idx);
         }
@@ -263,6 +280,7 @@ impl FractalArena {
         self.action_tier.push(0);
 
         self.axiom_path.push(Vec::new());
+        self.axiom_history.push(Vec::new());
 
         Some(idx)
     }
@@ -440,6 +458,7 @@ impl AsyncWaveSearch {
 
                 // Sync initial state dari Legacy WaveNode
                 arena.axiom_path[root_idx].clone_from(&wave.axiom_type);
+                arena.axiom_history[root_idx].clone_from(&wave.axiom_history);
                 arena.action_condition[root_idx].clone_from(&wave.condition_tensor);
                 arena.action_spatial[root_idx].clone_from(&wave.tensor_spatial);
                 arena.action_semantic[root_idx].clone_from(&wave.tensor_semantic);
@@ -650,6 +669,7 @@ impl AsyncWaveSearch {
                             },
                         ),
                         state_manifolds: arena.states[current_idx].clone(),
+                        axiom_history: arena.axiom_history[current_idx].clone(),
                         state_modified: arena.modified_flags[current_idx],
                         probability: amplitude,
                         depth: current_depth,
@@ -731,8 +751,20 @@ impl AsyncWaveSearch {
                             #[allow(clippy::assigning_clones)]
                             {
                                 arena.axiom_path[child_idx] = arena.axiom_path[current_idx].clone();
+                                arena.axiom_history[child_idx] =
+                                    arena.axiom_history[current_idx].clone();
                             }
                             arena.axiom_path[child_idx].push(next_axiom.axiom_type[0].clone());
+                            arena.axiom_history[child_idx].push(Axiom {
+                                name: next_axiom.axiom_type[0].clone(),
+                                tier: next_axiom.physics_tier,
+                                condition_tensor: next_axiom.condition_tensor.clone(),
+                                delta_spatial: next_axiom.tensor_spatial.clone(),
+                                delta_semantic: next_axiom.tensor_semantic.clone(),
+                                delta_x: next_axiom.delta_x,
+                                delta_y: next_axiom.delta_y,
+                                _state: std::marker::PhantomData,
+                            });
 
                             arena.action_condition[child_idx]
                                 .clone_from(&next_axiom.condition_tensor);

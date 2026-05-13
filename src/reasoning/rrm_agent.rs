@@ -1153,6 +1153,16 @@ impl RrmAgent {
 
                         let initial_wave = WaveNode {
                             axiom_type: vec!["ROOT_START".to_string()],
+                            axiom_history: vec![crate::reasoning::structures::Axiom {
+                                name: "ROOT_START".to_string(),
+                                tier: 0,
+                                condition_tensor: Some(id_tensor.clone()),
+                                delta_spatial: id_tensor.clone(),
+                                delta_semantic: id_tensor.clone(),
+                                delta_x: 0.0,
+                                delta_y: 0.0,
+                                _state: std::marker::PhantomData,
+                            }],
                             static_background: std::sync::Arc::new(
                                 crate::core::infinite_detail::CoarseData {
                                     regions: std::sync::Arc::new(vec![]),
@@ -1160,6 +1170,7 @@ impl RrmAgent {
                                 },
                             ),
                             state_manifolds: std::sync::Arc::clone(&initial_manifolds_adv),
+                            state_modified: false,
                             condition_tensor: Some(id_tensor.clone()),
                             tensor_spatial: id_tensor.clone(),
                             tensor_semantic: id_tensor.clone(),
@@ -1168,7 +1179,6 @@ impl RrmAgent {
                             delta_y: 0.0,
                             physics_tier: 0,
                             depth: 0,
-                            state_modified: false,
                         };
 
                         let mut all_clone: Vec<WaveNode> = high_confidence_axioms.clone();
@@ -1409,16 +1419,19 @@ impl RrmAgent {
             );
 
             // Apply all rules in the path in order.
-            // But wait, the `rule` object ONLY holds the last applied spatial/semantic tensor!
-            // Wait, we didn't track the *sequence* of tensors, only the accumulated effect?
-            // Oh, MultiverseSandbox::apply_axiom expects a single tensor...
-            // Actually, `test_manifold` should be collapsed using the same rule path.
-            // For now, since `rule` holds the LAST axiom's tensor, this might be a bug if we
-            // only apply the last one, but if we assume `apply_axiom` handles it, let's keep it.
-            // Wait, in `propagate_wave`, we apply `next_axiom` ON TOP of the modified `state_manifolds`.
-            // So we need to apply ALL axioms in the history to the `test_manifold`.
-            // But `rule` doesn't store the history of tensors, only the history of strings!
-            // Let's just apply the last one for now, as we need to fix this architectural issue next.
+            for axiom in &rule.axiom_history {
+                MultiverseSandbox::apply_axiom(
+                    &mut test_manifold,
+                    &axiom.condition_tensor,
+                    &axiom.delta_spatial,
+                    &axiom.delta_semantic,
+                    axiom.delta_x,
+                    axiom.delta_y,
+                    axiom.tier,
+                    &axiom.name,
+                );
+            }
+
             let current_axiom_str = rule
                 .axiom_type
                 .last()
@@ -1435,18 +1448,6 @@ impl RrmAgent {
 
             blackboard.synchronize(&[spatial_agent, semantic_agent]);
             let _collective = blackboard.read_collective_state(); // Future use for gestalt rendering
-
-            // Terapkan ke test_manifold
-            MultiverseSandbox::apply_axiom(
-                &mut test_manifold,
-                &rule.condition_tensor,
-                &rule.tensor_spatial,
-                &rule.tensor_semantic,
-                rule.delta_x,
-                rule.delta_y,
-                rule.physics_tier,
-                current_axiom_str,
-            );
         } else {
             println!("   [Rust MCTS] WARNING: Semua gelombang hancur! (Halusinasi/Meleset)");
             let mut wiki = crate::self_awareness::executable_wiki::ExecutableWiki::new(
@@ -1474,6 +1475,20 @@ impl RrmAgent {
                 (
                     WaveNode {
                         axiom_type: vec!["FAILED_TRANS_X_5".to_string()],
+                        axiom_history: vec![crate::reasoning::structures::Axiom {
+                            name: "FAILED_TRANS_X_5".to_string(),
+                            tier: 1,
+                            condition_tensor: None,
+                            delta_spatial: crate::core::fhrr::FHRR::fractional_bind_2d(
+                                x_seed, 5.0, y_seed, 0.0,
+                            ),
+                            delta_semantic: ndarray::Array1::ones(
+                                crate::core::config::GLOBAL_DIMENSION,
+                            ) * 0.1,
+                            delta_x: 5.0,
+                            delta_y: 0.0,
+                            _state: std::marker::PhantomData,
+                        }],
                         condition_tensor: None,
                         tensor_spatial: crate::core::fhrr::FHRR::fractional_bind_2d(
                             x_seed, 5.0, y_seed, 0.0,
@@ -1497,6 +1512,20 @@ impl RrmAgent {
                     },
                     WaveNode {
                         axiom_type: vec!["FAILED_TRANS_Y_2".to_string()],
+                        axiom_history: vec![crate::reasoning::structures::Axiom {
+                            name: "FAILED_TRANS_Y_2".to_string(),
+                            tier: 1,
+                            condition_tensor: None,
+                            delta_spatial: crate::core::fhrr::FHRR::fractional_bind_2d(
+                                x_seed, 0.0, y_seed, 2.0,
+                            ),
+                            delta_semantic: ndarray::Array1::ones(
+                                crate::core::config::GLOBAL_DIMENSION,
+                            ) * -0.2,
+                            delta_x: 0.0,
+                            delta_y: 2.0,
+                            _state: std::marker::PhantomData,
+                        }],
                         condition_tensor: None,
                         tensor_spatial: crate::core::fhrr::FHRR::fractional_bind_2d(
                             x_seed, 0.0, y_seed, 2.0,
