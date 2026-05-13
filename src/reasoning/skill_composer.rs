@@ -237,17 +237,21 @@ pub fn execute_novel_skill(input: &mut EntityManifold) -> Result<(), String> {{
         );
 
         let out_dir = std::path::PathBuf::from("knowledge/skills/auto");
-        let _ = std::fs::create_dir_all(&out_dir);
-        let out_path = out_dir.join(format!("{}.md", skill_id));
-
-        if out_path.exists() {
-            println!("🧬 [Autopoiesis] Kode genetik sudah ada di Wiki ({:?}). Menggunakan kembali tanpa menulis file baru.", out_path);
+        if let Err(e) = std::fs::create_dir_all(&out_dir) {
+            eprintln!("🧬 [Autopoiesis] Gagal membuat direktori {}: {e}", out_dir.display());
         } else {
-            let _ = std::fs::write(&out_path, &md_content);
-            println!(
-                "🧬 [Autopoiesis] Kode genetik baru berhasil disintesis dan ditulis ke {:?}",
-                out_path
-            );
+            let out_path = out_dir.join(format!("{skill_id}.md"));
+
+            if out_path.exists() {
+                println!("🧬 [Autopoiesis] Kode genetik sudah ada di Wiki ({}). Menggunakan kembali tanpa menulis file baru.", out_path.display());
+            } else if let Err(e) = std::fs::write(&out_path, &md_content) {
+                eprintln!("🧬 [Autopoiesis] Gagal menulis file {}: {e}", out_path.display());
+            } else {
+                println!(
+                    "🧬 [Autopoiesis] Kode genetik baru berhasil disintesis dan ditulis ke {}",
+                    out_path.display()
+                );
+            }
         }
 
         // Bypassing compiler: Create the executable Axiom purely in memory!
