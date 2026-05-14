@@ -75,16 +75,21 @@ impl QuantumCellComplex {
         if !triangles.is_empty() && !edges.is_empty() {
             let mut d2 = Array2::<f32>::zeros((edges.len(), triangles.len()));
             for (t_idx, &(i, j, k)) in triangles.iter().enumerate() {
-                for (e_idx, &(a, b)) in edges.iter().enumerate() {
-                    if (a == i && b == j) || (a == j && b == i) {
-                        d2[[e_idx, t_idx]] = if a == i { 1.0 } else { -1.0 };
-                    }
-                    if (a == i && b == k) || (a == k && b == i) {
-                        d2[[e_idx, t_idx]] = if a == k { 1.0 } else { -1.0 };
-                    }
-                    if (a == j && b == k) || (a == k && b == j) {
-                        d2[[e_idx, t_idx]] = if a == j { 1.0 } else { -1.0 };
-                    }
+                let (e1, s1) = if i < j { ((i, j), 1.0) } else { ((j, i), -1.0) };
+                if let Ok(e_idx) = edges.binary_search(&e1) {
+                    d2[[e_idx, t_idx]] = s1;
+                }
+
+                // For (i, k), the boundary is typically written as d(i,j,k) = (j,k) - (i,k) + (i,j)
+                // So the sign for (i, k) inherently has a -1 multiplier in the boundary formula.
+                let (e2, s2) = if i < k { ((i, k), -1.0) } else { ((k, i), 1.0) };
+                if let Ok(e_idx) = edges.binary_search(&e2) {
+                    d2[[e_idx, t_idx]] = s2;
+                }
+
+                let (e3, s3) = if j < k { ((j, k), 1.0) } else { ((k, j), -1.0) };
+                if let Ok(e_idx) = edges.binary_search(&e3) {
+                    d2[[e_idx, t_idx]] = s3;
                 }
             }
             complex.boundary_operators.push(d2);
