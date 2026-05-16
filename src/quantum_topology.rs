@@ -73,18 +73,25 @@ impl QuantumCellComplex {
         }
 
         if !triangles.is_empty() && !edges.is_empty() {
+            debug_assert!(edges.windows(2).all(|w| w[0] < w[1]));
             let mut d2 = Array2::<f32>::zeros((edges.len(), triangles.len()));
             for (t_idx, &(i, j, k)) in triangles.iter().enumerate() {
-                for (e_idx, &(a, b)) in edges.iter().enumerate() {
-                    if (a == i && b == j) || (a == j && b == i) {
-                        d2[[e_idx, t_idx]] = if a == i { 1.0 } else { -1.0 };
-                    }
-                    if (a == i && b == k) || (a == k && b == i) {
-                        d2[[e_idx, t_idx]] = if a == k { 1.0 } else { -1.0 };
-                    }
-                    if (a == j && b == k) || (a == k && b == j) {
-                        d2[[e_idx, t_idx]] = if a == j { 1.0 } else { -1.0 };
-                    }
+                let e1 = if i < j { (i, j) } else { (j, i) };
+                if let Ok(e_idx) = edges.binary_search(&e1) {
+                    // Original logic: if (a==i && b==j), a is e1.0. If e1.0 == i { 1.0 } else { -1.0 }
+                    d2[[e_idx, t_idx]] = if e1.0 == i { 1.0 } else { -1.0 };
+                }
+
+                let e2 = if i < k { (i, k) } else { (k, i) };
+                if let Ok(e_idx) = edges.binary_search(&e2) {
+                    // Original logic: if (a==i && b==k), d2 = if a==k { 1.0 } else { -1.0 }
+                    d2[[e_idx, t_idx]] = if e2.0 == k { 1.0 } else { -1.0 };
+                }
+
+                let e3 = if j < k { (j, k) } else { (k, j) };
+                if let Ok(e_idx) = edges.binary_search(&e3) {
+                    // Original logic: if (a==j && b==k), d2 = if a==j { 1.0 } else { -1.0 }
+                    d2[[e_idx, t_idx]] = if e3.0 == j { 1.0 } else { -1.0 };
                 }
             }
             complex.boundary_operators.push(d2);
