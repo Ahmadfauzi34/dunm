@@ -54,6 +54,10 @@ impl QuantumCellComplex {
             }
         }
 
+        // Verify that edges are strictly sorted (guaranteed by the nested loops above)
+        // This invariant is critical for the binary_search optimization below.
+        debug_assert!(edges.windows(2).all(|w| w[0] < w[1]));
+
         let mut triangles = Vec::new();
         for &(i, j) in &edges {
             for k in (j + 1)..n {
@@ -74,17 +78,26 @@ impl QuantumCellComplex {
 
         if !triangles.is_empty() && !edges.is_empty() {
             let mut d2 = Array2::<f32>::zeros((edges.len(), triangles.len()));
+            // OPTIMIZATION: Instead of scanning all edges to construct the D2 matrix ($O(T \times E)$),
+            // we exploit the fact that lower-dimensional simplices (edges) constructed via nested loops
+            // are naturally sorted. We use binary search to locate the boundary edges in $O(T \log E)$ time.
             for (t_idx, &(i, j, k)) in triangles.iter().enumerate() {
-                for (e_idx, &(a, b)) in edges.iter().enumerate() {
-                    if (a == i && b == j) || (a == j && b == i) {
-                        d2[[e_idx, t_idx]] = if a == i { 1.0 } else { -1.0 };
-                    }
-                    if (a == i && b == k) || (a == k && b == i) {
-                        d2[[e_idx, t_idx]] = if a == k { 1.0 } else { -1.0 };
-                    }
-                    if (a == j && b == k) || (a == k && b == j) {
-                        d2[[e_idx, t_idx]] = if a == j { 1.0 } else { -1.0 };
-                    }
+                if let Ok(e_idx) = edges.binary_search(&(i, j)) {
+                    d2[[e_idx, t_idx]] = 1.0;
+                } else if let Ok(e_idx) = edges.binary_search(&(j, i)) {
+                    d2[[e_idx, t_idx]] = -1.0;
+                }
+
+                if let Ok(e_idx) = edges.binary_search(&(i, k)) {
+                    d2[[e_idx, t_idx]] = -1.0;
+                } else if let Ok(e_idx) = edges.binary_search(&(k, i)) {
+                    d2[[e_idx, t_idx]] = 1.0;
+                }
+
+                if let Ok(e_idx) = edges.binary_search(&(j, k)) {
+                    d2[[e_idx, t_idx]] = 1.0;
+                } else if let Ok(e_idx) = edges.binary_search(&(k, j)) {
+                    d2[[e_idx, t_idx]] = -1.0;
                 }
             }
             complex.boundary_operators.push(d2);
