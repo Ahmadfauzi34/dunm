@@ -76,34 +76,44 @@ impl QuantumCellComplex {
             complex.boundary_operators.push(d1);
         }
 
+        let mut triangle_edges = Vec::new();
+
         if !triangles.is_empty() && !edges.is_empty() {
             let mut d2 = Array2::<f32>::zeros((edges.len(), triangles.len()));
+            triangle_edges.reserve(triangles.len() * 3);
+
             // OPTIMIZATION: Instead of scanning all edges to construct the D2 matrix ($O(T \times E)$),
             // we exploit the fact that lower-dimensional simplices (edges) constructed via nested loops
             // are naturally sorted. We use binary search to locate the boundary edges in $O(T \log E)$ time.
             for (t_idx, &(i, j, k)) in triangles.iter().enumerate() {
                 if let Ok(e_idx) = edges.binary_search(&(i, j)) {
                     d2[[e_idx, t_idx]] = 1.0;
+                    triangle_edges.push((e_idx, 1.0_f32));
                 } else if let Ok(e_idx) = edges.binary_search(&(j, i)) {
                     d2[[e_idx, t_idx]] = -1.0;
+                    triangle_edges.push((e_idx, -1.0_f32));
                 }
 
                 if let Ok(e_idx) = edges.binary_search(&(i, k)) {
                     d2[[e_idx, t_idx]] = -1.0;
+                    triangle_edges.push((e_idx, -1.0_f32));
                 } else if let Ok(e_idx) = edges.binary_search(&(k, i)) {
                     d2[[e_idx, t_idx]] = 1.0;
+                    triangle_edges.push((e_idx, 1.0_f32));
                 }
 
                 if let Ok(e_idx) = edges.binary_search(&(j, k)) {
                     d2[[e_idx, t_idx]] = 1.0;
+                    triangle_edges.push((e_idx, 1.0_f32));
                 } else if let Ok(e_idx) = edges.binary_search(&(k, j)) {
                     d2[[e_idx, t_idx]] = -1.0;
+                    triangle_edges.push((e_idx, -1.0_f32));
                 }
             }
             complex.boundary_operators.push(d2);
         }
 
-        complex.compute_laplacians_and_betti();
+        complex.compute_laplacians_and_betti(triangle_edges);
         complex.compute_persistence(&dist_matrix, &edges, &triangles);
         complex
     }
@@ -112,32 +122,19 @@ impl QuantumCellComplex {
     /// edge Laplacian. By exploiting the domain invariant that each triangle bounds exactly
     /// 3 edges, we can accumulate outer products (3-cliques) in O(Triangles) time,
     /// rather than the standard O(Edges^3) dense matrix multiplication `d2.dot(&d2.t())`.
-    fn add_triangle_clique_laplacian(l1: &mut Array2<f32>, d2: &Array2<f32>) {
-        let num_edges = d2.shape()[0];
-        let num_triangles = d2.shape()[1];
-
-        let mut edges = Vec::with_capacity(3);
-
-        for t_idx in 0..num_triangles {
-            edges.clear();
-            // Collect the non-zero edge indices for this triangle
-            for e_idx in 0..num_edges {
-                let sign = d2[[e_idx, t_idx]];
-                if sign != 0.0 {
-                    edges.push((e_idx, sign));
-                }
-            }
-
+    fn add_triangle_clique_laplacian(l1: &mut Array2<f32>, triangle_edges: &[(usize, f32)]) {
+        // Iterate through chunks of 3 edges (since each triangle has 3 edges)
+        for edges in triangle_edges.chunks(3) {
             // Add outer product of the triangle's boundary to the Laplacian
-            for &(e_i, sign_i) in &edges {
-                for &(e_j, sign_j) in &edges {
+            for &(e_i, sign_i) in edges {
+                for &(e_j, sign_j) in edges {
                     l1[[e_i, e_j]] += sign_i * sign_j;
                 }
             }
         }
     }
 
-    fn compute_laplacians_and_betti(&mut self) {
+    fn compute_laplacians_and_betti(&mut self, triangle_edges: Vec<(usize, f32)>) {
         if self.boundary_operators.is_empty() {
             self.betti_numbers.push(0);
             return;
@@ -148,10 +145,9 @@ impl QuantumCellComplex {
         self.laplacians.push(l0);
 
         if self.boundary_operators.len() >= 2 {
-            let d2 = &self.boundary_operators[1];
             let mut l1 = d1.t().dot(d1);
 
-            Self::add_triangle_clique_laplacian(&mut l1, d2);
+            Self::add_triangle_clique_laplacian(&mut l1, &triangle_edges);
             self.laplacians.push(l1);
         }
 
