@@ -216,3 +216,142 @@ impl HamiltonianPruner {
         self.hypotheses.first()
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use ndarray::Array1;
+    use crate::core::config::GLOBAL_DIMENSION;
+
+    fn dummy_tensor(val: f32) -> Array1<f32> {
+        Array1::from_vec(vec![val; GLOBAL_DIMENSION])
+    }
+
+    #[test]
+    fn test_inject_hypothesis_basic() {
+        let mut pruner = HamiltonianPruner::new();
+        let t_sp = dummy_tensor(1.0);
+        let t_sem = dummy_tensor(1.0);
+
+        pruner.inject_hypothesis(
+            "test_hyp",
+            None,
+            &t_sp,
+            &t_sem,
+            1.0,
+            2.0,
+            10.0,
+            1,
+            0,
+        );
+
+        assert_eq!(pruner.hypotheses.len(), 1);
+        assert_eq!(pruner.hypotheses[0].description, "test_hyp");
+        assert_eq!(pruner.hypotheses[0].free_energy, 10.0);
+    }
+
+    #[test]
+    fn test_inject_hypothesis_duplicate_rejection() {
+        let mut pruner = HamiltonianPruner::new();
+        let t_sp = dummy_tensor(1.0);
+        let t_sem = dummy_tensor(1.0);
+
+        // Inject first
+        pruner.inject_hypothesis(
+            "test_hyp_1",
+            None,
+            &t_sp,
+            &t_sem,
+            1.0,
+            2.0,
+            10.0,
+            1,
+            0,
+        );
+
+        // Inject duplicate (similarity > 0.99, same dx, dy, physics_tier, condition match)
+        pruner.inject_hypothesis(
+            "test_hyp_2",
+            None,
+            &t_sp,
+            &t_sem,
+            1.0,
+            2.0,
+            20.0,
+            1,
+            0,
+        );
+
+        // Should still be 1
+        assert_eq!(pruner.hypotheses.len(), 1);
+        assert_eq!(pruner.hypotheses[0].description, "test_hyp_1");
+    }
+
+    #[test]
+    fn test_inject_hypothesis_different_condition() {
+        let mut pruner = HamiltonianPruner::new();
+        let t_sp = dummy_tensor(1.0);
+        let t_sem = dummy_tensor(1.0);
+
+        // Inject with no condition
+        pruner.inject_hypothesis(
+            "test_hyp_1",
+            None,
+            &t_sp,
+            &t_sem,
+            1.0,
+            2.0,
+            10.0,
+            1,
+            0,
+        );
+
+        // Inject with condition
+        let cond = Some(dummy_tensor(2.0));
+        pruner.inject_hypothesis(
+            "test_hyp_2",
+            cond,
+            &t_sp,
+            &t_sem,
+            1.0,
+            2.0,
+            20.0,
+            1,
+            0,
+        );
+
+        // Should be 2 because conditions differ (None vs Some)
+        assert_eq!(pruner.hypotheses.len(), 2);
+    }
+
+    #[test]
+    fn test_inject_hypothesis_different_dx_dy() {
+        let mut pruner = HamiltonianPruner::new();
+        let t_sp = dummy_tensor(1.0);
+        let t_sem = dummy_tensor(1.0);
+
+        pruner.inject_hypothesis("test_hyp_1", None, &t_sp, &t_sem, 1.0, 2.0, 10.0, 1, 0);
+        pruner.inject_hypothesis("test_hyp_2", None, &t_sp, &t_sem, 1.5, 2.0, 10.0, 1, 0); // dx differs > EPSILON
+
+        assert_eq!(pruner.hypotheses.len(), 2);
+    }
+
+    #[test]
+    fn test_enforce_dissipation() {
+        let mut pruner = HamiltonianPruner::new();
+        pruner.max_branches = 2; // Set max branches to a small number
+
+        let t_sp = dummy_tensor(1.0);
+        let t_sem = dummy_tensor(1.0);
+
+        // Inject 3 hypotheses with DIFFERENT dx so they don't get rejected as duplicates
+        pruner.inject_hypothesis("test_hyp_1", None, &t_sp, &t_sem, 1.0, 0.0, 30.0, 1, 0);
+        pruner.inject_hypothesis("test_hyp_2", None, &t_sp, &t_sem, 2.0, 0.0, 10.0, 1, 0);
+        pruner.inject_hypothesis("test_hyp_3", None, &t_sp, &t_sem, 3.0, 0.0, 20.0, 1, 0);
+
+        // Check that only 2 remain and they are sorted by energy (10.0 and 20.0)
+        assert_eq!(pruner.hypotheses.len(), 2);
+        assert_eq!(pruner.hypotheses[0].free_energy, 10.0);
+        assert_eq!(pruner.hypotheses[1].free_energy, 20.0);
+    }
+}
