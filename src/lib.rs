@@ -1,12 +1,4 @@
-#![cfg_attr(
-    not(test),
-    warn(
-        clippy::all,
-        clippy::pedantic,
-        clippy::cargo,
-    )
-)]
-
+#![cfg_attr(not(test), warn(clippy::all, clippy::pedantic, clippy::cargo,))]
 // ==========================================
 // ⛔ STRICT DENY (Keamanan & Anti-Mangkir)
 // ==========================================
@@ -18,18 +10,16 @@
     clippy::todo,          // Cegah AI/Developer meninggalkan placeholder
     clippy::unimplemented, // Cegah fungsi kosong masuk ke production
 ))]
-
 // ==========================================
 // 🚧 TEMPORARY ALLOW (Tersisa Prioritas Merah & Struktural)
 // ==========================================
 #![allow(
     clippy::suboptimal_flops,      // 🔴 Paling tinggi: tensor math (Belum dioptimasi)
-    
+
     // ⚠️ STRUKTURAL: Dipertahankan agar AI tidak merusak arsitektur hot-path SoA
     clippy::too_many_lines,
     clippy::too_many_arguments,
 )]
-
 // ==========================================
 // 🛡️ PERMANENT ALLOW (Domain Tensor)
 // ==========================================
@@ -38,7 +28,7 @@
     clippy::must_use_candidate,
 
     clippy::unreadable_literal, // FHRR random generator constant
-    
+
     // [⬡ Carbo] FHRR: i64→f32 cast intentional untuk AVX2 256-bit alignment
     clippy::cast_possible_truncation,
     clippy::cast_precision_loss,

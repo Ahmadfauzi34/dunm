@@ -238,14 +238,20 @@ pub fn execute_novel_skill(input: &mut EntityManifold) -> Result<(), String> {{
 
         let out_dir = std::path::PathBuf::from("knowledge/skills/auto");
         if let Err(e) = std::fs::create_dir_all(&out_dir) {
-            eprintln!("🧬 [Autopoiesis] Gagal membuat direktori {}: {e}", out_dir.display());
+            eprintln!(
+                "🧬 [Autopoiesis] Gagal membuat direktori {}: {e}",
+                out_dir.display()
+            );
         } else {
             let out_path = out_dir.join(format!("{skill_id}.md"));
 
             if out_path.exists() {
                 println!("🧬 [Autopoiesis] Kode genetik sudah ada di Wiki ({}). Menggunakan kembali tanpa menulis file baru.", out_path.display());
             } else if let Err(e) = std::fs::write(&out_path, &md_content) {
-                eprintln!("🧬 [Autopoiesis] Gagal menulis file {}: {e}", out_path.display());
+                eprintln!(
+                    "🧬 [Autopoiesis] Gagal menulis file {}: {e}",
+                    out_path.display()
+                );
             } else {
                 println!(
                     "🧬 [Autopoiesis] Kode genetik baru berhasil disintesis dan ditulis ke {}",

@@ -2,10 +2,10 @@ use ndarray::Array1;
 use std::sync::{Arc, RwLock};
 
 use crate::core::config::GLOBAL_DIMENSION;
-use crate::reasoning::structures::{Axiom, Unverified};
 use crate::core::entity_manifold::EntityManifold;
 use crate::reasoning::multiverse_sandbox::MultiverseSandbox;
 use crate::reasoning::quantum_search_simd::{CognitivePhase, SimdEnergyCalculator};
+use crate::reasoning::structures::{Axiom, Unverified};
 use crate::shared::visualizer::{MctsNodeInfo, TransparencyLevel, Visualizer};
 use futures_lite::future;
 

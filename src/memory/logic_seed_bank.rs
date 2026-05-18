@@ -197,7 +197,9 @@ mod tests {
         let tensor = Array1::<f32>::zeros(GLOBAL_DIMENSION);
 
         // Add a seed
-        let idx = bank.add_seed(name, seed, &tensor).expect("Failed to add seed");
+        let idx = bank
+            .add_seed(name, seed, &tensor)
+            .expect("Failed to add seed");
         assert_eq!(bank.active_count, 1);
 
         // Verify query returns the seed
