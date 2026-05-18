@@ -129,3 +129,43 @@ impl WaveDynamics {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::core::entity_manifold::EntityManifold;
+
+    #[test]
+    fn test_initialize_entities_zero_count() {
+        let mut wave_dynamics = WaveDynamics::new();
+        let mut manifold = EntityManifold::new();
+        manifold.active_count = 0;
+
+        wave_dynamics.initialize_entities(&manifold);
+
+        assert_eq!(wave_dynamics.entanglement_graph.row_ptr.len(), 1);
+        assert_eq!(wave_dynamics.entanglement_graph.values.len(), 0);
+        assert_eq!(wave_dynamics.entanglement_graph.col_indices.len(), 0);
+    }
+
+    #[test]
+    fn test_initialize_entities_non_zero_count() {
+        let mut wave_dynamics = WaveDynamics::new();
+        let mut manifold = EntityManifold::new();
+        manifold.active_count = 5;
+
+        wave_dynamics.initialize_entities(&manifold);
+
+        assert_eq!(wave_dynamics.entanglement_graph.row_ptr.len(), 6);
+        assert_eq!(wave_dynamics.entanglement_graph.values.len(), 5);
+        assert_eq!(wave_dynamics.entanglement_graph.col_indices.len(), 5);
+
+        // Verify self-loops
+        for i in 0..5 {
+            assert_eq!(wave_dynamics.entanglement_graph.row_ptr[i], i);
+            assert_eq!(wave_dynamics.entanglement_graph.col_indices[i], i);
+            assert_eq!(wave_dynamics.entanglement_graph.values[i], 1.0);
+        }
+        assert_eq!(wave_dynamics.entanglement_graph.row_ptr[5], 5);
+    }
+}
