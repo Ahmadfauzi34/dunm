@@ -121,7 +121,8 @@ Sebelum merubah algoritma matematika FHRR, MCTS, atau topologi spasial, Anda har
 ## 6. Disiplin Testing (Micro-benchmarking)
  * Setelah mengubah *core logic*, Anda WAJIB memverifikasinya.
  * Jalankan cargo test --release untuk memastikan tes terdistribusi (seperti tes termodinamika CoW) tidak gagal (*FAIL*).
- * Jalankan *micro-benchmark* (cargo run --release --bin bench_topology) jika optimasi memengaruhi *EntityManifold* atau matriks struktural untuk membuktikan kecepatan eksekusi (waktu rerata).
+ * Jalankan *micro-benchmark* (cargo run --release --bin bench_topology) jika optimasi memengaruhi *EntityManifold* atau matriks struktural untuk membuktikan kecepatan eksekusi (waktu rerata)
+ * lakukan brutal (stresstest).
 ## 7. Pre-Flight Checklist (Agen Tidak Boleh Bypass)
 Sebelum mengakhiri sesi atau melaporkan "selesai", agen WAJIB menjalankan dan melampirkan output sesuai jalur pengerjaan:
 **Jalur Minor (Dokumentasi, Linter, Styling):**
