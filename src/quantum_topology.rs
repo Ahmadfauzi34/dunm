@@ -113,7 +113,7 @@ impl QuantumCellComplex {
             complex.boundary_operators.push(d2);
         }
 
-        complex.compute_laplacians_and_betti(triangle_edges);
+        complex.compute_laplacians_and_betti(&edges, triangle_edges);
         complex.compute_persistence(&dist_matrix, &edges, &triangles);
         complex
     }
@@ -134,18 +134,37 @@ impl QuantumCellComplex {
         }
     }
 
-    fn compute_laplacians_and_betti(&mut self, triangle_edges: Vec<(usize, f32)>) {
+    fn compute_laplacians_and_betti(&mut self, edges: &[(usize, usize)], triangle_edges: Vec<(usize, f32)>) {
         if self.boundary_operators.is_empty() {
             self.betti_numbers.push(0);
             return;
         }
 
         let d1 = &self.boundary_operators[0];
-        let l0 = d1.dot(&d1.t());
+        let n = d1.shape()[0];
+        let mut l0 = Array2::<f32>::zeros((n, n));
+        for &(u, v) in edges {
+            l0[[u, u]] += 1.0;
+            l0[[v, v]] += 1.0;
+            l0[[u, v]] -= 1.0;
+            l0[[v, u]] -= 1.0;
+        }
         self.laplacians.push(l0);
 
         if self.boundary_operators.len() >= 2 {
-            let mut l1 = d1.t().dot(d1);
+            let mut l1 = Array2::<f32>::zeros((edges.len(), edges.len()));
+            let mut vertex_to_edges = vec![Vec::new(); n];
+            for (e_idx, &(u, v)) in edges.iter().enumerate() {
+                vertex_to_edges[u].push((e_idx, 1.0_f32));
+                vertex_to_edges[v].push((e_idx, -1.0_f32));
+            }
+            for incident in &vertex_to_edges {
+                for &(e_i, sign_i) in incident {
+                    for &(e_j, sign_j) in incident {
+                        l1[[e_i, e_j]] += sign_i * sign_j;
+                    }
+                }
+            }
 
             Self::add_triangle_clique_laplacian(&mut l1, &triangle_edges);
             self.laplacians.push(l1);
