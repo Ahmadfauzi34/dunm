@@ -1,12 +1,4 @@
-#![cfg_attr(
-    not(test),
-    warn(
-        clippy::all,
-        clippy::pedantic,
-        clippy::cargo,
-    )
-)]
-
+#![cfg_attr(not(test), warn(clippy::all, clippy::pedantic, clippy::cargo,))]
 // ==========================================
 // ⛔ STRICT DENY (Keamanan & Anti-Mangkir)
 // ==========================================
@@ -18,18 +10,16 @@
     clippy::todo,          // Cegah AI/Developer meninggalkan placeholder
     clippy::unimplemented, // Cegah fungsi kosong masuk ke production
 ))]
-
 // ==========================================
 // 🚧 TEMPORARY ALLOW (Tersisa Prioritas Merah & Struktural)
 // ==========================================
 #![allow(
     clippy::suboptimal_flops,      // 🔴 Paling tinggi: tensor math (Belum dioptimasi)
-    
+
     // ⚠️ STRUKTURAL: Dipertahankan agar AI tidak merusak arsitektur hot-path SoA
     clippy::too_many_lines,
     clippy::too_many_arguments,
 )]
-
 // ==========================================
 // 🛡️ PERMANENT ALLOW (Domain Tensor)
 // ==========================================
@@ -42,7 +32,6 @@
     clippy::cast_precision_loss,
     clippy::cast_sign_loss,
 )]
-
 
 #[global_allocator]
 static ALLOCATOR: rrm_rust::memory::allocator::TrackingAllocator =
@@ -87,9 +76,10 @@ fn distill_yaml_skills() {
             }
         }
 
+        use std::fmt::Write;
         let mut yaml_arr = String::new();
         for i in 0..GLOBAL_DIMENSION {
-            yaml_arr.push_str(&format!("{:.6}", skill_tensor[i]));
+            let _ = write!(yaml_arr, "{:.6}", skill_tensor[i]);
             if i < GLOBAL_DIMENSION - 1 {
                 yaml_arr.push_str(", ");
             }

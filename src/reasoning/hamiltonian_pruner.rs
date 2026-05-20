@@ -220,8 +220,8 @@ impl HamiltonianPruner {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use ndarray::Array1;
     use crate::core::config::GLOBAL_DIMENSION;
+    use ndarray::Array1;
 
     fn dummy_tensor(val: f32) -> Array1<f32> {
         Array1::from_vec(vec![val; GLOBAL_DIMENSION])
@@ -233,17 +233,7 @@ mod tests {
         let t_sp = dummy_tensor(1.0);
         let t_sem = dummy_tensor(1.0);
 
-        pruner.inject_hypothesis(
-            "test_hyp",
-            None,
-            &t_sp,
-            &t_sem,
-            1.0,
-            2.0,
-            10.0,
-            1,
-            0,
-        );
+        pruner.inject_hypothesis("test_hyp", None, &t_sp, &t_sem, 1.0, 2.0, 10.0, 1, 0);
 
         assert_eq!(pruner.hypotheses.len(), 1);
         assert_eq!(pruner.hypotheses[0].description, "test_hyp");
@@ -257,30 +247,10 @@ mod tests {
         let t_sem = dummy_tensor(1.0);
 
         // Inject first
-        pruner.inject_hypothesis(
-            "test_hyp_1",
-            None,
-            &t_sp,
-            &t_sem,
-            1.0,
-            2.0,
-            10.0,
-            1,
-            0,
-        );
+        pruner.inject_hypothesis("test_hyp_1", None, &t_sp, &t_sem, 1.0, 2.0, 10.0, 1, 0);
 
         // Inject duplicate (similarity > 0.99, same dx, dy, physics_tier, condition match)
-        pruner.inject_hypothesis(
-            "test_hyp_2",
-            None,
-            &t_sp,
-            &t_sem,
-            1.0,
-            2.0,
-            20.0,
-            1,
-            0,
-        );
+        pruner.inject_hypothesis("test_hyp_2", None, &t_sp, &t_sem, 1.0, 2.0, 20.0, 1, 0);
 
         // Should still be 1
         assert_eq!(pruner.hypotheses.len(), 1);
@@ -294,31 +264,11 @@ mod tests {
         let t_sem = dummy_tensor(1.0);
 
         // Inject with no condition
-        pruner.inject_hypothesis(
-            "test_hyp_1",
-            None,
-            &t_sp,
-            &t_sem,
-            1.0,
-            2.0,
-            10.0,
-            1,
-            0,
-        );
+        pruner.inject_hypothesis("test_hyp_1", None, &t_sp, &t_sem, 1.0, 2.0, 10.0, 1, 0);
 
         // Inject with condition
         let cond = Some(dummy_tensor(2.0));
-        pruner.inject_hypothesis(
-            "test_hyp_2",
-            cond,
-            &t_sp,
-            &t_sem,
-            1.0,
-            2.0,
-            20.0,
-            1,
-            0,
-        );
+        pruner.inject_hypothesis("test_hyp_2", cond, &t_sp, &t_sem, 1.0, 2.0, 20.0, 1, 0);
 
         // Should be 2 because conditions differ (None vs Some)
         assert_eq!(pruner.hypotheses.len(), 2);

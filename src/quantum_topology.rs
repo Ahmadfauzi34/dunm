@@ -134,7 +134,11 @@ impl QuantumCellComplex {
         }
     }
 
-    fn compute_laplacians_and_betti(&mut self, edges: &[(usize, usize)], triangle_edges: Vec<(usize, f32)>) {
+    fn compute_laplacians_and_betti(
+        &mut self,
+        edges: &[(usize, usize)],
+        triangle_edges: Vec<(usize, f32)>,
+    ) {
         if self.boundary_operators.is_empty() {
             self.betti_numbers.push(0);
             return;
