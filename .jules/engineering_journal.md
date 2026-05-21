@@ -40,3 +40,8 @@ This journal serves as a collaborative knowledge base between the architectural 
 **Context:** The `generate_geometric_axiom` function lacked unit tests.
 **Decision:** Wrote a test to verify `MIRROR_X`, `MIRROR_Y`, `MIRROR_XY`, and a fallback default case, ensuring they all output a flat tensor of size `GLOBAL_DIMENSION` reflecting correctly formatted outputs.
 **Consequences:** Validated basic behavior without needing internal property parsing.
+
+## 2025-03-01 - [⚡ Bolt] - Added tests for EntityManifold::new
+**Context:** Added unit tests for `EntityManifold::new` and `EntityManifold::default` to improve test coverage in `src/core/entity_manifold.rs`.
+**Decision:** Validated initialization logic and verified that all vectors are created dynamically and state counts correctly initialize to 0.
+**Consequences:** Safer codebase preventing silent regressions on vector initialization.
