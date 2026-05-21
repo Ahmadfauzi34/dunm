@@ -43,6 +43,25 @@ mod tests {
     use super::*;
 
     #[test]
+    fn test_generate_translation_axiom() {
+        let x_seed = FHRR::create(Some(42));
+        let y_seed = FHRR::create(Some(43));
+
+        let trans_zero = AxiomGenerator::generate_translation_axiom(0.0, 0.0, &x_seed, &y_seed);
+        assert_eq!(trans_zero.len(), GLOBAL_DIMENSION);
+
+        let trans_xy = AxiomGenerator::generate_translation_axiom(1.5, -2.5, &x_seed, &y_seed);
+        assert_eq!(trans_xy.len(), GLOBAL_DIMENSION);
+
+        // Zero translation should be relatively close to the identity or at least not fail.
+        // It's a deterministic process.
+        let trans_xy_2 = AxiomGenerator::generate_translation_axiom(1.5, -2.5, &x_seed, &y_seed);
+        // Ensure deterministic behavior
+        let similarity = FHRR::similarity(&trans_xy, &trans_xy_2);
+        assert!(similarity > 0.99);
+    }
+
+    #[test]
     fn test_generate_geometric_axiom() {
         let x_seed = FHRR::create(Some(42));
         let y_seed = FHRR::create(Some(43));
@@ -62,5 +81,14 @@ mod tests {
         // Test default case
         let default_case = AxiomGenerator::generate_geometric_axiom("UNKNOWN", 1.0, 2.0, &x_seed, &y_seed);
         assert_eq!(default_case.len(), GLOBAL_DIMENSION);
+
+        // Ensure deterministic behavior
+        let mirror_x_2 = AxiomGenerator::generate_geometric_axiom("MIRROR_X", 1.0, 2.0, &x_seed, &y_seed);
+        let similarity = FHRR::similarity(&mirror_x, &mirror_x_2);
+        assert!(similarity > 0.99);
+
+        // Ensure that MIRROR_X and MIRROR_Y give different results
+        let sim_xy = FHRR::similarity(&mirror_x, &mirror_y);
+        assert!(sim_xy < 0.99); // They shouldn't be identical
     }
 }
