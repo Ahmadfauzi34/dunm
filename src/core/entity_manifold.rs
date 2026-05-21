@@ -201,3 +201,66 @@ impl EntityManifold {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_entity_manifold_new() {
+        let manifold = EntityManifold::new();
+
+        assert_eq!(manifold.active_count, 0);
+        assert_eq!(manifold.global_width, 0.0);
+        assert_eq!(manifold.global_height, 0.0);
+
+        assert!(manifold.spatial_tensors.is_empty());
+        assert!(manifold.shape_tensors.is_empty());
+        assert!(manifold.semantic_tensors.is_empty());
+
+        assert!(manifold.ids.is_empty());
+        assert!(manifold.masses.is_empty());
+        assert!(manifold.tokens.is_empty());
+
+        assert!(manifold.spans_x.is_empty());
+        assert!(manifold.spans_y.is_empty());
+
+        assert!(manifold.centers_x.is_empty());
+        assert!(manifold.centers_y.is_empty());
+        assert!(manifold.momentums_x.is_empty());
+        assert!(manifold.momentums_y.is_empty());
+
+        assert!(manifold.entanglement_status.is_empty());
+
+        assert!(manifold.cow_grid.is_none());
+    }
+
+    #[test]
+    fn test_entity_manifold_default() {
+        let manifold = EntityManifold::default();
+
+        assert_eq!(manifold.active_count, 0);
+        assert_eq!(manifold.global_width, 0.0);
+        assert_eq!(manifold.global_height, 0.0);
+
+        assert!(manifold.spatial_tensors.is_empty());
+        assert!(manifold.shape_tensors.is_empty());
+        assert!(manifold.semantic_tensors.is_empty());
+
+        assert!(manifold.ids.is_empty());
+        assert!(manifold.masses.is_empty());
+        assert!(manifold.tokens.is_empty());
+
+        assert!(manifold.spans_x.is_empty());
+        assert!(manifold.spans_y.is_empty());
+
+        assert!(manifold.centers_x.is_empty());
+        assert!(manifold.centers_y.is_empty());
+        assert!(manifold.momentums_x.is_empty());
+        assert!(manifold.momentums_y.is_empty());
+
+        assert!(manifold.entanglement_status.is_empty());
+
+        assert!(manifold.cow_grid.is_none());
+    }
+}
