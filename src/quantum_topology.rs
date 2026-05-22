@@ -58,11 +58,34 @@ impl QuantumCellComplex {
         // This invariant is critical for the binary_search optimization below.
         debug_assert!(edges.windows(2).all(|w| w[0] < w[1]));
 
+        // OPTIMIZATION: O(E * deg) instead of O(E * N) for triangle finding
+        let mut adj = vec![Vec::new(); n];
+        for &(i, j) in &edges {
+            adj[i].push(j);
+        }
+
         let mut triangles = Vec::new();
         for &(i, j) in &edges {
-            for k in (j + 1)..n {
-                if dist_matrix[[i, k]] <= epsilon_sq && dist_matrix[[j, k]] <= epsilon_sq {
-                    triangles.push((i, j, k));
+            let i_adj = &adj[i];
+            let j_adj = &adj[j];
+
+            let mut i_idx = match i_adj.binary_search(&(j + 1)) {
+                Ok(idx) => idx,
+                Err(idx) => idx,
+            };
+            let mut j_idx = 0;
+
+            while i_idx < i_adj.len() && j_idx < j_adj.len() {
+                let k1 = i_adj[i_idx];
+                let k2 = j_adj[j_idx];
+                if k1 == k2 {
+                    triangles.push((i, j, k1));
+                    i_idx += 1;
+                    j_idx += 1;
+                } else if k1 < k2 {
+                    i_idx += 1;
+                } else {
+                    j_idx += 1;
                 }
             }
         }

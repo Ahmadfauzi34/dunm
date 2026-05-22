@@ -13,3 +13,7 @@
 ## 2026-05-18 - [Topological Operations Optimizations]
 **Learning:** Found a major performance bottleneck in `compute_laplacians_and_betti` related to the instantiation of the `L1` laplacian using `d1.t().dot(d1)`. This dense matrix multiplication causes O(N*E^2) time complexity, whereas calculating the sparse interactions directly is O(E^2), speeding up the function dramatically. Further, L0 which was calculated via `d1.dot(&d1.t())` can also be calculated sparsely in O(E).
 **Action:** Always compute topological incidence laplacians using the sparse edges array rather than performing dense matrix multiplications on the boundary operators.
+
+## 2024-05-22 - Optimize Triangle Construction in Topological Computations
+**Learning:** In `QuantumCellComplex::from_manifold`, computing triangles via nested loops `for k in (j + 1)..n` takes $O(E \times N)$ operations (~625,000 inner loop iterations for 500 vertices). By first constructing an adjacency list for each vertex (`adj[i]`), finding a common neighbor (a triangle) becomes the intersection of two sorted lists. Furthermore, since we only want triangles `(i, j, k)` with `i < j < k`, we can use `binary_search` to start intersecting at elements greater than `j`.
+**Action:** Always consider replacing naive nested loops for clique-finding (like triangles) with adjacency list intersections. Pre-sorting or constructing sorted adjacency lists guarantees optimal intersection times for finding 3-cliques in sparse graph structures.
