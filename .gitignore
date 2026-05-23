@@ -1,2 +1,8 @@
 target/
 **/*.rs.bk
+knowledge/architecture_lint.md
+knowledge/grammar/*.md
+knowledge/skills/auto/*.md
+logs/
+main/
+rrm_rust/knowledge/
