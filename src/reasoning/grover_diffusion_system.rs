@@ -194,39 +194,22 @@ impl<'a> GroverDiffusionSystem<'a> {
             self.mean_buffer[dim] *= inv_n;
         }
 
-        // Reflection
-        for i in 0..n {
-            let base_idx = i * d;
-            for dim in 0..d {
-                let mean = self.mean_buffer[dim];
-                self.amplitudes[base_idx + dim] = 2.0 * mean - self.amplitudes[base_idx + dim];
-            }
-        }
-
-        self.thermal_normalize(n);
-    }
-
-    /// Normalisasi Energi Kinetik menggunakan distribusi Boltzmann tiruan.
-    fn thermal_normalize(&mut self, n: usize) {
-        let d = self.config.dimensions;
         let t = self.config.temperature;
 
-        let mut norms = vec![0.0; n];
-
-        for (i, norm_val) in norms.iter_mut().enumerate().take(n) {
+        // Fused Reflection and Thermal Normalization
+        for i in 0..n {
             let base_idx = i * d;
             let mut sum_sq = 0.0;
+
+            // Fused reflection and norm sq computation
             for dim in 0..d {
-                let a = self.amplitudes[base_idx + dim];
-                sum_sq += a * a;
+                let mean = self.mean_buffer[dim];
+                let val = 2.0 * mean - self.amplitudes[base_idx + dim];
+                self.amplitudes[base_idx + dim] = val;
+                sum_sq += val * val;
             }
-            *norm_val = sum_sq.sqrt();
-        }
 
-        for (i, &norm) in norms.iter().enumerate().take(n) {
-            let base_idx = i * d;
-            let norm = norm + 1e-10;
-
+            let norm = sum_sq.sqrt() + 1e-10;
             let thermal_factor = (-norm / t).exp();
             let scale = 1.0 / (norm + thermal_factor);
 
