@@ -196,3 +196,48 @@ impl FHRR {
         dot_product / (mag_a_sq.sqrt() * mag_b_sq.sqrt())
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_fhrr_bind_commutativity() {
+        let a = FHRR::create(Some(123));
+        let b = FHRR::create(Some(456));
+
+        let bind_ab = FHRR::bind(&a, &b);
+        let bind_ba = FHRR::bind(&b, &a);
+
+        let similarity = FHRR::similarity(&bind_ab, &bind_ba);
+
+        // FHRR bind is commutative, similarity should be very close to 1
+        assert!(
+            (similarity - 1.0).abs() < 1e-5,
+            "FHRR bind is not commutative: similarity {}",
+            similarity
+        );
+    }
+
+    #[test]
+    fn test_fhrr_bind_associativity() {
+        let a = FHRR::create(Some(111));
+        let b = FHRR::create(Some(222));
+        let c = FHRR::create(Some(333));
+
+        let bind_ab = FHRR::bind(&a, &b);
+        let bind_ab_c = FHRR::bind(&bind_ab, &c);
+
+        let bind_bc = FHRR::bind(&b, &c);
+        let bind_a_bc = FHRR::bind(&a, &bind_bc);
+
+        let similarity = FHRR::similarity(&bind_ab_c, &bind_a_bc);
+
+        // FHRR bind is associative, similarity should be very close to 1
+        assert!(
+            (similarity - 1.0).abs() < 1e-5,
+            "FHRR bind is not associative: similarity {}",
+            similarity
+        );
+    }
+}
