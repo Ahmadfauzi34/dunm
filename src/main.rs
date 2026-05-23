@@ -93,7 +93,7 @@ fn distill_yaml_skills() {
             format!("knowledge/grammar/{}.md", id.to_lowercase()),
             yaml_doc,
         ) {
-            eprintln!("Gagal menulis YAML grammar: {}", e);
+            eprintln!("Gagal menulis YAML grammar: {e}");
         }
     };
 
@@ -127,30 +127,30 @@ fn main() {
     let total = tasks.len();
 
     for task_name in tasks {
-        let path = format!("../ARC-AGI-1.0.2/data/training/{}.json", task_name);
+        let path = format!("ARC-AGI-1.0.2/data/training/{task_name}.json");
         let mut data = fs::read_to_string(&path).unwrap_or_default();
         if data.is_empty() {
-            data = fs::read_to_string(format!("{}.json", task_name)).unwrap_or_default();
+            data = fs::read_to_string(format!("{task_name}.json")).unwrap_or_default();
         }
         if data.is_empty() {
-            println!("Skipping {}, file not found", task_name);
+            println!("Skipping {task_name}, file not found");
             continue;
         }
 
         let json: Value = match serde_json::from_str(&data) {
             Ok(v) => v,
             Err(e) => {
-                println!("Failed to parse JSON for {}: {}", task_name, e);
+                println!("Failed to parse JSON for {task_name}: {e}");
                 continue;
             }
         };
 
         let Some(train) = json["train"].as_array() else {
-            println!("'train' is not an array in {}", task_name);
+            println!("'train' is not an array in {task_name}");
             continue;
         };
         let Some(test) = json["test"].as_array() else {
-            println!("'test' is not an array in {}", task_name);
+            println!("'test' is not an array in {task_name}");
             continue;
         };
 
@@ -174,7 +174,7 @@ fn main() {
                 train_in.push(i);
                 train_out.push(o);
             } else {
-                println!("Failed to parse training pair in {}", task_name);
+                println!("Failed to parse training pair in {task_name}");
                 skip_task = true;
                 break;
             }
@@ -187,16 +187,16 @@ fn main() {
             if let (Some(i), Some(o)) = (parse_grid(&t0["input"]), parse_grid(&t0["output"])) {
                 (i, o)
             } else {
-                println!("Failed to parse test pair in {}", task_name);
+                println!("Failed to parse test pair in {task_name}");
                 continue;
             }
         } else {
-            println!("'test' array is empty in {}", task_name);
+            println!("'test' array is empty in {task_name}");
             continue;
         };
 
         println!("\n\n🌿 ==================================");
-        println!("Solving Task: {}.json", task_name);
+        println!("Solving Task: {task_name}.json");
         println!("🌿 ==================================");
 
         let _start_time = Instant::now();
@@ -280,7 +280,7 @@ fn main() {
     }
 
     println!("\n\n🏁 BATCH EXECUTION COMPLETE");
-    println!("Score: {} / {}", successes, total);
+    println!("Score: {successes} / {total}");
 
     println!("\n🌿 ==================================");
     println!("🌙 MENGAKTIFKAN SIKLUS TIDUR (MENTAL REPLAY)");

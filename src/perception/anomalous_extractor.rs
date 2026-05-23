@@ -24,10 +24,193 @@ impl AnomalousExtractor {
     }
 }
 
+
 pub fn extract_anomalous_quadrant(state: &EntityManifold) -> EntityManifold {
     if state.active_count == 0 {
         return state.clone();
     }
+
+    let w = state.global_width as usize;
+    let h = state.global_height as usize;
+    let bg_color = 0;
+
+    if w > 0 && h > 0 {
+        let mut grid = vec![vec![0; w]; h];
+        for i in 0..state.active_count {
+            if state.masses[i] > 0.0 {
+                let cx = state.centers_x[i].round() as usize;
+                let cy = state.centers_y[i].round() as usize;
+                if cx < w && cy < h {
+                    grid[cy][cx] = state.tokens[i];
+                }
+            }
+        }
+
+        // HEURISTIC 1: Periodic Extrapolation (Dynamic Stride Detection)
+        let mut best_period = None;
+        let mut best_mapping = std::collections::HashMap::new();
+
+        for k in 2..=(std::cmp::max(w, h) / 2).max(4) {
+            let mut is_valid = true;
+            let mut mapping = std::collections::HashMap::new();
+            let mut has_elements = false;
+
+            for r in 0..h {
+                for c in 0..w {
+                    let val = grid[r][c];
+                    if val != bg_color {
+                        has_elements = true;
+                        let key = (r + c) % k;
+                        if let Some(&existing) = mapping.get(&key) {
+                            if existing != val {
+                                is_valid = false;
+                                break;
+                            }
+                        } else {
+                            mapping.insert(key, val);
+                        }
+                    }
+                }
+                if !is_valid { break; }
+            }
+
+            if has_elements && is_valid && mapping.len() > 1 && mapping.len() <= k {
+                best_period = Some(k);
+                best_mapping = mapping;
+                break;
+            }
+        }
+
+        if let Some(k) = best_period {
+            let mut out_state = EntityManifold::new();
+            out_state.global_width = state.global_width;
+            out_state.global_height = state.global_height;
+            let mut idx = 0;
+            for r in 0..h {
+                for c in 0..w {
+                    if let Some(&val) = best_mapping.get(&((r + c) % k)) {
+                        out_state.ensure_scalar_capacity(idx + 1);
+                        out_state.masses[idx] = 1.0;
+                        out_state.tokens[idx] = val;
+                        out_state.centers_x[idx] = c as f32;
+                        out_state.centers_y[idx] = r as f32;
+                        out_state.spans_x[idx] = 1.0;
+                        out_state.spans_y[idx] = 1.0;
+                        idx += 1;
+                    }
+                }
+            }
+            out_state.active_count = idx;
+            return out_state;
+        }
+
+        // HEURISTIC 2: Fractal Isomorphism (Partitioned Grid Reasoning)
+        let mut possible_separators = std::collections::HashSet::new();
+        for r in 0..h {
+            let mut row_colors = std::collections::HashSet::new();
+            for c in 0..w { row_colors.insert(grid[r][c]); }
+            if row_colors.len() == 1 {
+                if let Some(&color) = row_colors.iter().next() {
+                    possible_separators.insert(color);
+                }
+            }
+        }
+
+        for sep in possible_separators {
+            if sep == bg_color { continue; }
+            let mut r_sep = Vec::new();
+            for r in 0..h { if grid[r].iter().all(|&x| x == sep) { r_sep.push(r); } }
+
+            let mut c_sep = Vec::new();
+            for c in 0..w { if (0..h).all(|r| grid[r][c] == sep) { c_sep.push(c); } }
+
+            if !r_sep.is_empty() && !c_sep.is_empty() {
+                let mut r_bounds = vec![-1];
+                for &r in &r_sep { r_bounds.push(r as i32); }
+                r_bounds.push(h as i32);
+
+                let mut c_bounds = vec![-1];
+                for &c in &c_sep { c_bounds.push(c as i32); }
+                c_bounds.push(w as i32);
+
+                struct Quad { r_idx: usize, c_idx: usize, pixels: Vec<(usize, usize, i32)>, r_start: usize, r_end: usize, c_start: usize, c_end: usize }
+                let mut quads = Vec::new();
+
+                for (r_idx, _) in r_bounds.iter().enumerate().take(r_bounds.len().saturating_sub(1)) {
+                    for (c_idx, _) in c_bounds.iter().enumerate().take(c_bounds.len().saturating_sub(1)) {
+                        let r_start = (r_bounds[r_idx] + 1) as usize;
+                        let r_end = r_bounds[r_idx + 1] as usize;
+                        let c_start = (c_bounds[c_idx] + 1) as usize;
+                        let c_end = c_bounds[c_idx + 1] as usize;
+                        if r_start >= r_end || c_start >= c_end { continue; }
+
+                        let mut pixels = Vec::new();
+                        for r in r_start..r_end {
+                            for c in c_start..c_end {
+                                if grid[r][c] != bg_color && grid[r][c] != sep {
+                                    pixels.push((r - r_start, c - c_start, grid[r][c]));
+                                }
+                            }
+                        }
+                        quads.push(Quad { r_idx, c_idx, pixels, r_start, r_end, c_start, c_end });
+                    }
+                }
+
+                // Sub-Heuristic: The "Incomplete Mapping"
+                let mut base_quad_idx = None;
+                let mut min_pixels = usize::MAX;
+                for (i, q) in quads.iter().enumerate() {
+                    if !q.pixels.is_empty() && q.pixels.len() < min_pixels {
+                        min_pixels = q.pixels.len();
+                        base_quad_idx = Some(i);
+                    }
+                }
+
+                if let Some(idx) = base_quad_idx {
+                    let base_quad = &quads[idx];
+                    let mut out_state = EntityManifold::new();
+                    out_state.global_width = state.global_width;
+                    out_state.global_height = state.global_height;
+                    let mut out_idx = 0;
+
+                    for r in 0..h {
+                        for c in 0..w {
+                            if r_sep.contains(&r) || c_sep.contains(&c) {
+                                out_state.ensure_scalar_capacity(out_idx + 1);
+                                out_state.masses[out_idx] = 1.0;
+                                out_state.tokens[out_idx] = sep;
+                                out_state.centers_x[out_idx] = c as f32;
+                                out_state.centers_y[out_idx] = r as f32;
+                                out_state.spans_x[out_idx] = 1.0;
+                                out_state.spans_y[out_idx] = 1.0;
+                                out_idx += 1;
+                            }
+                        }
+                    }
+
+                    for &(pr, pc, v) in &base_quad.pixels {
+                        if let Some(target_q) = quads.iter().find(|q| q.r_idx == pr && q.c_idx == pc) {
+                            for r in target_q.r_start..target_q.r_end {
+                                for c in target_q.c_start..target_q.c_end {
+                                    out_state.ensure_scalar_capacity(out_idx + 1);
+                                    out_state.masses[out_idx] = 1.0;
+                                    out_state.tokens[out_idx] = v;
+                                    out_state.centers_x[out_idx] = c as f32;
+                                    out_state.centers_y[out_idx] = r as f32;
+                                    out_state.spans_x[out_idx] = 1.0;
+                                    out_state.spans_y[out_idx] = 1.0;
+                                    out_idx += 1;
+                                }
+                            }
+                        }
+                    }
+                    out_state.active_count = out_idx;
+                    return out_state;
+                }
+            }
+        }
+    }
+
 
     // ========================================================
     // FASE 1: MICRO SCALE (Semantic & Geometric Detection)
