@@ -13,3 +13,7 @@
 ## 2026-05-18 - [Topological Operations Optimizations]
 **Learning:** Found a major performance bottleneck in `compute_laplacians_and_betti` related to the instantiation of the `L1` laplacian using `d1.t().dot(d1)`. This dense matrix multiplication causes O(N*E^2) time complexity, whereas calculating the sparse interactions directly is O(E^2), speeding up the function dramatically. Further, L0 which was calculated via `d1.dot(&d1.t())` can also be calculated sparsely in O(E).
 **Action:** Always compute topological incidence laplacians using the sparse edges array rather than performing dense matrix multiplications on the boundary operators.
+
+## 2024-05-21 - Avoid redundant square roots in power iterations
+**Learning:** During structural topological benchmarks, calculation of the square root on the hot loop inside `estimate_eigenvalues` power iteration for every iteration before threshold checking was highly redundant. Checking `norm_sq > 1e-12` is significantly faster.
+**Action:** When working on numerical iterations, always prefer checking the non-squared magnitude metric vs squared threshold value before executing expensive `f32::sqrt()` normalizations to skip them when variables drop to insignificance.

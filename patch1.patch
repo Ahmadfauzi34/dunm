@@ -1,0 +1,51 @@
+--- src/quantum_topology.rs
++++ src/quantum_topology.rs
+@@ -187,17 +187,17 @@
+         }
+         let n = matrix.shape()[0];
+         let mut v = Array1::<f32>::ones(n);
+-        let norm = v.dot(&v).sqrt();
+-        if norm > 0.0 {
+-            v /= norm;
++        let norm_sq = v.dot(&v);
++        if norm_sq > 0.0 {
++            v /= norm_sq.sqrt();
+         } else {
+             return vec![0.0];
+         }
+
+         for _ in 0..20 {
+             let v_new = matrix.dot(&v);
+-            let norm = v_new.dot(&v_new).sqrt();
+-            if norm > 1e-6 {
+-                v = v_new / norm;
++            let norm_sq = v_new.dot(&v_new);
++            if norm_sq > 1e-12 {
++                v = v_new / norm_sq.sqrt();
+             }
+         }
+@@ -628,9 +628,9 @@
+             let mut v = Array1::<f32>::from_vec(
+                 (0..n).map(|i| ((i * 7919) as f32).sin()).collect(), // Deterministic init
+             );
+-            let v_norm = v.dot(&v).sqrt();
+-            if v_norm > 0.0 {
+-                v /= v_norm;
++            let v_norm_sq = v.dot(&v);
++            if v_norm_sq > 0.0 {
++                v /= v_norm_sq.sqrt();
+             }
+
+             // Gram-Schmidt orthogonalization
+@@ -643,9 +643,9 @@
+             // Power iteration
+             for _ in 0..20 {
+                 let v_new = laplacian.dot(&v);
+-                let norm = v_new.dot(&v_new).sqrt();
+-                if norm > 1e-6 {
+-                    v = v_new / norm;
++                let norm_sq = v_new.dot(&v_new);
++                if norm_sq > 1e-12 {
++                    v = v_new / norm_sq.sqrt();
+                 }
+             }
