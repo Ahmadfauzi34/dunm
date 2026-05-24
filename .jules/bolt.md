@@ -21,3 +21,6 @@
 ## 2026-05-23 - Fused Tensor Processing Loops
 **Learning:** During the application of the Grover Diffusion Operator, iterating over a large, flat amplitudes array (size `search_space_size * 8192`) multiple times per operation (once for inversion about the mean, then again to calculate sum of squares, and once more to apply thermal scaling) caused significant memory bandwidth overhead.
 **Action:** When performing sequence-like array operations (like reflection -> normalization), always look for opportunities to fuse the loops. By computing the sum of squares simultaneously during the reflection step, we drop the number of passes over the large `amplitudes` array, cutting Grover iteration time by ~14% per cycle.
+## 2026-05-23 - Prevent Vector allocation in Hot-Loop Bind
+**Learning:** During the application of `FHRR::bind`, calculating the convolution of two arrays required zipping the frequency maps and then calling `.collect()`, instantiating a new `Vec<Complex<f32>>` of length 8192 for each bound pair.
+**Action:** By applying `iter_mut()` directly over `cx_a` during the tensor zip logic, we calculate the multiplication in-place and pass `cx_a` directly to `fft_inv`. This eliminates a heavy memory allocation and significantly speeds up operations executing millions of bindings per second.

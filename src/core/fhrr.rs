@@ -80,17 +80,18 @@ impl FHRR {
             fft_fwd.process(&mut cx_b);
         });
 
-        let mut freqs: Vec<Complex<f32>> =
-            cx_a.iter().zip(cx_b.iter()).map(|(a, b)| a * b).collect();
+        for (a_val, b_val) in cx_a.iter_mut().zip(cx_b.iter()) {
+            *a_val = *a_val * b_val;
+        }
 
         PLANNER.with(|p| {
             let mut planner = p.borrow_mut();
             let fft_inv = planner.plan_fft_inverse(dim);
-            fft_inv.process(&mut freqs);
+            fft_inv.process(&mut cx_a);
         });
 
         let scale = 1.0 / (dim as f32);
-        Array1::from_iter(freqs.into_iter().map(|c| c.re * scale))
+        Array1::from_iter(cx_a.into_iter().map(|c| c.re * scale))
     }
 
     /// 3. FRACTIONAL BIND: Memutar Fasa Fraksional
