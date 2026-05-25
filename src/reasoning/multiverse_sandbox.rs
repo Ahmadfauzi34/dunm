@@ -615,14 +615,24 @@ impl MultiverseSandbox {
                 // 1. Spasial Tensor Binding
                 // Mengkonversi Tensor FHRR murni menjadi "Physical Hands" / translasi absolut
                 let mut sp_tensor = u.get_spatial_tensor_mut(e);
-                if let (Some(mut_slice), Some(delta_slice)) = (sp_tensor.as_slice_mut(), delta_spatial.as_slice()) {
-                    FHRR::bind_mut(mut_slice, delta_slice);
+                match (sp_tensor.as_slice_mut(), delta_spatial.as_slice()) {
+                    (Some(mut_slice), Some(delta_slice)) => FHRR::bind_mut(mut_slice, delta_slice),
+                    _ => {
+                        let original_sp = sp_tensor.to_owned();
+                        let future_sp = FHRR::bind(&original_sp, delta_spatial);
+                        sp_tensor.assign(&future_sp);
+                    }
                 }
 
                 // 2. Semantik Tensor Binding
                 let mut sem_tensor = u.get_semantic_tensor_mut(e);
-                if let (Some(mut_slice), Some(delta_slice)) = (sem_tensor.as_slice_mut(), delta_semantic.as_slice()) {
-                    FHRR::bind_mut(mut_slice, delta_slice);
+                match (sem_tensor.as_slice_mut(), delta_semantic.as_slice()) {
+                    (Some(mut_slice), Some(delta_slice)) => FHRR::bind_mut(mut_slice, delta_slice),
+                    _ => {
+                        let original_sem = sem_tensor.to_owned();
+                        let future_sem = FHRR::bind(&original_sem, delta_semantic);
+                        sem_tensor.assign(&future_sem);
+                    }
                 }
 
                 // 3. Menghubungkan FHRR murni dengan Grid Fisik (Scalar Momentum)
