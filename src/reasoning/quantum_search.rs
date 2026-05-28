@@ -94,7 +94,15 @@ impl WaveNode {
             let cloned: Vec<EntityManifold> = self
                 .state_manifolds
                 .iter()
-                .map(|m: &EntityManifold| m.clone())
+                .map(|m: &EntityManifold| {
+                    if !m.masses.is_empty() && m.masses[0] > 100.0 {
+                        let mut shallow = EntityManifold::new();
+                        shallow.active_count = 0;
+                        shallow
+                    } else {
+                        m.clone()
+                    }
+                })
                 .collect();
             self.state_manifolds = Arc::new(cloned);
             self.state_modified = true;
@@ -293,7 +301,15 @@ impl FractalArena {
         if !self.modified_flags[idx] {
             let cloned: Vec<EntityManifold> = self.states[idx]
                 .iter()
-                .map(|m: &EntityManifold| m.clone())
+                .map(|m: &EntityManifold| {
+                    if !m.masses.is_empty() && m.masses[0] > 100.0 {
+                        let mut shallow = EntityManifold::new();
+                        shallow.active_count = 0;
+                        shallow
+                    } else {
+                        m.clone()
+                    }
+                })
                 .collect();
             self.states[idx] = Arc::new(cloned);
             self.modified_flags[idx] = true;

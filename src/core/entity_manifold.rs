@@ -5,6 +5,7 @@ use ndarray::{Array1, ArrayViewMut1};
 /// Struktur `SoA` (Structure of Arrays) untuk Quantum Entity Manifold.
 /// Didesain untuk Zero-GC dan cache locality di L1/L2 secara dinamis.
 /// Menggunakan sistem Tri-Tensor: Spatial (Pusat Global), Shape (Pola Lokal), dan Semantic (Warna).
+#[derive(Clone)]
 pub struct EntityManifold {
     pub active_count: usize,
     pub global_width: f32,
@@ -43,55 +44,6 @@ pub struct EntityManifold {
 impl Default for EntityManifold {
     fn default() -> Self {
         Self::new()
-    }
-}
-
-impl Clone for EntityManifold {
-    /// Custom Clone to avoid copying unused pre-allocated capacity (reduces MCTS cache thrashing).
-    fn clone(&self) -> Self {
-        let count = self.active_count;
-        let t_count = count * GLOBAL_DIMENSION;
-
-        let mut new_manifold = Self {
-            active_count: count,
-            global_width: self.global_width,
-            global_height: self.global_height,
-            masses: Vec::with_capacity(count),
-            tokens: Vec::with_capacity(count),
-            spans_x: Vec::with_capacity(count),
-            spans_y: Vec::with_capacity(count),
-            centers_x: Vec::with_capacity(count),
-            centers_y: Vec::with_capacity(count),
-            momentums_x: Vec::with_capacity(count),
-            momentums_y: Vec::with_capacity(count),
-            entanglement_status: Vec::with_capacity(count),
-            spatial_tensors: Vec::with_capacity(t_count),
-            shape_tensors: Vec::with_capacity(t_count),
-            semantic_tensors: Vec::with_capacity(t_count),
-            ids: Vec::with_capacity(count),
-            cow_grid: self.cow_grid.clone(),
-        };
-
-        if count > 0 {
-            new_manifold.masses.extend_from_slice(&self.masses[..count]);
-            new_manifold.tokens.extend_from_slice(&self.tokens[..count]);
-            new_manifold.spans_x.extend_from_slice(&self.spans_x[..count]);
-            new_manifold.spans_y.extend_from_slice(&self.spans_y[..count]);
-            new_manifold.centers_x.extend_from_slice(&self.centers_x[..count]);
-            new_manifold.centers_y.extend_from_slice(&self.centers_y[..count]);
-            new_manifold.momentums_x.extend_from_slice(&self.momentums_x[..count]);
-            new_manifold.momentums_y.extend_from_slice(&self.momentums_y[..count]);
-            new_manifold.entanglement_status.extend_from_slice(&self.entanglement_status[..count]);
-
-            new_manifold.spatial_tensors.extend_from_slice(&self.spatial_tensors[..t_count]);
-            new_manifold.shape_tensors.extend_from_slice(&self.shape_tensors[..t_count]);
-            new_manifold.semantic_tensors.extend_from_slice(&self.semantic_tensors[..t_count]);
-
-            // IDs are Strings, so we map and clone just the active ones
-            new_manifold.ids.extend(self.ids.iter().take(count).cloned());
-        }
-
-        new_manifold
     }
 }
 

@@ -122,7 +122,12 @@ fn main() {
 
     let mut agent = RrmAgent::new();
 
-    let tasks = vec!["05269061", "09629e4f", "2dc579da"];
+    let tasks = vec![
+        "05269061", "09629e4f", "2dc579da",
+        "11852cab", "22168020", "22233c11",
+        "23581191", "264363fd", "29623171",
+        "32597951",
+    ];
     let mut successes = 0;
     let total = tasks.len();
 

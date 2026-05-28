@@ -80,48 +80,17 @@ impl FHRR {
             fft_fwd.process(&mut cx_b);
         });
 
-        for (a_val, b_val) in cx_a.iter_mut().zip(cx_b.iter()) {
-            *a_val = *a_val * b_val;
-        }
+        let mut freqs: Vec<Complex<f32>> =
+            cx_a.iter().zip(cx_b.iter()).map(|(a, b)| a * b).collect();
 
         PLANNER.with(|p| {
             let mut planner = p.borrow_mut();
             let fft_inv = planner.plan_fft_inverse(dim);
-            fft_inv.process(&mut cx_a);
+            fft_inv.process(&mut freqs);
         });
 
         let scale = 1.0 / (dim as f32);
-        Array1::from_iter(cx_a.into_iter().map(|c| c.re * scale))
-    }
-
-    /// 2.5. BIND IN-PLACE: Zero-allocation circular convolution for hot-loops
-    pub fn bind_mut(a: &mut [f32], b: &[f32]) {
-        let dim = GLOBAL_DIMENSION;
-        let mut cx_a: Vec<Complex<f32>> = a.iter().map(|&x| Complex::new(x, 0.0)).collect();
-        let mut cx_b: Vec<Complex<f32>> = b.iter().map(|&x| Complex::new(x, 0.0)).collect();
-
-        PLANNER.with(|p| {
-            let mut planner = p.borrow_mut();
-            let fft_fwd = planner.plan_fft_forward(dim);
-
-            fft_fwd.process(&mut cx_a);
-            fft_fwd.process(&mut cx_b);
-        });
-
-        for (a_val, b_val) in cx_a.iter_mut().zip(cx_b.iter()) {
-            *a_val = *a_val * b_val;
-        }
-
-        PLANNER.with(|p| {
-            let mut planner = p.borrow_mut();
-            let fft_inv = planner.plan_fft_inverse(dim);
-            fft_inv.process(&mut cx_a);
-        });
-
-        let scale = 1.0 / (dim as f32);
-        for (i, c) in cx_a.into_iter().enumerate() {
-            a[i] = c.re * scale;
-        }
+        Array1::from_iter(freqs.into_iter().map(|c| c.re * scale))
     }
 
     /// 3. FRACTIONAL BIND: Memutar Fasa Fraksional

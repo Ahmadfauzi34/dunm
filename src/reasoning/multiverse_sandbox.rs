@@ -49,16 +49,16 @@ impl MultiverseSandbox {
                     let sp_mut = &mut u.spatial_tensors;
                     let dim = crate::core::config::GLOBAL_DIMENSION;
 
-                    // Terapkan FHRR bind_mut in-place pada memori tensor fisik (Zero-Allocation)
-                    let delta_slice = delta_spatial.as_slice().unwrap_or_else(|| {
-                        // Jika `delta_spatial` tidak memori yang berkesinambungan (sangat jarang untuk Array1)
-                        panic!("delta_spatial is not contiguous")
-                    });
-
                     for i in 0..u.active_count {
                         let start = i * dim;
                         let end = start + dim;
-                        FHRR::bind_mut(&mut sp_mut[start..end], delta_slice);
+                        let chunk = ndarray::Array1::from_vec(sp_mut[start..end].to_vec());
+                        let new_chunk = FHRR::bind(&chunk, delta_spatial);
+                        if let Some(slice) = new_chunk.as_slice() {
+                            sp_mut[start..end].copy_from_slice(slice);
+                        } else {
+                            return false;
+                        }
                     }
 
                     // Untuk merubah piksel visual, sistem akan mende-bind posisinya
@@ -615,25 +615,15 @@ impl MultiverseSandbox {
                 // 1. Spasial Tensor Binding
                 // Mengkonversi Tensor FHRR murni menjadi "Physical Hands" / translasi absolut
                 let mut sp_tensor = u.get_spatial_tensor_mut(e);
-                match (sp_tensor.as_slice_mut(), delta_spatial.as_slice()) {
-                    (Some(mut_slice), Some(delta_slice)) => FHRR::bind_mut(mut_slice, delta_slice),
-                    _ => {
-                        let original_sp = sp_tensor.to_owned();
-                        let future_sp = FHRR::bind(&original_sp, delta_spatial);
-                        sp_tensor.assign(&future_sp);
-                    }
-                }
+                let original_sp = sp_tensor.to_owned();
+                let future_sp = FHRR::bind(&original_sp, delta_spatial);
+                sp_tensor.assign(&future_sp);
 
                 // 2. Semantik Tensor Binding
                 let mut sem_tensor = u.get_semantic_tensor_mut(e);
-                match (sem_tensor.as_slice_mut(), delta_semantic.as_slice()) {
-                    (Some(mut_slice), Some(delta_slice)) => FHRR::bind_mut(mut_slice, delta_slice),
-                    _ => {
-                        let original_sem = sem_tensor.to_owned();
-                        let future_sem = FHRR::bind(&original_sem, delta_semantic);
-                        sem_tensor.assign(&future_sem);
-                    }
-                }
+                let original_sem = sem_tensor.to_owned();
+                let future_sem = FHRR::bind(&original_sem, delta_semantic);
+                sem_tensor.assign(&future_sem);
 
                 // 3. Menghubungkan FHRR murni dengan Grid Fisik (Scalar Momentum)
                 if physics_tier != 4 {
