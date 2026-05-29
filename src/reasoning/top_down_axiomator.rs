@@ -387,8 +387,7 @@ impl TopDownAxiomator {
 
     fn identity_tensor() -> Array1<f32> {
         let mut t = Array1::zeros(GLOBAL_DIMENSION);
-        t[0] = 1.0;
-        t[GLOBAL_DIMENSION - 1] = 1.0;
+        t[0] = 1.0; // The true mathematical identity in time domain for circular convolution
         t
     }
 
