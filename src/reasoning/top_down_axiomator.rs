@@ -40,6 +40,14 @@ impl TopDownAxiomator {
             &output_structures,
         ));
         axioms.extend(Self::generate_movement_axioms(&input_atoms, &output_atoms));
+        axioms.extend(Self::generate_crop_extract_axioms(
+            &input_atoms,
+            &output_atoms,
+        ));
+        axioms.extend(Self::generate_scale_and_fill_axioms(
+            &input_atoms,
+            &output_atoms,
+        ));
 
         // CROP PHYSICS INJECTION
         axioms.extend(Self::generate_macroscopic_crop_axioms(
@@ -378,6 +386,106 @@ impl TopDownAxiomator {
                         ),
                         physics_tier: 0,
                     });
+                }
+            }
+        }
+
+        axioms
+    }
+
+    /// Deteksi: "Ekstrak Sub-Grid atau Kuadran" → `EXTRACT_QUADRANT`
+    /// Sangat penting untuk tes seperti `2dc579da` (13x13 -> 6x6, dst.) atau perubahan dimensi Grid spesifik.
+    fn generate_crop_extract_axioms(
+        input_atoms: &[GestaltAtom],
+        output_atoms: &[GestaltAtom],
+    ) -> Vec<TopologicalMatch> {
+        let mut axioms = Vec::new();
+
+        // Cari warna background / grid lines (biasanya yang massanya terbesar atau mengelilingi)
+        // Jika ada atom yang mengecil dimensinya secara signifikan (ekstraksi kuadran)
+        for in_atom in input_atoms {
+            for out_atom in output_atoms {
+                // Apakah warna ini tetap ada, tapi ukurannya mengecil secara proporsional?
+                let in_w = in_atom.bounding_box.2 - in_atom.bounding_box.0;
+                let in_h = in_atom.bounding_box.3 - in_atom.bounding_box.1;
+                let out_w = out_atom.bounding_box.2 - out_atom.bounding_box.0;
+                let out_h = out_atom.bounding_box.3 - out_atom.bounding_box.1;
+
+                if in_w > out_w && in_h > out_h && out_w > 0.0 && out_h > 0.0 {
+                    // Terdeteksi ada reduksi dimensi ruang.
+                    let id_tensor = Self::identity_tensor();
+                    let condition =
+                        FHRR::fractional_bind(CoreSeeds::color_seed(), out_atom.color as f32);
+
+                    axioms.push(TopologicalMatch {
+                        source_index: 0,
+                        target_index: -1,
+                        similarity: 0.88,
+                        condition_tensor: Some(condition),
+                        delta_spatial: id_tensor.clone(),
+                        delta_semantic: id_tensor.clone(),
+                        delta_x: out_w + 1.0, // Menyimpan target width
+                        delta_y: out_h + 1.0, // Menyimpan target height
+                        axiom_type: format!("CROP_WINDOW_AROUND({})", out_atom.color),
+                        physics_tier: 7, // CROP/DIMENSION Tier
+                    });
+                }
+            }
+        }
+
+        axioms
+    }
+
+    /// Deteksi: "Skala Kotak Berongga lalu Isi Dalamnya" → `SCALE_AND_FILL`
+    /// Atau: "Sejajarkan dua objek" → `ALIGN_EDGES`
+    fn generate_scale_and_fill_axioms(
+        input_atoms: &[GestaltAtom],
+        output_atoms: &[GestaltAtom],
+    ) -> Vec<TopologicalMatch> {
+        let mut axioms = Vec::new();
+
+        for in_atom in input_atoms {
+            for out_atom in output_atoms {
+                // Deteksi scale and fill jika dari hollow jadi solid tapi bounding box beda
+                if let AtomType::HollowRectangle = in_atom.atom_type {
+                    if let AtomType::SolidRectangle = out_atom.atom_type {
+                        if !Self::bbox_similar(&in_atom.bounding_box, &out_atom.bounding_box) {
+                            let _in_w = in_atom.bounding_box.2 - in_atom.bounding_box.0;
+                            let _in_h = in_atom.bounding_box.3 - in_atom.bounding_box.1;
+
+                            // Width & height is max - min + 1 (inclusive)
+                            let out_w = out_atom.bounding_box.2 - out_atom.bounding_box.0 + 1.0;
+                            let out_h = out_atom.bounding_box.3 - out_atom.bounding_box.1 + 1.0;
+
+                            // Hitung offset berdasarkan titik sudut Kiri-Atas (Min), BUKAN Center of Mass!
+                            let dx = out_atom.bounding_box.0 - in_atom.bounding_box.0;
+                            let dy = out_atom.bounding_box.1 - in_atom.bounding_box.1;
+
+                            let id_tensor = Self::identity_tensor();
+                            let color_cond = FHRR::fractional_bind(
+                                CoreSeeds::color_seed(),
+                                in_atom.color as f32,
+                            );
+
+                            axioms.push(TopologicalMatch {
+                                source_index: 0,
+                                target_index: -1,
+                                similarity: 0.85,
+                                condition_tensor: Some(color_cond),
+                                delta_spatial: id_tensor.clone(),
+                                delta_semantic: id_tensor.clone(),
+                                delta_x: dx.round(),
+                                delta_y: dy.round(),
+                                axiom_type: format!(
+                                    "SCALE_AND_FILL_{}_{}x{}",
+                                    in_atom.color,
+                                    out_w.round(),
+                                    out_h.round()
+                                ),
+                                physics_tier: 6, // Spawn/Fill/Align tier
+                            });
+                        }
+                    }
                 }
             }
         }

@@ -24,7 +24,6 @@ impl AnomalousExtractor {
     }
 }
 
-
 pub fn extract_anomalous_quadrant(state: &EntityManifold) -> EntityManifold {
     if state.active_count == 0 {
         return state.clone();
@@ -71,7 +70,9 @@ pub fn extract_anomalous_quadrant(state: &EntityManifold) -> EntityManifold {
                         }
                     }
                 }
-                if !is_valid { break; }
+                if !is_valid {
+                    break;
+                }
             }
 
             if has_elements && is_valid && mapping.len() > 1 && mapping.len() <= k {
@@ -108,7 +109,9 @@ pub fn extract_anomalous_quadrant(state: &EntityManifold) -> EntityManifold {
         let mut possible_separators = std::collections::HashSet::new();
         for r in 0..h {
             let mut row_colors = std::collections::HashSet::new();
-            for c in 0..w { row_colors.insert(grid[r][c]); }
+            for c in 0..w {
+                row_colors.insert(grid[r][c]);
+            }
             if row_colors.len() == 1 {
                 if let Some(&color) = row_colors.iter().next() {
                     possible_separators.insert(color);
@@ -117,32 +120,64 @@ pub fn extract_anomalous_quadrant(state: &EntityManifold) -> EntityManifold {
         }
 
         for sep in possible_separators {
-            if sep == bg_color { continue; }
+            if sep == bg_color {
+                continue;
+            }
             let mut r_sep = Vec::new();
-            for r in 0..h { if grid[r].iter().all(|&x| x == sep) { r_sep.push(r); } }
+            for r in 0..h {
+                if grid[r].iter().all(|&x| x == sep) {
+                    r_sep.push(r);
+                }
+            }
 
             let mut c_sep = Vec::new();
-            for c in 0..w { if (0..h).all(|r| grid[r][c] == sep) { c_sep.push(c); } }
+            for c in 0..w {
+                if (0..h).all(|r| grid[r][c] == sep) {
+                    c_sep.push(c);
+                }
+            }
 
             if !r_sep.is_empty() && !c_sep.is_empty() {
                 let mut r_bounds = vec![-1];
-                for &r in &r_sep { r_bounds.push(r as i32); }
+                for &r in &r_sep {
+                    r_bounds.push(r as i32);
+                }
                 r_bounds.push(h as i32);
 
                 let mut c_bounds = vec![-1];
-                for &c in &c_sep { c_bounds.push(c as i32); }
+                for &c in &c_sep {
+                    c_bounds.push(c as i32);
+                }
                 c_bounds.push(w as i32);
 
-                struct Quad { r_idx: usize, c_idx: usize, pixels: Vec<(usize, usize, i32)>, r_start: usize, r_end: usize, c_start: usize, c_end: usize }
+                struct Quad {
+                    r_idx: usize,
+                    c_idx: usize,
+                    pixels: Vec<(usize, usize, i32)>,
+                    r_start: usize,
+                    r_end: usize,
+                    c_start: usize,
+                    c_end: usize,
+                }
                 let mut quads = Vec::new();
 
-                for (r_idx, _) in r_bounds.iter().enumerate().take(r_bounds.len().saturating_sub(1)) {
-                    for (c_idx, _) in c_bounds.iter().enumerate().take(c_bounds.len().saturating_sub(1)) {
+                for (r_idx, _) in r_bounds
+                    .iter()
+                    .enumerate()
+                    .take(r_bounds.len().saturating_sub(1))
+                {
+                    for (c_idx, _) in c_bounds
+                        .iter()
+                        .enumerate()
+                        .take(c_bounds.len().saturating_sub(1))
+                    {
                         let r_start = (r_bounds[r_idx] + 1) as usize;
                         let r_end = r_bounds[r_idx + 1] as usize;
                         let c_start = (c_bounds[c_idx] + 1) as usize;
                         let c_end = c_bounds[c_idx + 1] as usize;
-                        if r_start >= r_end || c_start >= c_end { continue; }
+                        if r_start >= r_end || c_start >= c_end {
+                            continue;
+                        }
 
                         let mut pixels = Vec::new();
                         for r in r_start..r_end {
@@ -152,7 +187,15 @@ pub fn extract_anomalous_quadrant(state: &EntityManifold) -> EntityManifold {
                                 }
                             }
                         }
-                        quads.push(Quad { r_idx, c_idx, pixels, r_start, r_end, c_start, c_end });
+                        quads.push(Quad {
+                            r_idx,
+                            c_idx,
+                            pixels,
+                            r_start,
+                            r_end,
+                            c_start,
+                            c_end,
+                        });
                     }
                 }
 
@@ -189,7 +232,9 @@ pub fn extract_anomalous_quadrant(state: &EntityManifold) -> EntityManifold {
                     }
 
                     for &(pr, pc, v) in &base_quad.pixels {
-                        if let Some(target_q) = quads.iter().find(|q| q.r_idx == pr && q.c_idx == pc) {
+                        if let Some(target_q) =
+                            quads.iter().find(|q| q.r_idx == pr && q.c_idx == pc)
+                        {
                             for r in target_q.r_start..target_q.r_end {
                                 for c in target_q.c_start..target_q.c_end {
                                     out_state.ensure_scalar_capacity(out_idx + 1);
@@ -210,7 +255,6 @@ pub fn extract_anomalous_quadrant(state: &EntityManifold) -> EntityManifold {
             }
         }
     }
-
 
     // ========================================================
     // FASE 1: MICRO SCALE (Semantic & Geometric Detection)
