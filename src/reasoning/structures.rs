@@ -57,11 +57,13 @@ impl Axiom<Unverified> {
 
     pub fn identity() -> Self {
         use crate::core::config::GLOBAL_DIMENSION;
+        let mut id_tensor = Array1::zeros(GLOBAL_DIMENSION);
+        id_tensor[0] = 1.0;
         Self::new(
             "IDENTITY",
             0,
-            Array1::zeros(GLOBAL_DIMENSION),
-            Array1::zeros(GLOBAL_DIMENSION),
+            id_tensor.clone(),
+            id_tensor,
             0.0,
             0.0,
         )

@@ -66,8 +66,34 @@ impl FHRR {
         Array1::from_iter(out.into_iter().map(|c| c.re * scale))
     }
 
+    #[inline]
+    fn check_tensor_type(a: &[f32]) -> (bool, bool) {
+        if a.is_empty() {
+            return (false, false);
+        }
+
+        if a[0] == 0.0 {
+            // Is it a pure zero tensor?
+            let is_zero = a.iter().all(|&v| v == 0.0);
+            (false, is_zero)
+        } else if (a[0] - 1.0).abs() <= f32::EPSILON {
+            // Is it a mathematical identity tensor (Kronecker Delta)?
+            let is_identity = a.iter().skip(1).all(|&v| v == 0.0);
+            (is_identity, false)
+        } else {
+            (false, false)
+        }
+    }
+
     /// 2. BIND: Konvolusi Sirkular (FFT -> Mul -> IFFT)
     pub fn bind(a: &Array1<f32>, b: &Array1<f32>) -> Array1<f32> {
+        let (is_ident, is_zero) = Self::check_tensor_type(b.as_slice().unwrap_or(&[]));
+        if is_ident {
+            return a.clone();
+        } else if is_zero {
+            return Array1::zeros(GLOBAL_DIMENSION);
+        }
+
         let dim = GLOBAL_DIMENSION;
         let mut cx_a: Vec<Complex<f32>> = a.iter().map(|&x| Complex::new(x, 0.0)).collect();
         let mut cx_b: Vec<Complex<f32>> = b.iter().map(|&x| Complex::new(x, 0.0)).collect();
@@ -80,17 +106,56 @@ impl FHRR {
             fft_fwd.process(&mut cx_b);
         });
 
-        let mut freqs: Vec<Complex<f32>> =
-            cx_a.iter().zip(cx_b.iter()).map(|(a, b)| a * b).collect();
+        for (a_val, b_val) in cx_a.iter_mut().zip(cx_b.iter()) {
+            *a_val = *a_val * b_val;
+        }
 
         PLANNER.with(|p| {
             let mut planner = p.borrow_mut();
             let fft_inv = planner.plan_fft_inverse(dim);
-            fft_inv.process(&mut freqs);
+            fft_inv.process(&mut cx_a);
         });
 
         let scale = 1.0 / (dim as f32);
-        Array1::from_iter(freqs.into_iter().map(|c| c.re * scale))
+        Array1::from_iter(cx_a.into_iter().map(|c| c.re * scale))
+    }
+
+    /// 2.5. BIND IN-PLACE: Zero-allocation circular convolution for hot-loops
+    pub fn bind_mut(a: &mut [f32], b: &[f32]) {
+        let (is_ident, is_zero) = Self::check_tensor_type(b);
+        if is_ident {
+            return;
+        } else if is_zero {
+            a.fill(0.0);
+            return;
+        }
+
+        let dim = GLOBAL_DIMENSION;
+        let mut cx_a: Vec<Complex<f32>> = a.iter().map(|&x| Complex::new(x, 0.0)).collect();
+        let mut cx_b: Vec<Complex<f32>> = b.iter().map(|&x| Complex::new(x, 0.0)).collect();
+
+        PLANNER.with(|p| {
+            let mut planner = p.borrow_mut();
+            let fft_fwd = planner.plan_fft_forward(dim);
+
+            fft_fwd.process(&mut cx_a);
+            fft_fwd.process(&mut cx_b);
+        });
+
+        for (a_val, b_val) in cx_a.iter_mut().zip(cx_b.iter()) {
+            *a_val = *a_val * b_val;
+        }
+
+        PLANNER.with(|p| {
+            let mut planner = p.borrow_mut();
+            let fft_inv = planner.plan_fft_inverse(dim);
+            fft_inv.process(&mut cx_a);
+        });
+
+        let scale = 1.0 / (dim as f32);
+        for (i, c) in cx_a.into_iter().enumerate() {
+            a[i] = c.re * scale;
+        }
     }
 
     /// 3. FRACTIONAL BIND: Memutar Fasa Fraksional
