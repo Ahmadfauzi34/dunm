@@ -260,9 +260,11 @@ impl MultiverseSandbox {
                                         }
 
                                         let min_xi = (anchor_x + center_offset_x).round() as i32;
-                                        let max_xi = (anchor_x + center_offset_x + tw - 1.0).round() as i32;
+                                        let max_xi =
+                                            (anchor_x + center_offset_x + tw - 1.0).round() as i32;
                                         let min_yi = (anchor_y + center_offset_y).round() as i32;
-                                        let max_yi = (anchor_y + center_offset_y + th - 1.0).round() as i32;
+                                        let max_yi =
+                                            (anchor_y + center_offset_y + th - 1.0).round() as i32;
 
                                         let new_sem_tensor = FHRR::fractional_bind(
                                             crate::core::core_seeds::CoreSeeds::color_seed(),
@@ -414,11 +416,11 @@ impl MultiverseSandbox {
                                     let spatial = u.get_spatial_tensor(e);
                                     let shift_x = FHRR::fractional_bind(
                                         crate::core::core_seeds::CoreSeeds::x_axis_seed(),
-                                        -min_x
+                                        -min_x,
                                     );
                                     let shift_y = FHRR::fractional_bind(
                                         crate::core::core_seeds::CoreSeeds::y_axis_seed(),
-                                        -min_y
+                                        -min_y,
                                     );
                                     let shifted_tensor = FHRR::bind(&shift_x, &shift_y);
                                     let new_spatial = FHRR::bind(&spatial, &shifted_tensor);

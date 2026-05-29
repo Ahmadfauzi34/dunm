@@ -373,46 +373,18 @@ impl RrmAgent {
         let expected_grids: Vec<Vec<Vec<i32>>> = train_out.clone();
 
         // 1.5 ORIENTASI PRE-EMPTIVE (Membaca Niat Task)
-        println!("🧠 [Orientasi Pre-emptive] Membaca Niat Task...");
-        let mut pre_emptive_delta = None;
-        let mut betti_1_holes = 0;
         let mut curvature_norm = 0.0;
-
-        if let Some((man_in, man_out)) = train_states.first() {
-            let delta = StructuralAnalyzer::analyze(man_in, man_out);
-            let report = self.self_reflection.assess_situation(&delta);
-            println!(
-                "   -> Niat / Klasifikasi Masalah: {}",
-                report.situation_assessment
+        let (pre_emptive_delta, betti_1_holes) =
+            crate::reasoning::agent::orientation::OrientationEngine::assess_pre_emptive_intent(
+                &train_states,
+                &mut self.self_reflection,
             );
-            pre_emptive_delta = Some(delta);
-
-            // Evaluasi Topologi Kuantum (Deteksi Lubang / Betti-1)
-            let qcc = crate::quantum_topology::QuantumCellComplex::from_manifold(man_in, 1.5);
-            betti_1_holes = *qcc.betti_numbers.get(1).unwrap_or(&0);
-
-            if betti_1_holes > 0 {
-                println!("🧠 [Topologi Kuantum] Betti-1: Mendeteksi {} lubang (holes) pada struktur awal. Task mungkin bertipe Flood-Fill / Enclosure.", betti_1_holes);
-            } else {
-                println!(
-                    "🧠 [Topologi Kuantum] Betti-1: Tidak ada lubang terdeteksi. Struktur solid."
-                );
-            }
-        }
 
         // Cek Saliency Ratio: Seberapa besar porsi grid yang benar-benar aktif dibanding keseluruhan?
-        // Menghitung berdasarkan massa total entitas aktif (jumlah piksel)
-        if let Some((man_in, _)) = train_states.first() {
-            let mut total_active_mass = 0.0;
-            for i in 0..man_in.active_count {
-                if man_in.tokens[i] != 0 {
-                    total_active_mass += man_in.masses[i];
-                }
-            }
-
-            let total_area = (man_in.global_width * man_in.global_height).max(1.0);
-            self.self_reflection.active_saliency_ratio = total_active_mass / total_area;
-        }
+        crate::reasoning::agent::orientation::OrientationEngine::calculate_saliency_ratio(
+            &train_states,
+            &mut self.self_reflection,
+        );
 
         // Asosiasi Masa Lalu (Knowledge Base) & Betti-1 Injection
         let mut historical_axiom_injected = false;
@@ -439,18 +411,8 @@ impl RrmAgent {
         let mut loop_counter = 0;
         let max_loops = 6;
 
-        let calculate_dark_matter = |manifold: &EntityManifold| -> f32 {
-            if manifold.active_count == 0 {
-                return 0.0;
-            }
-            let mut zero_mass_count = 0;
-            for i in 0..manifold.active_count {
-                if manifold.masses[i] == 0.0 {
-                    zero_mass_count += 1;
-                }
-            }
-            zero_mass_count as f32 / manifold.active_count as f32
-        };
+        let calculate_dark_matter =
+            crate::reasoning::agent::cognitive_loop::CognitiveLoop::calculate_dark_matter;
 
         let mut best_rule: Option<WaveNode> = None;
         let mut seed_axioms: Vec<WaveNode> = Vec::new();
