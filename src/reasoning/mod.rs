@@ -21,3 +21,4 @@ pub mod counterfactual_engine;
 pub mod hierarchical_planner;
 pub mod skill_composer;
 pub mod structures;
+pub mod sandbox_physics;

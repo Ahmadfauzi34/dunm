@@ -41,30 +41,12 @@ impl MultiverseSandbox {
         let mut collision_detected = false;
         // 🌟 FISIKA TIER 8: REKURSI MACRO (Interpreter Siklus Otot/Skill) 🌟
         if physics_tier == 8 {
-            if axiom_type.starts_with("MACRO:") {
-                // TENSOR DRIVEN EXECUTION
-                // Alih-alih if-else hardcode, MCTS akan memutar ruang menggunakan Array Tensor murni.
-                // Jika array ini adalah hasil distilasi 'Anomaly Cropping', ia akan mengikat dan menormalkan pusat massa ke origin.
-                if delta_spatial.iter().any(|&v| v.abs() > 0.0) {
-                    let sp_mut = &mut u.spatial_tensors;
-                    let dim = crate::core::config::GLOBAL_DIMENSION;
+            let macro_success = crate::reasoning::sandbox_physics::tier_macro::TierMacroPhysics::apply_macro_physics(
+                u, delta_spatial, axiom_type
+            );
 
-                    for i in 0..u.active_count {
-                        let start = i * dim;
-                        let end = start + dim;
-                        let chunk = ndarray::Array1::from_vec(sp_mut[start..end].to_vec());
-                        let new_chunk = FHRR::bind(&chunk, delta_spatial);
-                        if let Some(slice) = new_chunk.as_slice() {
-                            sp_mut[start..end].copy_from_slice(slice);
-                        } else {
-                            return false;
-                        }
-                    }
-
-                    // Untuk merubah piksel visual, sistem akan mende-bind posisinya
-                    // menggunakan hologram_decoder. Namun di MCTS Phase, cukup transform Tensor-nya dulu.
-                }
-                // (Untuk task visual murni 2dc579da sementara tetap kita biarkan fallback jika tidak ada Tensor, tapi kali ini Tensornya ada!)
+            if !macro_success {
+                return false;
             }
 
             if let Some(macro_content) = axiom_type.strip_prefix("MACRO:") {
