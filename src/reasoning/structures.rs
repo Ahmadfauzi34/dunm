@@ -59,14 +59,7 @@ impl Axiom<Unverified> {
         use crate::core::config::GLOBAL_DIMENSION;
         let mut id_tensor = Array1::zeros(GLOBAL_DIMENSION);
         id_tensor[0] = 1.0;
-        Self::new(
-            "IDENTITY",
-            0,
-            id_tensor.clone(),
-            id_tensor,
-            0.0,
-            0.0,
-        )
+        Self::new("IDENTITY", 0, id_tensor.clone(), id_tensor, 0.0, 0.0)
     }
 
     /// Consume this Unverified Axiom and transition it to a Verified Axiom at compile time.

@@ -67,23 +67,28 @@ mod tests {
         let y_seed = FHRR::create(Some(43));
 
         // Test MIRROR_X
-        let mirror_x = AxiomGenerator::generate_geometric_axiom("MIRROR_X", 1.0, 2.0, &x_seed, &y_seed);
+        let mirror_x =
+            AxiomGenerator::generate_geometric_axiom("MIRROR_X", 1.0, 2.0, &x_seed, &y_seed);
         assert_eq!(mirror_x.len(), GLOBAL_DIMENSION);
 
         // Test MIRROR_Y
-        let mirror_y = AxiomGenerator::generate_geometric_axiom("MIRROR_Y", 1.0, 2.0, &x_seed, &y_seed);
+        let mirror_y =
+            AxiomGenerator::generate_geometric_axiom("MIRROR_Y", 1.0, 2.0, &x_seed, &y_seed);
         assert_eq!(mirror_y.len(), GLOBAL_DIMENSION);
 
         // Test MIRROR_XY
-        let mirror_xy = AxiomGenerator::generate_geometric_axiom("MIRROR_XY", 1.0, 2.0, &x_seed, &y_seed);
+        let mirror_xy =
+            AxiomGenerator::generate_geometric_axiom("MIRROR_XY", 1.0, 2.0, &x_seed, &y_seed);
         assert_eq!(mirror_xy.len(), GLOBAL_DIMENSION);
 
         // Test default case
-        let default_case = AxiomGenerator::generate_geometric_axiom("UNKNOWN", 1.0, 2.0, &x_seed, &y_seed);
+        let default_case =
+            AxiomGenerator::generate_geometric_axiom("UNKNOWN", 1.0, 2.0, &x_seed, &y_seed);
         assert_eq!(default_case.len(), GLOBAL_DIMENSION);
 
         // Ensure deterministic behavior
-        let mirror_x_2 = AxiomGenerator::generate_geometric_axiom("MIRROR_X", 1.0, 2.0, &x_seed, &y_seed);
+        let mirror_x_2 =
+            AxiomGenerator::generate_geometric_axiom("MIRROR_X", 1.0, 2.0, &x_seed, &y_seed);
         let similarity = FHRR::similarity(&mirror_x, &mirror_x_2);
         assert!(similarity > 0.99);
 

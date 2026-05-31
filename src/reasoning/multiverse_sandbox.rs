@@ -41,30 +41,12 @@ impl MultiverseSandbox {
         let mut collision_detected = false;
         // 🌟 FISIKA TIER 8: REKURSI MACRO (Interpreter Siklus Otot/Skill) 🌟
         if physics_tier == 8 {
-            if axiom_type.starts_with("MACRO:") {
-                // TENSOR DRIVEN EXECUTION
-                // Alih-alih if-else hardcode, MCTS akan memutar ruang menggunakan Array Tensor murni.
-                // Jika array ini adalah hasil distilasi 'Anomaly Cropping', ia akan mengikat dan menormalkan pusat massa ke origin.
-                if delta_spatial.iter().any(|&v| v.abs() > 0.0) {
-                    let sp_mut = &mut u.spatial_tensors;
-                    let dim = crate::core::config::GLOBAL_DIMENSION;
+            let macro_success = crate::reasoning::sandbox_physics::tier_macro::TierMacroPhysics::apply_macro_physics(
+                u, delta_spatial, axiom_type
+            );
 
-                    for i in 0..u.active_count {
-                        let start = i * dim;
-                        let end = start + dim;
-                        let chunk = ndarray::Array1::from_vec(sp_mut[start..end].to_vec());
-                        let new_chunk = FHRR::bind(&chunk, delta_spatial);
-                        if let Some(slice) = new_chunk.as_slice() {
-                            sp_mut[start..end].copy_from_slice(slice);
-                        } else {
-                            return false;
-                        }
-                    }
-
-                    // Untuk merubah piksel visual, sistem akan mende-bind posisinya
-                    // menggunakan hologram_decoder. Namun di MCTS Phase, cukup transform Tensor-nya dulu.
-                }
-                // (Untuk task visual murni 2dc579da sementara tetap kita biarkan fallback jika tidak ada Tensor, tapi kali ini Tensornya ada!)
+            if !macro_success {
+                return false;
             }
 
             if let Some(macro_content) = axiom_type.strip_prefix("MACRO:") {
@@ -211,8 +193,123 @@ impl MultiverseSandbox {
                         }
                     }
                 }
+            } else if axiom_type.starts_with("SCALE_AND_FILL_") {
+                // Parsing format SCALE_AND_FILL_{color}_{target_w}x{target_h}
+                let parts: Vec<&str> = axiom_type.split('_').collect();
+                if parts.len() >= 4 {
+                    if let Ok(target_color) = parts[3].parse::<i32>() {
+                        let dim_part = parts.last().unwrap_or(&"0x0");
+                        let dims: Vec<&str> = dim_part.split('x').collect();
+                        if dims.len() == 2 {
+                            if let (Ok(tw), Ok(th)) =
+                                (dims[0].parse::<f32>(), dims[1].parse::<f32>())
+                            {
+                                // Eksekusi Scale and Fill mirip dengan SPAWN tetapi menutupi ukuran baru
+                                // Asumsikan posisi anchor (kiri atas) dari target (seperti SPAWN)
+                                // Delta_x dan delta_y di sini menampung offset pergerakan pusat jika ada
+                                if let Some(cond) = condition_tensor {
+                                    let mut anchor_x = 9999.0;
+                                    let mut anchor_y = 9999.0;
+                                    let mut found_anchor = false;
+
+                                    for e in 0..u.active_count {
+                                        if u.masses[e] > 0.0 {
+                                            let sem = u.get_semantic_tensor(e);
+                                            if FHRR::similarity(&sem, cond) >= 0.8 {
+                                                found_anchor = true;
+                                                let cx = u.centers_x[e];
+                                                let cy = u.centers_y[e];
+                                                if cx < anchor_x {
+                                                    anchor_x = cx;
+                                                }
+                                                if cy < anchor_y {
+                                                    anchor_y = cy;
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    if found_anchor {
+                                        // Mengaplikasikan delta pergerakan (offset translasi pusat massa yang diberikan axiom)
+                                        let mut center_offset_x = 0.0;
+                                        let mut center_offset_y = 0.0;
+
+                                        if delta_x.abs() > 0.0 || delta_y.abs() > 0.0 {
+                                            // delta_x dan delta_y mengukur offset pergerakan pusat ke pusat baru.
+                                            // Kita asumsikan pergeseran ini dikenakan pada BBox Anchor Kiri-Atas (Min)
+                                            center_offset_x = delta_x;
+                                            center_offset_y = delta_y;
+                                        }
+
+                                        let min_xi = (anchor_x + center_offset_x).round() as i32;
+                                        let max_xi =
+                                            (anchor_x + center_offset_x + tw - 1.0).round() as i32;
+                                        let min_yi = (anchor_y + center_offset_y).round() as i32;
+                                        let max_yi =
+                                            (anchor_y + center_offset_y + th - 1.0).round() as i32;
+
+                                        let new_sem_tensor = FHRR::fractional_bind(
+                                            crate::core::core_seeds::CoreSeeds::color_seed(),
+                                            target_color as f32,
+                                        );
+
+                                        for spawn_y in min_yi..=max_yi {
+                                            for spawn_x in min_xi..=max_xi {
+                                                let mut occupied = false;
+                                                for e in 0..u.active_count {
+                                                    if u.masses[e] > 0.0
+                                                        && (u.centers_x[e] - spawn_x as f32).abs()
+                                                            < 0.1
+                                                        && (u.centers_y[e] - spawn_y as f32).abs()
+                                                            < 0.1
+                                                    {
+                                                        occupied = true;
+                                                        // Update the color if it's already occupied but different
+                                                        if u.tokens[e] != target_color {
+                                                            u.tokens[e] = target_color;
+                                                            let mut sem_tensor =
+                                                                u.get_semantic_tensor_mut(e);
+                                                            sem_tensor.assign(&new_sem_tensor);
+                                                        }
+                                                        break;
+                                                    }
+                                                }
+
+                                                if !occupied {
+                                                    let mut dm_idx = u.active_count;
+                                                    for m_idx in 0..u.active_count {
+                                                        if u.masses[m_idx] == 0.0 {
+                                                            dm_idx = m_idx;
+                                                            break;
+                                                        }
+                                                    }
+
+                                                    u.ensure_scalar_capacity(dm_idx + 1);
+
+                                                    u.masses[dm_idx] = 1.0;
+                                                    u.centers_x[dm_idx] = spawn_x as f32;
+                                                    u.centers_y[dm_idx] = spawn_y as f32;
+                                                    u.tokens[dm_idx] = target_color;
+
+                                                    let mut sem_tensor =
+                                                        u.get_semantic_tensor_mut(dm_idx);
+                                                    sem_tensor.assign(&new_sem_tensor);
+
+                                                    if dm_idx >= u.active_count {
+                                                        u.active_count = dm_idx + 1;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        // End of Spawn Box Logic
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
-            // Karena ini operasi SPAWN murni, kita bisa langsung return dari fungsi.
+            // Karena ini operasi SPAWN/SCALE_FILL murni, kita bisa langsung return dari fungsi.
             return false;
         }
 
@@ -282,6 +379,38 @@ impl MultiverseSandbox {
                         _ = max_x;
                         max_y = min_y + target_h - 1.0;
                         _ = max_y;
+
+                        // Eksekusi pemotongan CROP_WINDOW_AROUND(color) secara fisik dalam engine.
+                        // Jika Sandbox tidak diselaraskan ke resolusi grid target (dimensi ini bisa jadi fiktif kalau hanya CoG),
+                        // maka kita ubah array spasial untuk membunuh entitas di luar bounds:
+                        for e in 0..u.active_count {
+                            if u.masses[e] > 0.0 {
+                                let cx = u.centers_x[e];
+                                let cy = u.centers_y[e];
+                                if cx < min_x || cx > max_x || cy < min_y || cy > max_y {
+                                    u.masses[e] = 0.0; // Hancurkan entitas (crop cut)
+                                } else {
+                                    // Geser sisa entitas agar relatif terhadap batas min
+                                    u.centers_x[e] -= min_x;
+                                    u.centers_y[e] -= min_y;
+                                    // Peringatan: Saat ini sistem hologram bergantung tensor,
+                                    // Jadi tensor juga harus digeser spasialnya.
+                                    let spatial = u.get_spatial_tensor(e);
+                                    let shift_x = FHRR::fractional_bind(
+                                        crate::core::core_seeds::CoreSeeds::x_axis_seed(),
+                                        -min_x,
+                                    );
+                                    let shift_y = FHRR::fractional_bind(
+                                        crate::core::core_seeds::CoreSeeds::y_axis_seed(),
+                                        -min_y,
+                                    );
+                                    let shifted_tensor = FHRR::bind(&shift_x, &shift_y);
+                                    let new_spatial = FHRR::bind(&spatial, &shifted_tensor);
+                                    let mut mut_spatial = u.get_spatial_tensor_mut(e);
+                                    mut_spatial.assign(&new_spatial);
+                                }
+                            }
+                        }
                     }
                 }
             } else if axiom_type.starts_with("CROP_TO_QUADRANT_") {

@@ -15,8 +15,10 @@ pub mod top_down_axiomator;
 pub mod topological_aligner;
 pub mod wave_dynamics;
 
+pub mod agent;
 pub mod causal_reasoning;
 pub mod counterfactual_engine;
 pub mod hierarchical_planner;
 pub mod skill_composer;
 pub mod structures;
+pub mod sandbox_physics;
