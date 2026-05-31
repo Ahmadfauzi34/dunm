@@ -44,6 +44,14 @@ impl TopDownAxiomator {
             &input_atoms,
             &output_atoms,
         ));
+        axioms.extend(Self::generate_extrapolation_axioms(
+            &input_atoms,
+            &output_atoms,
+        ));
+        axioms.extend(Self::generate_intersection_fill_axioms(
+            &input_atoms,
+            &output_atoms,
+        ));
         axioms.extend(Self::generate_scale_and_fill_axioms(
             &input_atoms,
             &output_atoms,
@@ -61,6 +69,138 @@ impl TopDownAxiomator {
                 .partial_cmp(&a.similarity)
                 .unwrap_or(std::cmp::Ordering::Equal)
         });
+
+        axioms
+    }
+
+    /// Deteksi Ekstrapolasi Linier (Diagonal / Garis Lurus) -> `SPAWN_EXTRAPOLATE`
+    /// Menangani task seperti 22233c11.json, di mana objek ditempatkan di ujung atau ekstensi dari pola yang ada.
+    fn generate_extrapolation_axioms(
+        input_atoms: &[GestaltAtom],
+        output_atoms: &[GestaltAtom],
+    ) -> Vec<TopologicalMatch> {
+        let mut axioms = Vec::new();
+
+        // Cari warna elemen baru (yang di-spawn di output)
+        for out_atom in output_atoms {
+            let mut is_new = true;
+            for in_atom in input_atoms {
+                if in_atom.color == out_atom.color {
+                    is_new = false;
+                    break;
+                }
+            }
+
+            if is_new {
+                // Ada warna baru di-spawn.
+                // Cari dua elemen dengan tipe/warna yang sama di input untuk mencari vektor arah.
+                let mut anchors: Vec<&GestaltAtom> = Vec::new();
+                for in_atom in input_atoms {
+                    if in_atom.pixel_count > 0 {
+                        anchors.push(in_atom);
+                    }
+                }
+
+                // Urutkan berdasarkan posisi spasial (misal x kemudian y) agar mendapatkan urutan linier
+                anchors.sort_by(|a, b| {
+                    a.center_of_mass.0.partial_cmp(&b.center_of_mass.0).unwrap_or(std::cmp::Ordering::Equal)
+                });
+
+                if anchors.len() >= 2 {
+                    // Cek apakah out_atom adalah kelanjutan linier dari p1 -> p2
+                    let p1 = anchors[anchors.len() - 2];
+                    let p2 = anchors[anchors.len() - 1];
+
+                    let dx_anchor = p2.center_of_mass.0 - p1.center_of_mass.0;
+                    let dy_anchor = p2.center_of_mass.1 - p1.center_of_mass.1;
+
+                    let dx_out = out_atom.center_of_mass.0 - p2.center_of_mass.0;
+                    let dy_out = out_atom.center_of_mass.1 - p2.center_of_mass.1;
+
+                    // Verifikasi apakah vektornya searah
+                    if dx_anchor.signum() == dx_out.signum() && dy_anchor.signum() == dy_out.signum() {
+                        let id_tensor = Self::identity_tensor();
+                        let cond = FHRR::fractional_bind(CoreSeeds::color_seed(), p2.color as f32);
+
+                        let out_w = out_atom.bounding_box.2 - out_atom.bounding_box.0 + 1.0;
+                        let out_h = out_atom.bounding_box.3 - out_atom.bounding_box.1 + 1.0;
+
+                        axioms.push(TopologicalMatch {
+                            source_index: 0,
+                            target_index: -1,
+                            similarity: 0.84, // Heuristic Extrapolation
+                            condition_tensor: Some(cond),
+                            delta_spatial: id_tensor.clone(),
+                            delta_semantic: id_tensor.clone(),
+                            delta_x: dx_out.round(),
+                            delta_y: dy_out.round(),
+                            axiom_type: format!("SCALE_AND_FILL_{}_{}x{}", out_atom.color, out_w.round(), out_h.round()),
+                            physics_tier: 6,
+                        });
+                    }
+                }
+            }
+        }
+
+        axioms
+    }
+
+    /// Deteksi: "Isi perpotongan garis atau sudut dari objek berongga/garis" -> `INTERSECTION_FILL`
+    /// Menangani task seperti 29623171 di mana Cross/Garis membatasi wilayah yang harus diisi warna.
+    fn generate_intersection_fill_axioms(
+        input_atoms: &[GestaltAtom],
+        output_atoms: &[GestaltAtom],
+    ) -> Vec<TopologicalMatch> {
+        let mut axioms = Vec::new();
+
+        // Cari warna elemen baru (yang sebelumnya massanya 0 atau tidak ada di input)
+        for out_atom in output_atoms {
+            let mut is_new = true;
+            for in_atom in input_atoms {
+                if in_atom.color == out_atom.color {
+                    is_new = false;
+                    break;
+                }
+            }
+
+            if is_new {
+                // Ada warna baru di-spawn. Kemungkinan besar ini adalah isian (Fill) atau anotasi titik.
+                // Cari anchor di dekatnya
+                for in_atom in input_atoms {
+                    if in_atom.pixel_count > 0 {
+                        // Jika bounding box out_atom berada di dalam bounding box in_atom (mengisi sudut/perpotongan)
+                        let in_b = in_atom.bounding_box;
+                        let out_b = out_atom.bounding_box;
+
+                        if out_b.0 >= in_b.0 && out_b.2 <= in_b.2 && out_b.1 >= in_b.1 && out_b.3 <= in_b.3 {
+                            let id_tensor = Self::identity_tensor();
+                            let cond = FHRR::fractional_bind(CoreSeeds::color_seed(), in_atom.color as f32);
+
+                            // Delta relative position
+                            let dx = out_b.0 - in_b.0;
+                            let dy = out_b.1 - in_b.1;
+
+                            // Lebar/tinggi yang diisi
+                            let out_w = out_b.2 - out_b.0 + 1.0;
+                            let out_h = out_b.3 - out_b.1 + 1.0;
+
+                            axioms.push(TopologicalMatch {
+                                source_index: 0,
+                                target_index: -1,
+                                similarity: 0.82,
+                                condition_tensor: Some(cond),
+                                delta_spatial: id_tensor.clone(),
+                                delta_semantic: id_tensor.clone(),
+                                delta_x: dx.round(),
+                                delta_y: dy.round(),
+                                axiom_type: format!("SCALE_AND_FILL_{}_{}x{}", out_atom.color, out_w.round(), out_h.round()),
+                                physics_tier: 6,
+                            });
+                        }
+                    }
+                }
+            }
+        }
 
         axioms
     }
