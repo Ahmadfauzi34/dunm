@@ -28,3 +28,6 @@
 ## 2026-05-18 - Perbaikan MCTS Depth Check & Sanitasi PR
 **Learning:** `CognitivePhase::MacroStructural` di `quantum_search.rs` sebelumnya salah dievaluasi pada `current_depth <= 1`, menyebabkan evaluasi yang seharusnya untuk piksel mikroskopis dilewati. Hal ini menyebabkan error pragmatis negatif tinggi diartikan sebagai *ground state*. Selain itu, meninggalkan script scratchpad Python `.py` di indeks *working tree* merusak standar kebersihan repositori.
 **Action:** Evaluasi MacroStructural dipaksa *strictly* untuk `current_depth == 0`. Selalu bersihkan *working tree* dari skrip scratchpad atau `.log` sebelum meng-commit dan merilis patch, menggunakan `git rm --cached` atau menambahkannya ke `.gitignore`.
+## 2026-05-18 - .gitignore override
+**Learning:** Ketika menambahkan script `.py` penting (seperti utility tools) sementara repositori memiliki `.gitignore` global untuk `*.py`, file tersebut tidak akan ter-add dengan `git add` biasa.
+**Action:** Gunakan flag `-f` (`git add -f path/to/script.py`) untuk memaksa memasukkan utility tool tersebut tanpa harus mengubah `.gitignore` global (sehingga tidak merusak isolasi scratchpad).
