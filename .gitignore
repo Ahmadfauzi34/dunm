@@ -6,3 +6,6 @@ knowledge/skills/auto/*.md
 logs/
 main/
 rrm_rust/knowledge/
+
+*.py
+arc_output*.log

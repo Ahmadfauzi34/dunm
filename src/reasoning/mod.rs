@@ -19,6 +19,6 @@ pub mod agent;
 pub mod causal_reasoning;
 pub mod counterfactual_engine;
 pub mod hierarchical_planner;
+pub mod sandbox_physics;
 pub mod skill_composer;
 pub mod structures;
-pub mod sandbox_physics;

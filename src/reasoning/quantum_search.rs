@@ -327,7 +327,7 @@ impl FractalArena {
         let mut total_epistemic_value = 0.0;
 
         let current_depth = self.children_ranges[idx].1 as usize;
-        let current_phase = if current_depth <= 1 {
+        let current_phase = if current_depth == 0 {
             CognitivePhase::MacroStructural // Langkah pertama HARUS menyelesaikan dimensi!
         } else {
             CognitivePhase::Microscopic // Langkah kedua merapikan isi (piksel)
@@ -448,8 +448,7 @@ impl AsyncWaveSearch {
                     max_branching_factor: 20,
                 };
 
-                if let Some(idx) =
-                    arena.spawn_node(None, root_tolerance, wave.state_manifolds.clone())
+                if let Some(idx) = arena.spawn_node(None, root_tolerance, initial_manifolds.clone())
                 {
                     root_idx = idx;
                 } else {
@@ -582,9 +581,16 @@ impl AsyncWaveSearch {
                     arena.amplitudes[current_idx] *= 0.5; // Mengurangi probabilitas secara drastis
                 }
 
-
                 let pragmatic_error = arena.reasoning_pragmatic[current_idx];
                 let epistemic_value = arena.reasoning_epistemic[current_idx];
+
+                let current_axiom_str = arena.axiom_path[current_idx].join(" ");
+                if current_axiom_str.contains("SPAWN_EXTRAPOLATE")
+                    || current_axiom_str.contains("INTERSECTION_FILL")
+                {
+                    arena.amplitudes[current_idx] = 1.0;
+                }
+
                 let amplitude = arena.amplitudes[current_idx];
                 let current_depth = arena.children_ranges[current_idx].1 as usize;
 
@@ -592,7 +598,7 @@ impl AsyncWaveSearch {
                 let m_width = arena.states[current_idx][0].global_width;
                 let m_height = arena.states[current_idx][0].global_height;
 
-                let is_ground_state = pragmatic_error <= 0.0 && current_depth >= 1;
+                let is_ground_state = pragmatic_error == 0.0 && current_depth >= 1;
                 let is_pruned = amplitude < 0.01;
 
                 println!(

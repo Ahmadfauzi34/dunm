@@ -81,7 +81,6 @@ impl TopDownAxiomator {
     ) -> Vec<TopologicalMatch> {
         let mut axioms = Vec::new();
 
-        // Cari warna elemen baru (yang di-spawn di output)
         for out_atom in output_atoms {
             let mut is_new = true;
             for in_atom in input_atoms {
@@ -92,49 +91,38 @@ impl TopDownAxiomator {
             }
 
             if is_new {
-                // Ada warna baru di-spawn.
-                // Cari dua elemen dengan tipe/warna yang sama di input untuk mencari vektor arah.
-                let mut anchors: Vec<&GestaltAtom> = Vec::new();
-                for in_atom in input_atoms {
-                    if in_atom.pixel_count > 0 {
-                        anchors.push(in_atom);
+                // If it's a new color being spawned, it might be an extrapolation.
+                // We emit a SPAWN_EXTRAPOLATE action and let the physics tier figure out the extremities.
+                // We use delta_x and delta_y to pass the out_atom's dimension, not absolute position!
+
+                let out_w = out_atom.bounding_box.2 - out_atom.bounding_box.0 + 1.0;
+                let out_h = out_atom.bounding_box.3 - out_atom.bounding_box.1 + 1.0;
+
+                // Pick any potential anchor color from input to serve as reference
+                for anchor in input_atoms {
+                    if anchor.pixel_count > 0 && anchor.color != 0 && anchor.color != out_atom.color
+                    {
+                        let id_tensor = Self::identity_tensor();
+                        let cond =
+                            FHRR::fractional_bind(CoreSeeds::color_seed(), anchor.color as f32);
+
+                        axioms.push(TopologicalMatch {
+                            source_index: 0,
+                            target_index: -1,
+                            similarity: 5.99, // Force survival
+                            condition_tensor: Some(cond),
+                            delta_spatial: id_tensor.clone(),
+                            delta_semantic: id_tensor.clone(),
+                            delta_x: out_w.round(),
+                            delta_y: out_h.round(),
+                            axiom_type: format!("SPAWN_EXTRAPOLATE_{}", out_atom.color),
+                            physics_tier: 6,
+                        });
+                        break; // Just emit one valid anchor type per new color
                     }
-                }
-
-                // Urutkan berdasarkan posisi spasial (misal x kemudian y) agar mendapatkan urutan linier
-                anchors.sort_by(|a, b| {
-                    a.center_of_mass.0.partial_cmp(&b.center_of_mass.0).unwrap_or(std::cmp::Ordering::Equal)
-                });
-
-                if anchors.len() >= 2 {
-                    // Cek apakah out_atom adalah kelanjutan linier dari p1 -> p2
-                    let p2 = anchors[anchors.len() - 1];
-
-                    let id_tensor = Self::identity_tensor();
-                    let cond = FHRR::fractional_bind(CoreSeeds::color_seed(), p2.color as f32);
-
-                    let out_w = out_atom.bounding_box.2 - out_atom.bounding_box.0 + 1.0;
-                    let out_h = out_atom.bounding_box.3 - out_atom.bounding_box.1 + 1.0;
-
-                    let min_x = out_atom.bounding_box.0;
-                    let min_y = out_atom.bounding_box.1;
-
-                    axioms.push(TopologicalMatch {
-                        source_index: 0,
-                        target_index: -1,
-                        similarity: 5.99, // Force survival
-                        condition_tensor: Some(cond),
-                        delta_spatial: id_tensor.clone(),
-                        delta_semantic: id_tensor.clone(),
-                        delta_x: min_x,
-                        delta_y: min_y,
-                        axiom_type: format!("SCALE_AND_FILL_ABS_{}_{}x{}", out_atom.color, out_w.round(), out_h.round()),
-                        physics_tier: 6,
-                    });
                 }
             }
         }
-
         axioms
     }
 
@@ -146,7 +134,6 @@ impl TopDownAxiomator {
     ) -> Vec<TopologicalMatch> {
         let mut axioms = Vec::new();
 
-        // Cari warna elemen baru (yang sebelumnya massanya 0 atau tidak ada di input)
         for out_atom in output_atoms {
             let mut is_new = true;
             for in_atom in input_atoms {
@@ -157,44 +144,36 @@ impl TopDownAxiomator {
             }
 
             if is_new {
-                // Ada warna baru di-spawn. Kemungkinan besar ini adalah isian (Fill) atau anotasi titik.
-                // Cari anchor di dekatnya
-                for in_atom in input_atoms {
-                    if in_atom.pixel_count > 0 {
-                        // Jika bounding box out_atom berada di dalam bounding box in_atom (mengisi sudut/perpotongan)
-                        let in_b = in_atom.bounding_box;
-                        let out_b = out_atom.bounding_box;
+                let id_tensor = Self::identity_tensor();
 
-                        if out_b.0 >= in_b.0 && out_b.2 <= in_b.2 && out_b.1 >= in_b.1 && out_b.3 <= in_b.3 {
-                            let id_tensor = Self::identity_tensor();
-                            let cond = FHRR::fractional_bind(CoreSeeds::color_seed(), in_atom.color as f32);
+                // For intersection fill, we usually anchor to the grid or line color.
+                // We'll emit an INTERSECTION_FILL action.
+                let out_w = out_atom.bounding_box.2 - out_atom.bounding_box.0 + 1.0;
+                let out_h = out_atom.bounding_box.3 - out_atom.bounding_box.1 + 1.0;
 
-                            // Delta relative position
-                            let dx = out_b.0 - in_b.0;
-                            let dy = out_b.1 - in_b.1;
+                for anchor in input_atoms {
+                    if anchor.pixel_count > 0 && anchor.color != 0 && anchor.color != out_atom.color
+                    {
+                        let cond =
+                            FHRR::fractional_bind(CoreSeeds::color_seed(), anchor.color as f32);
 
-                            // Lebar/tinggi yang diisi
-                            let out_w = out_b.2 - out_b.0 + 1.0;
-                            let out_h = out_b.3 - out_b.1 + 1.0;
-
-                            axioms.push(TopologicalMatch {
-                                source_index: 0,
-                                target_index: -1,
-                                similarity: 0.82,
-                                condition_tensor: Some(cond),
-                                delta_spatial: id_tensor.clone(),
-                                delta_semantic: id_tensor.clone(),
-                                delta_x: dx.round(),
-                                delta_y: dy.round(),
-                                axiom_type: format!("SCALE_AND_FILL_ABS_{}_{}x{}", out_atom.color, out_w.round(), out_h.round()),
-                                physics_tier: 6,
-                            });
-                        }
+                        axioms.push(TopologicalMatch {
+                            source_index: 0,
+                            target_index: -1,
+                            similarity: 5.99,
+                            condition_tensor: Some(cond),
+                            delta_spatial: id_tensor.clone(),
+                            delta_semantic: id_tensor.clone(),
+                            delta_x: out_w.round(),
+                            delta_y: out_h.round(),
+                            axiom_type: format!("INTERSECTION_FILL_{}", out_atom.color),
+                            physics_tier: 6,
+                        });
+                        break;
                     }
                 }
             }
         }
-
         axioms
     }
 
@@ -610,7 +589,7 @@ impl TopDownAxiomator {
                                 delta_x: dx.round(),
                                 delta_y: dy.round(),
                                 axiom_type: format!(
-                                    "SCALE_AND_FILL_{}_{}x{}",
+                                    "SCALE_AND_FILL_ABS_{}_{}x{}",
                                     in_atom.color,
                                     out_w.round(),
                                     out_h.round()
