@@ -582,6 +582,7 @@ impl AsyncWaveSearch {
                     arena.amplitudes[current_idx] *= 0.5; // Mengurangi probabilitas secara drastis
                 }
 
+
                 let pragmatic_error = arena.reasoning_pragmatic[current_idx];
                 let epistemic_value = arena.reasoning_epistemic[current_idx];
                 let amplitude = arena.amplitudes[current_idx];
@@ -591,7 +592,7 @@ impl AsyncWaveSearch {
                 let m_width = arena.states[current_idx][0].global_width;
                 let m_height = arena.states[current_idx][0].global_height;
 
-                let is_ground_state = pragmatic_error <= 0.0 && current_depth > 1;
+                let is_ground_state = pragmatic_error <= 0.0 && current_depth >= 1;
                 let is_pruned = amplitude < 0.01;
 
                 println!(
@@ -699,6 +700,7 @@ impl AsyncWaveSearch {
 
                 // Quantum Tunneling & Ghost Amplitudes (Dynamic Pruning)
                 // Jika amplitudo rendah atau energi memburuk, jangan dibunuh (0.0). Beri Phase Shift (Amplitudo Hantu)
+
                 let predicted_min_energy =
                     pragmatic_error * 0.9f32.powi((self.max_depth as i32) - (current_depth as i32));
 
