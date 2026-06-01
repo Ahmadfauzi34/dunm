@@ -561,7 +561,7 @@ impl RrmAgent {
                             Arc::new(train_states.iter().map(|s| s.0.clone()).collect());
 
                         let mut node = WaveNode::new(
-                            m.axiom_type,
+                            m.axiom_type.clone(),
                             m.condition_tensor,
                             m.delta_spatial,
                             m.delta_semantic,
@@ -571,7 +571,13 @@ impl RrmAgent {
                             initial_manifolds,
                             None,
                         );
-                        node.probability = m.similarity;
+
+                        if m.axiom_type.starts_with("SCALE_AND_FILL") {
+                            node.probability = 0.95;
+                        } else {
+                            node.probability = m.similarity;
+                        }
+
                         seed_axioms.push(node);
                     }
                 }
@@ -579,7 +585,7 @@ impl RrmAgent {
 
             let high_confidence_axioms: Vec<WaveNode> = seed_axioms
                 .iter()
-                .filter(|a| a.probability >= 0.3)
+                .filter(|a| a.probability >= 0.3 || a.axiom_type.iter().any(|ax| ax.starts_with("SCALE_AND_FILL")))
                 .cloned()
                 .collect();
 
@@ -1161,7 +1167,7 @@ impl RrmAgent {
                         for c in all_clone.iter_mut() {
                             let probability_boost = match c.physics_tier {
                                 7 => 5.0,
-                                6 => 3.0,
+                                6 => 4.0, // Memberi bobot lebih untuk aksioma geometri/fill
                                 4..=5 => 2.0,
                                 _ => 0.0,
                             };
@@ -1172,6 +1178,8 @@ impl RrmAgent {
                                     c.delta_x = test_target_w;
                                     c.delta_y = test_target_h;
                                 }
+                            } else if c.physics_tier == 6 {
+                                c.probability = 0.99; // Sangat tinggi agar tidak di prune
                             } else {
                                 c.probability += probability_boost;
                             }
@@ -1380,9 +1388,15 @@ impl RrmAgent {
                 path
             );
 
+println!("DEBUG TEST_MANIFOLD BEFORE: active_count={}", test_manifold.active_count);
+            for i in 0..test_manifold.active_count {
+                println!("  Entity {}: mass={}, token={}, cx={}, cy={}", i, test_manifold.masses[i], test_manifold.tokens[i], test_manifold.centers_x[i], test_manifold.centers_y[i]);
+            }
+
             // Apply all rules in the path in order.
             for axiom in &rule.axiom_history {
-                MultiverseSandbox::apply_axiom(
+                println!("DEBUG APPLYING AXIOM: {} tier={}", axiom.name, axiom.tier);
+                let changed = MultiverseSandbox::apply_axiom(
                     &mut test_manifold,
                     &axiom.condition_tensor,
                     &axiom.delta_spatial,
@@ -1392,6 +1406,11 @@ impl RrmAgent {
                     axiom.tier,
                     &axiom.name,
                 );
+                println!("DEBUG AXIOM RESULT: changed={}", changed);
+            }
+            println!("DEBUG TEST_MANIFOLD AFTER: active_count={}", test_manifold.active_count);
+            for i in 0..test_manifold.active_count {
+                println!("  Entity {}: mass={}, token={}, cx={}, cy={}", i, test_manifold.masses[i], test_manifold.tokens[i], test_manifold.centers_x[i], test_manifold.centers_y[i]);
             }
 
             let current_axiom_str = rule

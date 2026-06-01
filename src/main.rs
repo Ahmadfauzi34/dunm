@@ -221,9 +221,11 @@ fn main() {
         let _final_result = if success {
             result
         } else {
-            println!(
-                "MCTS failed. Engaging Generative Synthesized Skill: extract_anomalous_quadrant..."
-            );
+            println!("DEBUG: Agent returned grid:");
+            for r in &result {
+                println!("{r:?}");
+            }
+            println!("MCTS failed. Engaging Generative Synthesized Skill: extract_anomalous_quadrant...");
 
             let mut raw_manifold = EntityManifold::new();
             raw_manifold.global_width = test_in[0].len() as f32;

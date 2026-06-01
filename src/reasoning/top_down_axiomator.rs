@@ -108,36 +108,29 @@ impl TopDownAxiomator {
 
                 if anchors.len() >= 2 {
                     // Cek apakah out_atom adalah kelanjutan linier dari p1 -> p2
-                    let p1 = anchors[anchors.len() - 2];
                     let p2 = anchors[anchors.len() - 1];
 
-                    let dx_anchor = p2.center_of_mass.0 - p1.center_of_mass.0;
-                    let dy_anchor = p2.center_of_mass.1 - p1.center_of_mass.1;
+                    let id_tensor = Self::identity_tensor();
+                    let cond = FHRR::fractional_bind(CoreSeeds::color_seed(), p2.color as f32);
 
-                    let dx_out = out_atom.center_of_mass.0 - p2.center_of_mass.0;
-                    let dy_out = out_atom.center_of_mass.1 - p2.center_of_mass.1;
+                    let out_w = out_atom.bounding_box.2 - out_atom.bounding_box.0 + 1.0;
+                    let out_h = out_atom.bounding_box.3 - out_atom.bounding_box.1 + 1.0;
 
-                    // Verifikasi apakah vektornya searah
-                    if dx_anchor.signum() == dx_out.signum() && dy_anchor.signum() == dy_out.signum() {
-                        let id_tensor = Self::identity_tensor();
-                        let cond = FHRR::fractional_bind(CoreSeeds::color_seed(), p2.color as f32);
+                    let min_x = out_atom.bounding_box.0;
+                    let min_y = out_atom.bounding_box.1;
 
-                        let out_w = out_atom.bounding_box.2 - out_atom.bounding_box.0 + 1.0;
-                        let out_h = out_atom.bounding_box.3 - out_atom.bounding_box.1 + 1.0;
-
-                        axioms.push(TopologicalMatch {
-                            source_index: 0,
-                            target_index: -1,
-                            similarity: 0.84, // Heuristic Extrapolation
-                            condition_tensor: Some(cond),
-                            delta_spatial: id_tensor.clone(),
-                            delta_semantic: id_tensor.clone(),
-                            delta_x: dx_out.round(),
-                            delta_y: dy_out.round(),
-                            axiom_type: format!("SCALE_AND_FILL_{}_{}x{}", out_atom.color, out_w.round(), out_h.round()),
-                            physics_tier: 6,
-                        });
-                    }
+                    axioms.push(TopologicalMatch {
+                        source_index: 0,
+                        target_index: -1,
+                        similarity: 5.99, // Force survival
+                        condition_tensor: Some(cond),
+                        delta_spatial: id_tensor.clone(),
+                        delta_semantic: id_tensor.clone(),
+                        delta_x: min_x,
+                        delta_y: min_y,
+                        axiom_type: format!("SCALE_AND_FILL_ABS_{}_{}x{}", out_atom.color, out_w.round(), out_h.round()),
+                        physics_tier: 6,
+                    });
                 }
             }
         }
@@ -193,7 +186,7 @@ impl TopDownAxiomator {
                                 delta_semantic: id_tensor.clone(),
                                 delta_x: dx.round(),
                                 delta_y: dy.round(),
-                                axiom_type: format!("SCALE_AND_FILL_{}_{}x{}", out_atom.color, out_w.round(), out_h.round()),
+                                axiom_type: format!("SCALE_AND_FILL_ABS_{}_{}x{}", out_atom.color, out_w.round(), out_h.round()),
                                 physics_tier: 6,
                             });
                         }
@@ -453,7 +446,7 @@ impl TopDownAxiomator {
                 axioms.push(TopologicalMatch {
                     source_index: 0,
                     target_index: -1,
-                    similarity: 0.85,
+                    similarity: 5.99,
                     condition_tensor: None,
                     delta_spatial: Self::identity_tensor(),
                     delta_semantic: Self::identity_tensor(),
@@ -466,7 +459,7 @@ impl TopDownAxiomator {
                 axioms.push(TopologicalMatch {
                     source_index: 0,
                     target_index: -1,
-                    similarity: 0.85,
+                    similarity: 5.99,
                     condition_tensor: None,
                     delta_spatial: Self::identity_tensor(),
                     delta_semantic: Self::identity_tensor(),
@@ -610,7 +603,7 @@ impl TopDownAxiomator {
                             axioms.push(TopologicalMatch {
                                 source_index: 0,
                                 target_index: -1,
-                                similarity: 0.85,
+                                similarity: 5.99,
                                 condition_tensor: Some(color_cond),
                                 delta_spatial: id_tensor.clone(),
                                 delta_semantic: id_tensor.clone(),

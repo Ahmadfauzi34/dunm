@@ -23,32 +23,43 @@ impl HologramDecoder {
         manifold: &EntityManifold,
         width: usize,
         height: usize,
-        _threshold: f32, // Tidak dipakai untuk Partikel murni, Z-Buffer 1.0 murni.
+        _threshold: f32,
     ) -> Vec<Vec<i32>> {
         let mut grid = vec![vec![0; width]; height];
-
-        // SWARM COLLAPSE (Lossless Absolute Collapse)
-        // Kita tidak lagi memutar Sinar Probe (Superposisi) untuk menebak keberadaan.
-        // Karena ini murni kumpulan Partikel Individu (Piksel),
-        // kita langsung render koordinat absolut mereka di layar!
 
         for e in 0..manifold.active_count {
             if manifold.masses[e] == 0.0 {
                 continue;
             }
 
-            let center_x = manifold.centers_x[e].round() as i32;
-            let center_y = manifold.centers_y[e].round() as i32;
+            let cx = manifold.centers_x[e];
+            let cy = manifold.centers_y[e];
+            let sx = manifold.spans_x[e].max(1.0);
+            let sy = manifold.spans_y[e].max(1.0);
 
-            if center_x >= 0
-                && (center_x as usize) < width
-                && center_y >= 0
-                && (center_y as usize) < height
-            {
-                // Untuk Swarm Kuantum dasar, token warna sudah tersimpan utuh.
-                // Jika ingin ekstraksi Fasa Semantik bisa panggil Probe Warna.
-                // Tapi untuk efisiensi absolut, token asli sudah tersedia di manifold!
-                grid[center_y as usize][center_x as usize] = manifold.tokens[e];
+            // Assuming cx, cy is the top-left of the BBox if it was spawned with SCALE_AND_FILL
+            // Wait, SCALE_AND_FILL spawns MULTIPLE particles of size 1x1!
+            // Wait, EntitySegmenter creates entities. Is it top-left or center?
+            // "Pusatkan jendela" in `top_down_axiomator` suggests `centers_x` is the center.
+            // Let's just draw the bounding box from `cx - sx/2` to `cx + sx/2`
+            let half_w = sx / 2.0;
+            let half_h = sy / 2.0;
+
+            // Actually, in `EntitySegmenter` `centers_x` is the exact center of mass.
+            // If `sx` is 3.0, `half_w` is 1.5.
+            // Min x = cx - half_w. Max x = cx + half_w.
+
+            let min_x = (cx - half_w).ceil() as i32;
+            let max_x = (cx + half_w).floor() as i32;
+            let min_y = (cy - half_h).ceil() as i32;
+            let max_y = (cy + half_h).floor() as i32;
+
+            for y in min_y..=max_y {
+                for x in min_x..=max_x {
+                    if x >= 0 && (x as usize) < width && y >= 0 && (y as usize) < height {
+                        grid[y as usize][x as usize] = manifold.tokens[e];
+                    }
+                }
             }
         }
 

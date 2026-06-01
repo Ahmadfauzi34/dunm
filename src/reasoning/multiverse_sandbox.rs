@@ -99,209 +99,192 @@ impl MultiverseSandbox {
 
         // TIER 6: SPAWN / FILL (Membangkitkan Dark Matter)
         // Kita tangani SPAWN sebelum loop update reguler agar partikel baru tidak ter-update dua kali.
-        if physics_tier == 6 && axiom_type.contains("SPAWN") {
-            // Karena ini adalah "Create", `delta_x` dan `delta_y` menyimpan koordinat relatif
-            // berdasarkan bounding box. Untuk saat ini kita asumsikan SPAWN mengisi seluruh BBox.
-            // BBox kita cari dari kondisi (Warna tertentu). Jika tanpa kondisi, error.
-            if let Some(cond) = condition_tensor {
-                let mut min_x = 9999.0;
-                let mut max_x = -9999.0;
-                let mut min_y = 9999.0;
-                let mut max_y = -9999.0;
-                let mut found = false;
+        if physics_tier == 6 {
+            if axiom_type.contains("SPAWN") {
+                if let Some(cond) = condition_tensor {
+                    let mut min_x = 9999.0;
+                    let mut max_x = -9999.0;
+                    let mut min_y = 9999.0;
+                    let mut max_y = -9999.0;
+                    let mut found = false;
 
-                // 1. Temukan bounding box dari target (anchor)
-                for e in 0..u.active_count {
-                    if u.masses[e] == 0.0 {
-                        continue;
-                    }
-                    let sem = u.get_semantic_tensor(e);
-                    if FHRR::similarity(&sem, cond) >= 0.8 {
-                        found = true;
-                        _ = found;
-                        let cx = u.centers_x[e];
-                        let cy = u.centers_y[e];
-                        if cx < min_x {
-                            min_x = cx;
+                    for e in 0..u.active_count {
+                        if u.masses[e] == 0.0 {
+                            continue;
                         }
-                        if cx > max_x {
-                            max_x = cx;
-                        }
-                        if cy < min_y {
-                            min_y = cy;
-                        }
-                        if cy > max_y {
-                            max_y = cy;
+                        let sem = u.get_semantic_tensor(e);
+                        if FHRR::similarity(&sem, cond) >= 0.8 {
+                            found = true;
+                            let cx = u.centers_x[e];
+                            let cy = u.centers_y[e];
+                            if cx < min_x { min_x = cx; }
+                            if cx > max_x { max_x = cx; }
+                            if cy < min_y { min_y = cy; }
+                            if cy > max_y { max_y = cy; }
                         }
                     }
-                }
 
-                // 2. Bangkitkan Dark Matter di setiap titik dalam kotak BBox tersebut
-                if found {
-                    let min_xi = min_x.round() as i32;
-                    let max_xi = max_x.round() as i32;
-                    let min_yi = min_y.round() as i32;
-                    let max_yi = max_y.round() as i32;
+                    if found {
+                        let min_xi = min_x.round() as i32;
+                        let max_xi = max_x.round() as i32;
+                        let min_yi = min_y.round() as i32;
+                        let max_yi = max_y.round() as i32;
 
-                    let target_color = delta_x as i32; // Warna target di simpan di delta_x
-                    let new_sem_tensor = FHRR::fractional_bind(
-                        crate::core::core_seeds::CoreSeeds::color_seed(),
-                        target_color as f32,
-                    );
+                        let target_color = delta_x as i32;
+                        let new_sem_tensor = FHRR::fractional_bind(
+                            crate::core::core_seeds::CoreSeeds::color_seed(),
+                            target_color as f32,
+                        );
 
-                    for spawn_y in min_yi..=max_yi {
-                        for spawn_x in min_xi..=max_xi {
-                            // Cek apakah posisi ini sudah terisi (jangan timpa)
-                            let mut occupied = false;
-                            for e in 0..u.active_count {
-                                if u.masses[e] > 0.0
-                                    && (u.centers_x[e] - spawn_x as f32).abs() < 0.1
-                                    && (u.centers_y[e] - spawn_y as f32).abs() < 0.1
-                                {
-                                    occupied = true;
-                                    break;
-                                }
-                            }
-
-                            if !occupied {
-                                // Temukan slot Dark Matter pertama atau spawn baru secara dinamis
-                                let mut dm_idx = u.active_count;
-                                // Loop until we find mass == 0.0 (if any)
-                                for m_idx in 0..u.active_count {
-                                    if u.masses[m_idx] == 0.0 {
-                                        dm_idx = m_idx;
+                        for spawn_y in min_yi..=max_yi {
+                            for spawn_x in min_xi..=max_xi {
+                                let mut occupied = false;
+                                for e in 0..u.active_count {
+                                    if u.masses[e] > 0.0
+                                        && (u.centers_x[e] - spawn_x as f32).abs() < 0.1
+                                        && (u.centers_y[e] - spawn_y as f32).abs() < 0.1
+                                    {
+                                        occupied = true;
                                         break;
                                     }
                                 }
 
-                                u.ensure_scalar_capacity(dm_idx + 1);
+                                if !occupied {
+                                    let mut dm_idx = u.active_count;
+                                    for m_idx in 0..u.active_count {
+                                        if u.masses[m_idx] == 0.0 {
+                                            dm_idx = m_idx;
+                                            break;
+                                        }
+                                    }
 
-                                // Bangkitkan!
-                                u.masses[dm_idx] = 1.0;
-                                u.centers_x[dm_idx] = spawn_x as f32;
-                                u.centers_y[dm_idx] = spawn_y as f32;
-                                u.tokens[dm_idx] = target_color;
+                                    u.ensure_scalar_capacity(dm_idx + 1);
+                                    u.masses[dm_idx] = 1.0;
+                                    u.centers_x[dm_idx] = spawn_x as f32;
+                                    u.centers_y[dm_idx] = spawn_y as f32;
+                                    u.tokens[dm_idx] = target_color;
 
-                                // Update Tensors
-                                let mut sem_tensor = u.get_semantic_tensor_mut(dm_idx);
-                                sem_tensor.assign(&new_sem_tensor);
+                                    let mut sem_tensor = u.get_semantic_tensor_mut(dm_idx);
+                                    sem_tensor.assign(&new_sem_tensor);
 
-                                if dm_idx >= u.active_count {
-                                    u.active_count = dm_idx + 1;
+                                    if dm_idx >= u.active_count {
+                                        u.active_count = dm_idx + 1;
+                                    }
                                 }
                             }
                         }
                     }
                 }
             } else if axiom_type.starts_with("SCALE_AND_FILL_") {
-                // Parsing format SCALE_AND_FILL_{color}_{target_w}x{target_h}
+                let is_abs = axiom_type.starts_with("SCALE_AND_FILL_ABS_");
                 let parts: Vec<&str> = axiom_type.split('_').collect();
-                if parts.len() >= 4 {
-                    if let Ok(target_color) = parts[3].parse::<i32>() {
+
+                let color_idx = if is_abs { 4 } else { 3 };
+
+                if parts.len() >= (color_idx + 1) {
+                    if let Ok(target_color) = parts[color_idx].parse::<i32>() {
                         let dim_part = parts.last().unwrap_or(&"0x0");
                         let dims: Vec<&str> = dim_part.split('x').collect();
                         if dims.len() == 2 {
                             if let (Ok(tw), Ok(th)) =
                                 (dims[0].parse::<f32>(), dims[1].parse::<f32>())
                             {
-                                // Eksekusi Scale and Fill mirip dengan SPAWN tetapi menutupi ukuran baru
-                                // Asumsikan posisi anchor (kiri atas) dari target (seperti SPAWN)
-                                // Delta_x dan delta_y di sini menampung offset pergerakan pusat jika ada
-                                if let Some(cond) = condition_tensor {
-                                    let mut anchor_x = 9999.0;
-                                    let mut anchor_y = 9999.0;
-                                    let mut found_anchor = false;
+                                let mut anchor_x = 0.0;
+                                let mut anchor_y = 0.0;
+                                let mut found_anchor = false;
 
-                                    for e in 0..u.active_count {
-                                        if u.masses[e] > 0.0 {
-                                            let sem = u.get_semantic_tensor(e);
-                                            if FHRR::similarity(&sem, cond) >= 0.8 {
-                                                found_anchor = true;
-                                                let cx = u.centers_x[e];
-                                                let cy = u.centers_y[e];
-                                                if cx < anchor_x {
-                                                    anchor_x = cx;
-                                                }
-                                                if cy < anchor_y {
-                                                    anchor_y = cy;
+                                if is_abs {
+                                    anchor_x = delta_x;
+                                    anchor_y = delta_y;
+                                    found_anchor = true;
+                                } else {
+                                    if let Some(cond) = condition_tensor {
+                                        anchor_x = 9999.0;
+                                        anchor_y = 9999.0;
+
+                                        for e in 0..u.active_count {
+                                            if u.masses[e] > 0.0 {
+                                                let sem = u.get_semantic_tensor(e);
+                                                if FHRR::similarity(&sem, cond) >= 0.8 {
+                                                    found_anchor = true;
+                                                    let cx = u.centers_x[e];
+                                                    let cy = u.centers_y[e];
+                                                    if cx < anchor_x {
+                                                        anchor_x = cx;
+                                                    }
+                                                    if cy < anchor_y {
+                                                        anchor_y = cy;
+                                                    }
                                                 }
                                             }
                                         }
-                                    }
-
-                                    if found_anchor {
-                                        // Mengaplikasikan delta pergerakan (offset translasi pusat massa yang diberikan axiom)
-                                        let mut center_offset_x = 0.0;
-                                        let mut center_offset_y = 0.0;
-
-                                        if delta_x.abs() > 0.0 || delta_y.abs() > 0.0 {
-                                            // delta_x dan delta_y mengukur offset pergerakan pusat ke pusat baru.
-                                            // Kita asumsikan pergeseran ini dikenakan pada BBox Anchor Kiri-Atas (Min)
-                                            center_offset_x = delta_x;
-                                            center_offset_y = delta_y;
+                                        if found_anchor {
+                                            anchor_x += delta_x;
+                                            anchor_y += delta_y;
                                         }
+                                    }
+                                }
 
-                                        let min_xi = (anchor_x + center_offset_x).round() as i32;
-                                        let max_xi =
-                                            (anchor_x + center_offset_x + tw - 1.0).round() as i32;
-                                        let min_yi = (anchor_y + center_offset_y).round() as i32;
-                                        let max_yi =
-                                            (anchor_y + center_offset_y + th - 1.0).round() as i32;
+                                if found_anchor {
+                                    let min_xi = anchor_x.round() as i32;
+                                    let max_xi = (anchor_x + tw - 1.0).round() as i32;
+                                    let min_yi = anchor_y.round() as i32;
+                                    let max_yi = (anchor_y + th - 1.0).round() as i32;
 
-                                        let new_sem_tensor = FHRR::fractional_bind(
-                                            crate::core::core_seeds::CoreSeeds::color_seed(),
-                                            target_color as f32,
-                                        );
+                                    let new_sem_tensor = FHRR::fractional_bind(
+                                        crate::core::core_seeds::CoreSeeds::color_seed(),
+                                        target_color as f32,
+                                    );
 
-                                        for spawn_y in min_yi..=max_yi {
-                                            for spawn_x in min_xi..=max_xi {
-                                                let mut occupied = false;
-                                                for e in 0..u.active_count {
-                                                    if u.masses[e] > 0.0
-                                                        && (u.centers_x[e] - spawn_x as f32).abs()
-                                                            < 0.1
-                                                        && (u.centers_y[e] - spawn_y as f32).abs()
-                                                            < 0.1
-                                                    {
-                                                        occupied = true;
-                                                        // Update the color if it's already occupied but different
-                                                        if u.tokens[e] != target_color {
-                                                            u.tokens[e] = target_color;
-                                                            let mut sem_tensor =
-                                                                u.get_semantic_tensor_mut(e);
-                                                            sem_tensor.assign(&new_sem_tensor);
-                                                        }
+                                    for spawn_y in min_yi..=max_yi {
+                                        for spawn_x in min_xi..=max_xi {
+                                            let mut occupied = false;
+                                            for e in 0..u.active_count {
+                                                if u.masses[e] > 0.0
+                                                    && (u.centers_x[e] - spawn_x as f32).abs() < 0.1
+                                                    && (u.centers_y[e] - spawn_y as f32).abs() < 0.1
+                                                {
+                                                    occupied = true;
+                                                    if u.tokens[e] != target_color {
+                                                        u.tokens[e] = target_color;
+                                                        let mut sem_tensor =
+                                                            u.get_semantic_tensor_mut(e);
+                                                        sem_tensor.assign(&new_sem_tensor);
+                                                        collision_detected = true;
+                                                    }
+                                                    break;
+                                                }
+                                            }
+
+                                            if !occupied {
+                                                let mut dm_idx = u.active_count;
+                                                for m_idx in 0..u.active_count {
+                                                    if u.masses[m_idx] == 0.0 {
+                                                        dm_idx = m_idx;
                                                         break;
                                                     }
                                                 }
 
-                                                if !occupied {
-                                                    let mut dm_idx = u.active_count;
-                                                    for m_idx in 0..u.active_count {
-                                                        if u.masses[m_idx] == 0.0 {
-                                                            dm_idx = m_idx;
-                                                            break;
-                                                        }
-                                                    }
-
-                                                    u.ensure_scalar_capacity(dm_idx + 1);
-
-                                                    u.masses[dm_idx] = 1.0;
-                                                    u.centers_x[dm_idx] = spawn_x as f32;
-                                                    u.centers_y[dm_idx] = spawn_y as f32;
-                                                    u.tokens[dm_idx] = target_color;
-
-                                                    let mut sem_tensor =
-                                                        u.get_semantic_tensor_mut(dm_idx);
-                                                    sem_tensor.assign(&new_sem_tensor);
-
-                                                    if dm_idx >= u.active_count {
-                                                        u.active_count = dm_idx + 1;
-                                                    }
+                                                u.ensure_scalar_capacity(dm_idx + 1);
+                                                u.masses[dm_idx] = 1.0;
+                                                u.centers_x[dm_idx] = spawn_x as f32;
+                                                u.centers_y[dm_idx] = spawn_y as f32;
+                                                u.tokens[dm_idx] = target_color;
+                                                let mut sem_tensor = u.get_semantic_tensor_mut(dm_idx);
+                                                sem_tensor.assign(&new_sem_tensor);
+                                                if dm_idx >= u.active_count {
+                                                    u.active_count = dm_idx + 1;
                                                 }
+                                                // Expand global bounds if we spawn out of bounds
+                                                if spawn_x as f32 >= u.global_width {
+                                                    u.global_width = spawn_x as f32 + 1.0;
+                                                }
+                                                if spawn_y as f32 >= u.global_height {
+                                                    u.global_height = spawn_y as f32 + 1.0;
+                                                }
+                                                collision_detected = true;
                                             }
                                         }
-                                        // End of Spawn Box Logic
                                     }
                                 }
                             }
@@ -309,8 +292,7 @@ impl MultiverseSandbox {
                     }
                 }
             }
-            // Karena ini operasi SPAWN/SCALE_FILL murni, kita bisa langsung return dari fungsi.
-            return false;
+            return collision_detected;
         }
 
         // 🌟 FISIKA TIER 7: CROP / PEMOTONGAN DIMENSI (FULL OPTIMIZED) 🌟
