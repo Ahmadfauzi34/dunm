@@ -188,8 +188,8 @@ impl MultiverseSandbox {
             {
                 let parts: Vec<&str> = axiom_type.split('_').collect();
                 if let Ok(target_color) = parts.last().unwrap_or(&"0").parse::<i32>() {
-                    let tw = delta_x.max(1.0);
-                    let th = delta_y.max(1.0);
+                    let _tw_old = delta_x.max(1.0);
+                    let _th_old = delta_y.max(1.0);
 
                     if let Some(cond) = condition_tensor {
                         // Extrapolation heuristics: find extremity of matching anchors
@@ -227,6 +227,43 @@ impl MultiverseSandbox {
                         }
 
                         if found_anchor {
+                            // Find dimension of FIRST contiguous component dynamically at runtime
+                            let mut visited = std::collections::HashSet::new();
+                            let mut queue = Vec::new();
+                            for e in 0..u.active_count {
+                                if u.masses[e] > 0.0 && FHRR::similarity(&u.get_semantic_tensor(e), cond) >= 0.8 {
+                                    queue.push(e);
+                                    visited.insert(e);
+                                    break;
+                                }
+                            }
+                            let mut c_min_x = 9999.0;
+                            let mut c_max_x = -9999.0;
+                            let mut c_min_y = 9999.0;
+                            let mut c_max_y = -9999.0;
+                            while let Some(curr) = queue.pop() {
+                                let cx = u.centers_x[curr];
+                                let cy = u.centers_y[curr];
+                                if cx < c_min_x { c_min_x = cx; }
+                                if cx > c_max_x { c_max_x = cx; }
+                                if cy < c_min_y { c_min_y = cy; }
+                                if cy > c_max_y { c_max_y = cy; }
+                                for e in 0..u.active_count {
+                                    if u.masses[e] > 0.0 && !visited.contains(&e) && FHRR::similarity(&u.get_semantic_tensor(e), cond) >= 0.8 {
+                                        let dx = (u.centers_x[e] - cx).abs();
+                                        let dy = (u.centers_y[e] - cy).abs();
+                                        if dx <= 1.1 && dy <= 1.1 {
+                                            visited.insert(e);
+                                            queue.push(e);
+                                        }
+                                    }
+                                }
+                            }
+
+                            // Overwrite tw and th dynamically
+                            let tw = (c_max_x - c_min_x + 1.0).max(1.0);
+                            let th = (c_max_y - c_min_y + 1.0).max(1.0);
+
                             // If it's extrapolate, spawn outside the bounding box, diagonally (bottom-right)
                             // In ARC 22233c11, it's spawned at max_x + tw and max_y + th or similar.
                             // Let's spawn at Top-Left and Bottom-Right for a diagonal extrapolation.
