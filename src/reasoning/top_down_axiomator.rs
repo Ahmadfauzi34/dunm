@@ -97,7 +97,6 @@ impl TopDownAxiomator {
 
                 let out_w = out_atom.bounding_box.2 - out_atom.bounding_box.0 + 1.0;
                 let out_h = out_atom.bounding_box.3 - out_atom.bounding_box.1 + 1.0;
-
                 // Pick any potential anchor color from input to serve as reference
                 for anchor in input_atoms {
                     if anchor.pixel_count > 0 && anchor.color != 0 && anchor.color != out_atom.color
@@ -110,12 +109,24 @@ impl TopDownAxiomator {
                             source_index: 0,
                             target_index: -1,
                             similarity: 5.99, // Force survival
+                            condition_tensor: Some(cond.clone()),
+                            delta_spatial: id_tensor.clone(),
+                            delta_semantic: id_tensor.clone(),
+                            delta_x: (anchor.bounding_box.2 - anchor.bounding_box.0 + 1.0).round(),
+                            delta_y: (anchor.bounding_box.3 - anchor.bounding_box.1 + 1.0).round(),
+                            axiom_type: format!("SPAWN_EXTRAPOLATE_TL_BR_{}", out_atom.color),
+                            physics_tier: 6,
+                        });
+                        axioms.push(TopologicalMatch {
+                            source_index: 0,
+                            target_index: -1,
+                            similarity: 5.98,
                             condition_tensor: Some(cond),
                             delta_spatial: id_tensor.clone(),
                             delta_semantic: id_tensor.clone(),
-                            delta_x: out_w.round(),
-                            delta_y: out_h.round(),
-                            axiom_type: format!("SPAWN_EXTRAPOLATE_{}", out_atom.color),
+                            delta_x: (anchor.bounding_box.2 - anchor.bounding_box.0 + 1.0).round(),
+                            delta_y: (anchor.bounding_box.3 - anchor.bounding_box.1 + 1.0).round(),
+                            axiom_type: format!("SPAWN_EXTRAPOLATE_TR_BL_{}", out_atom.color),
                             physics_tier: 6,
                         });
                         break; // Just emit one valid anchor type per new color
@@ -150,7 +161,6 @@ impl TopDownAxiomator {
                 // We'll emit an INTERSECTION_FILL action.
                 let out_w = out_atom.bounding_box.2 - out_atom.bounding_box.0 + 1.0;
                 let out_h = out_atom.bounding_box.3 - out_atom.bounding_box.1 + 1.0;
-
                 for anchor in input_atoms {
                     if anchor.pixel_count > 0 && anchor.color != 0 && anchor.color != out_atom.color
                     {
@@ -164,8 +174,8 @@ impl TopDownAxiomator {
                             condition_tensor: Some(cond),
                             delta_spatial: id_tensor.clone(),
                             delta_semantic: id_tensor.clone(),
-                            delta_x: out_w.round(),
-                            delta_y: out_h.round(),
+                            delta_x: (anchor.bounding_box.2 - anchor.bounding_box.0 + 1.0).round(),
+                            delta_y: (anchor.bounding_box.3 - anchor.bounding_box.1 + 1.0).round(),
                             axiom_type: format!("INTERSECTION_FILL_{}", out_atom.color),
                             physics_tier: 6,
                         });
@@ -568,7 +578,6 @@ impl TopDownAxiomator {
                             // Width & height is max - min + 1 (inclusive)
                             let out_w = out_atom.bounding_box.2 - out_atom.bounding_box.0 + 1.0;
                             let out_h = out_atom.bounding_box.3 - out_atom.bounding_box.1 + 1.0;
-
                             // Hitung offset berdasarkan titik sudut Kiri-Atas (Min), BUKAN Center of Mass!
                             let dx = out_atom.bounding_box.0 - in_atom.bounding_box.0;
                             let dy = out_atom.bounding_box.1 - in_atom.bounding_box.1;

@@ -236,23 +236,19 @@ impl MultiverseSandbox {
                             );
 
                             let mut spawn_locations = Vec::new();
-                            if axiom_type.starts_with("SPAWN_EXTRAPOLATE_") {
-                                // Diagonal extrapolation that hits the edge of the grid
-                                // For 22233c11, it fills the bounding box from the extrapolated point to the grid edge
-                                // Since we don't have perfect geometry, we'll just spawn at all 4 corners
-                                // and clamp to the grid later. Or we can just spawn at (0,0) and (max_x, max_y)
-                                // Actually, let's just create points at the exact edge extremities.
-                                // For simplicity and catching 22233c11, we just spawn a large block at the top-left and bottom-right edges
-                                // and rely on the intersection or the grid boundaries to crop it.
-
-                                // We'll just generate points near (0,0) and (10, 10).
-                                // A naive heuristic for ARC edge extrapolation:
-                                spawn_locations.push((0.0, 0.0));
-                                spawn_locations.push((u.global_width - tw, u.global_height - th));
-
-                                // Also try purely relative extrapolations
+                            if axiom_type.starts_with("SPAWN_EXTRAPOLATE_TL_BR_") {
+                                spawn_locations.push((min_x - tw, min_y - th)); // Top-Left
+                                spawn_locations.push((max_x + 1.0, max_y + 1.0));
+                            // Bottom-Right
+                            } else if axiom_type.starts_with("SPAWN_EXTRAPOLATE_TR_BL_") {
+                                spawn_locations.push((max_x + 1.0, min_y - th)); // Top-Right
+                                spawn_locations.push((min_x - tw, max_y + 1.0));
+                            // Bottom-Left
+                            } else if axiom_type.starts_with("SPAWN_EXTRAPOLATE_") {
                                 spawn_locations.push((min_x - tw, min_y - th));
-                                spawn_locations.push((max_x + tw, max_y + th));
+                                spawn_locations.push((max_x + 1.0, max_y + 1.0));
+                                spawn_locations.push((max_x + 1.0, min_y - th));
+                                spawn_locations.push((min_x - tw, max_y + 1.0));
                             } else {
                                 // INTERSECTION_FILL
                                 spawn_locations
