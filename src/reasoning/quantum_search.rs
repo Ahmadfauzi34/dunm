@@ -739,7 +739,8 @@ impl AsyncWaveSearch {
                             break;
                         }
 
-                        if next_axiom.physics_tier >= 3 && arena.action_tier[current_idx] >= 3 {
+                        // Allow chaining of identical tiers if they are geometric (Tier 6/7)
+                        if next_axiom.physics_tier >= 3 && arena.action_tier[current_idx] >= 3 && next_axiom.physics_tier != 6 && next_axiom.physics_tier != 7 {
                             continue;
                         }
 
