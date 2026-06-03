@@ -231,7 +231,9 @@ impl MultiverseSandbox {
                             let mut visited = std::collections::HashSet::new();
                             let mut queue = Vec::new();
                             for e in 0..u.active_count {
-                                if u.masses[e] > 0.0 && FHRR::similarity(&u.get_semantic_tensor(e), cond) >= 0.8 {
+                                if u.masses[e] > 0.0
+                                    && FHRR::similarity(&u.get_semantic_tensor(e), cond) >= 0.8
+                                {
                                     queue.push(e);
                                     visited.insert(e);
                                     break;
@@ -244,12 +246,23 @@ impl MultiverseSandbox {
                             while let Some(curr) = queue.pop() {
                                 let cx = u.centers_x[curr];
                                 let cy = u.centers_y[curr];
-                                if cx < c_min_x { c_min_x = cx; }
-                                if cx > c_max_x { c_max_x = cx; }
-                                if cy < c_min_y { c_min_y = cy; }
-                                if cy > c_max_y { c_max_y = cy; }
+                                if cx < c_min_x {
+                                    c_min_x = cx;
+                                }
+                                if cx > c_max_x {
+                                    c_max_x = cx;
+                                }
+                                if cy < c_min_y {
+                                    c_min_y = cy;
+                                }
+                                if cy > c_max_y {
+                                    c_max_y = cy;
+                                }
                                 for e in 0..u.active_count {
-                                    if u.masses[e] > 0.0 && !visited.contains(&e) && FHRR::similarity(&u.get_semantic_tensor(e), cond) >= 0.8 {
+                                    if u.masses[e] > 0.0
+                                        && !visited.contains(&e)
+                                        && FHRR::similarity(&u.get_semantic_tensor(e), cond) >= 0.8
+                                    {
                                         let dx = (u.centers_x[e] - cx).abs();
                                         let dy = (u.centers_y[e] - cy).abs();
                                         if dx <= 1.1 && dy <= 1.1 {

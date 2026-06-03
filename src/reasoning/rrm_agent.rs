@@ -587,9 +587,7 @@ impl RrmAgent {
                 .iter()
                 .filter(|a| {
                     a.probability >= 0.3
-                        || a.axiom_type
-                            .iter()
-                            .any(|ax| ax.starts_with("SCALE_AND_FILL"))
+                        || a.axiom_type.iter().any(|ax| ax.contains("SCALE_AND_FILL"))
                 })
                 .cloned()
                 .collect();

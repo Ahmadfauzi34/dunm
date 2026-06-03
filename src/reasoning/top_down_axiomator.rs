@@ -95,8 +95,8 @@ impl TopDownAxiomator {
                 // We emit a SPAWN_EXTRAPOLATE action and let the physics tier figure out the extremities.
                 // We use delta_x and delta_y to pass the out_atom's dimension, not absolute position!
 
-                let out_w = out_atom.bounding_box.2 - out_atom.bounding_box.0 + 1.0;
-                let out_h = out_atom.bounding_box.3 - out_atom.bounding_box.1 + 1.0;
+                let _out_w = out_atom.bounding_box.2 - out_atom.bounding_box.0 + 1.0;
+                let _out_h = out_atom.bounding_box.3 - out_atom.bounding_box.1 + 1.0;
                 // Pick any potential anchor color from input to serve as reference
                 for anchor in input_atoms {
                     if anchor.pixel_count > 0 && anchor.color != 0 && anchor.color != out_atom.color
@@ -159,8 +159,8 @@ impl TopDownAxiomator {
 
                 // For intersection fill, we usually anchor to the grid or line color.
                 // We'll emit an INTERSECTION_FILL action.
-                let out_w = out_atom.bounding_box.2 - out_atom.bounding_box.0 + 1.0;
-                let out_h = out_atom.bounding_box.3 - out_atom.bounding_box.1 + 1.0;
+                let _out_w = out_atom.bounding_box.2 - out_atom.bounding_box.0 + 1.0;
+                let _out_h = out_atom.bounding_box.3 - out_atom.bounding_box.1 + 1.0;
                 for anchor in input_atoms {
                     if anchor.pixel_count > 0 && anchor.color != 0 && anchor.color != out_atom.color
                     {
