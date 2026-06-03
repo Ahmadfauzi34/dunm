@@ -31,3 +31,7 @@
 ## 2026-05-18 - .gitignore override
 **Learning:** Ketika menambahkan script `.py` penting (seperti utility tools) sementara repositori memiliki `.gitignore` global untuk `*.py`, file tersebut tidak akan ter-add dengan `git add` biasa.
 **Action:** Gunakan flag `-f` (`git add -f path/to/script.py`) untuk memaksa memasukkan utility tool tersebut tanpa harus mengubah `.gitignore` global (sehingga tidak merusak isolasi scratchpad).
+
+## 2026-05-18 - Atomic / Sparse Skills for Recursive MCTS
+**Learning:** Menggabungkan banyak tindakan spasial/fisika ke dalam satu aksioma kaku (contoh: mengekstrapolasi semua 4 sudut sekaligus) akan membanjiri manifold dengan *noise*. Hal ini memicu penalti *Pragmatic Error* yang parah pada MCTS, yang berakibat pada pemangkasan (pruning) cabang yang seharusnya memiliki solusi benar (amplitudo memudar).
+**Action:** Saat mengembangkan atau memperluas pipa logika (`TopDownAxiomator` atau `skill_ontology`), pastikan kemampuan/skill dirancang secara **Sparse dan Atomic** (misal: pecah menjadi varian `TL_BR` dan `TR_BL`). Ini memungkinkan agen MCTS untuk menggunakan *skill* secara rekursif dan mandiri, serta membuang percabangan yang tidak perlu tanpa mengorbankan tebakan yang benar.
