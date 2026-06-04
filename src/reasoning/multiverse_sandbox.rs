@@ -286,7 +286,85 @@ impl MultiverseSandbox {
                             );
 
                             let mut spawn_locations = Vec::new();
-                            if axiom_type.starts_with("SPAWN_EXTRAPOLATE_TL_BR_") {
+                            if axiom_type.starts_with("SPAWN_EXTRAPOLATE_ORTHOGONAL_") {
+                                // Orthogonal raycast: group components and extrapolate cross-diagonal
+                                let mut components = Vec::new();
+                                let mut all_visited = std::collections::HashSet::new();
+
+                                for e in 0..u.active_count {
+                                    if u.masses[e] > 0.0 && !all_visited.contains(&e) {
+                                        let sem = u.get_semantic_tensor(e);
+                                        if FHRR::similarity(&sem, cond) >= 0.8 {
+                                            let mut queue = vec![e];
+                                            let mut c_min_x = 9999.0;
+                                            let mut c_max_x = -9999.0;
+                                            let mut c_min_y = 9999.0;
+                                            let mut c_max_y = -9999.0;
+                                            all_visited.insert(e);
+
+                                            while let Some(curr) = queue.pop() {
+                                                let cx = u.centers_x[curr];
+                                                let cy = u.centers_y[curr];
+                                                if cx < c_min_x { c_min_x = cx; }
+                                                if cx > c_max_x { c_max_x = cx; }
+                                                if cy < c_min_y { c_min_y = cy; }
+                                                if cy > c_max_y { c_max_y = cy; }
+
+                                                for n in 0..u.active_count {
+                                                    if u.masses[n] > 0.0 && !all_visited.contains(&n) && FHRR::similarity(&u.get_semantic_tensor(n), cond) >= 0.8 {
+                                                        let dx = (u.centers_x[n] - cx).abs();
+                                                        let dy = (u.centers_y[n] - cy).abs();
+                                                        if dx <= 1.1 && dy <= 1.1 {
+                                                            all_visited.insert(n);
+                                                            queue.push(n);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            components.push((c_min_x, c_max_x, c_min_y, c_max_y));
+                                        }
+                                    }
+                                }
+
+                                for i in 0..components.len() {
+                                    for j in (i+1)..components.len() {
+                                        let (c1_min_x, c1_max_x, c1_min_y, c1_max_y) = components[i];
+                                        let (c2_min_x, c2_max_x, c2_min_y, c2_max_y) = components[j];
+
+                                        let cx1 = (c1_min_x + c1_max_x) / 2.0;
+                                        let cy1 = (c1_min_y + c1_max_y) / 2.0;
+                                        let cx2 = (c2_min_x + c2_max_x) / 2.0;
+                                        let cy2 = (c2_min_y + c2_max_y) / 2.0;
+
+                                        let dx = cx2 - cx1;
+                                        let dy = cy2 - cy1;
+
+                                        if dx.abs() > 0.5 && dy.abs() > 0.5 && (dx.abs() - dy.abs()).abs() <= 2.0 {
+                                            let pair_min_x = c1_min_x.min(c2_min_x);
+                                            let pair_max_x = c1_max_x.max(c2_max_x);
+                                            let pair_min_y = c1_min_y.min(c2_min_y);
+                                            let pair_max_y = c1_max_y.max(c2_max_y);
+
+                                            let tw = (c1_max_x - c1_min_x + 1.0).max(1.0);
+                                            let th = (c1_max_y - c1_min_y + 1.0).max(1.0);
+
+                                            if dx * dy > 0.0 {
+                                                // \ diagonal -> spawn /
+                                                let mut px = pair_max_x + 1.0; let mut py = pair_min_y - th;
+                                                while px < u.global_width + tw && py >= -th { spawn_locations.push((px, py)); px += tw; py -= th; }
+                                                let mut px = pair_min_x - tw; let mut py = pair_max_y + 1.0;
+                                                while px >= -tw && py < u.global_height + th { spawn_locations.push((px, py)); px -= tw; py += th; }
+                                            } else {
+                                                // / diagonal -> spawn \
+                                                let mut px = pair_min_x - tw; let mut py = pair_min_y - th;
+                                                while px >= -tw && py >= -th { spawn_locations.push((px, py)); px -= tw; py -= th; }
+                                                let mut px = pair_max_x + 1.0; let mut py = pair_max_y + 1.0;
+                                                while px < u.global_width + tw && py < u.global_height + th { spawn_locations.push((px, py)); px += tw; py += th; }
+                                            }
+                                        }
+                                    }
+                                }
+                            } else if axiom_type.starts_with("SPAWN_EXTRAPOLATE_TL_BR_") {
                                 spawn_locations.push((min_x - tw, min_y - th)); // Top-Left
                                 spawn_locations.push((max_x + 1.0, max_y + 1.0));
                             // Bottom-Right

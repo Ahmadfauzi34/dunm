@@ -522,6 +522,7 @@ impl AsyncWaveSearch {
                     arena.tracked_deep_copies += 1;
                 }
 
+                let current_depth = arena.children_ranges[current_idx].1 as usize;
                 let states_mut = Arc::make_mut(&mut arena.states[current_idx]);
                 let mut any_collision = false;
 
@@ -529,8 +530,29 @@ impl AsyncWaveSearch {
                 batch_iterations += 1;
                 _ = batch_iterations;
 
-                for manifold in states_mut.iter_mut() {
+                for (i, manifold) in states_mut.iter_mut().enumerate() {
                     local_active_count += manifold.active_count;
+
+                    let width = self.expected_grids[i][0].len();
+                    let height = self.expected_grids[i].len();
+                    let m_width = if manifold.global_width > 0.0 { manifold.global_width as usize } else { width };
+                    let m_height = if manifold.global_height > 0.0 { manifold.global_height as usize } else { height };
+
+                    let pre_error = if current_depth > 0 {
+                        SimdEnergyCalculator::calculate_pragmatic_streaming(
+                            manifold,
+                            &self.expected_grids[i],
+                            m_width,
+                            m_height,
+                            &CognitivePhase::Microscopic,
+                            0.0
+                        )
+                    } else { 9999.0 };
+
+                    if pre_error == 0.0 && current_depth > 0 {
+                        continue;
+                    }
+
                     let collided = MultiverseSandbox::apply_axiom(
                         &mut *manifold,
                         &action_condition,
