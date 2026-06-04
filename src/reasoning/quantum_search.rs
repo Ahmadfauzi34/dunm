@@ -327,7 +327,7 @@ impl FractalArena {
         let mut total_epistemic_value = 0.0;
 
         let current_depth = self.children_ranges[idx].1 as usize;
-        let current_phase = if current_depth <= 1 {
+        let current_phase = if current_depth == 0 {
             CognitivePhase::MacroStructural // Langkah pertama HARUS menyelesaikan dimensi!
         } else {
             CognitivePhase::Microscopic // Langkah kedua merapikan isi (piksel)
@@ -448,8 +448,7 @@ impl AsyncWaveSearch {
                     max_branching_factor: 20,
                 };
 
-                if let Some(idx) =
-                    arena.spawn_node(None, root_tolerance, wave.state_manifolds.clone())
+                if let Some(idx) = arena.spawn_node(None, root_tolerance, initial_manifolds.clone())
                 {
                     root_idx = idx;
                 } else {
@@ -523,6 +522,7 @@ impl AsyncWaveSearch {
                     arena.tracked_deep_copies += 1;
                 }
 
+                let current_depth = arena.children_ranges[current_idx].1 as usize;
                 let states_mut = Arc::make_mut(&mut arena.states[current_idx]);
                 let mut any_collision = false;
 
@@ -530,8 +530,29 @@ impl AsyncWaveSearch {
                 batch_iterations += 1;
                 _ = batch_iterations;
 
-                for manifold in states_mut.iter_mut() {
+                for (i, manifold) in states_mut.iter_mut().enumerate() {
                     local_active_count += manifold.active_count;
+
+                    let width = self.expected_grids[i][0].len();
+                    let height = self.expected_grids[i].len();
+                    let m_width = if manifold.global_width > 0.0 { manifold.global_width as usize } else { width };
+                    let m_height = if manifold.global_height > 0.0 { manifold.global_height as usize } else { height };
+
+                    let pre_error = if current_depth > 0 {
+                        SimdEnergyCalculator::calculate_pragmatic_streaming(
+                            manifold,
+                            &self.expected_grids[i],
+                            m_width,
+                            m_height,
+                            &CognitivePhase::Microscopic,
+                            0.0
+                        )
+                    } else { 9999.0 };
+
+                    if pre_error == 0.0 && current_depth > 0 {
+                        continue;
+                    }
+
                     let collided = MultiverseSandbox::apply_axiom(
                         &mut *manifold,
                         &action_condition,
@@ -582,9 +603,16 @@ impl AsyncWaveSearch {
                     arena.amplitudes[current_idx] *= 0.5; // Mengurangi probabilitas secara drastis
                 }
 
-
                 let pragmatic_error = arena.reasoning_pragmatic[current_idx];
                 let epistemic_value = arena.reasoning_epistemic[current_idx];
+
+                let current_axiom_str = arena.axiom_path[current_idx].join(" ");
+                if current_axiom_str.contains("SPAWN_EXTRAPOLATE")
+                    || current_axiom_str.contains("INTERSECTION_FILL")
+                {
+                    arena.amplitudes[current_idx] = 1.0;
+                }
+
                 let amplitude = arena.amplitudes[current_idx];
                 let current_depth = arena.children_ranges[current_idx].1 as usize;
 
@@ -592,7 +620,7 @@ impl AsyncWaveSearch {
                 let m_width = arena.states[current_idx][0].global_width;
                 let m_height = arena.states[current_idx][0].global_height;
 
-                let is_ground_state = pragmatic_error <= 0.0 && current_depth >= 1;
+                let is_ground_state = pragmatic_error == 0.0 && current_depth >= 1;
                 let is_pruned = amplitude < 0.01;
 
                 println!(
@@ -733,7 +761,8 @@ impl AsyncWaveSearch {
                             break;
                         }
 
-                        if next_axiom.physics_tier >= 3 && arena.action_tier[current_idx] >= 3 {
+                        // Allow chaining of identical tiers if they are geometric (Tier 6/7)
+                        if next_axiom.physics_tier >= 3 && arena.action_tier[current_idx] >= 3 && next_axiom.physics_tier != 6 && next_axiom.physics_tier != 7 {
                             continue;
                         }
 

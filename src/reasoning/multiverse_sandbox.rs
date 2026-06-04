@@ -117,10 +117,18 @@ impl MultiverseSandbox {
                             found = true;
                             let cx = u.centers_x[e];
                             let cy = u.centers_y[e];
-                            if cx < min_x { min_x = cx; }
-                            if cx > max_x { max_x = cx; }
-                            if cy < min_y { min_y = cy; }
-                            if cy > max_y { max_y = cy; }
+                            if cx < min_x {
+                                min_x = cx;
+                            }
+                            if cx > max_x {
+                                max_x = cx;
+                            }
+                            if cy < min_y {
+                                min_y = cy;
+                            }
+                            if cy > max_y {
+                                max_y = cy;
+                            }
                         }
                     }
 
@@ -169,6 +177,279 @@ impl MultiverseSandbox {
 
                                     if dm_idx >= u.active_count {
                                         u.active_count = dm_idx + 1;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            } else if axiom_type.starts_with("SPAWN_EXTRAPOLATE_")
+                || axiom_type.starts_with("INTERSECTION_FILL_")
+            {
+                let parts: Vec<&str> = axiom_type.split('_').collect();
+                if let Ok(target_color) = parts.last().unwrap_or(&"0").parse::<i32>() {
+                    let _tw_old = delta_x.max(1.0);
+                    let _th_old = delta_y.max(1.0);
+
+                    if let Some(cond) = condition_tensor {
+                        // Extrapolation heuristics: find extremity of matching anchors
+                        // For a simple extrapolation (like 22233c11), if we see a pattern of anchors, we continue the pattern.
+                        // Since we just have the condition tensor, let's find the bounding box of ALL anchors
+                        // and spawn new objects adjacent to the bounding box if it's extrapolate, or inside if it's intersect.
+
+                        let mut min_x = 9999.0;
+                        let mut max_x = -9999.0;
+                        let mut min_y = 9999.0;
+                        let mut max_y = -9999.0;
+                        let mut found_anchor = false;
+
+                        for e in 0..u.active_count {
+                            if u.masses[e] > 0.0 {
+                                let sem = u.get_semantic_tensor(e);
+                                if FHRR::similarity(&sem, cond) >= 0.8 {
+                                    found_anchor = true;
+                                    let cx = u.centers_x[e];
+                                    let cy = u.centers_y[e];
+                                    if cx < min_x {
+                                        min_x = cx;
+                                    }
+                                    if cx > max_x {
+                                        max_x = cx;
+                                    }
+                                    if cy < min_y {
+                                        min_y = cy;
+                                    }
+                                    if cy > max_y {
+                                        max_y = cy;
+                                    }
+                                }
+                            }
+                        }
+
+                        if found_anchor {
+                            // Find dimension of FIRST contiguous component dynamically at runtime
+                            let mut visited = std::collections::HashSet::new();
+                            let mut queue = Vec::new();
+                            for e in 0..u.active_count {
+                                if u.masses[e] > 0.0
+                                    && FHRR::similarity(&u.get_semantic_tensor(e), cond) >= 0.8
+                                {
+                                    queue.push(e);
+                                    visited.insert(e);
+                                    break;
+                                }
+                            }
+                            let mut c_min_x = 9999.0;
+                            let mut c_max_x = -9999.0;
+                            let mut c_min_y = 9999.0;
+                            let mut c_max_y = -9999.0;
+                            while let Some(curr) = queue.pop() {
+                                let cx = u.centers_x[curr];
+                                let cy = u.centers_y[curr];
+                                if cx < c_min_x {
+                                    c_min_x = cx;
+                                }
+                                if cx > c_max_x {
+                                    c_max_x = cx;
+                                }
+                                if cy < c_min_y {
+                                    c_min_y = cy;
+                                }
+                                if cy > c_max_y {
+                                    c_max_y = cy;
+                                }
+                                for e in 0..u.active_count {
+                                    if u.masses[e] > 0.0
+                                        && !visited.contains(&e)
+                                        && FHRR::similarity(&u.get_semantic_tensor(e), cond) >= 0.8
+                                    {
+                                        let dx = (u.centers_x[e] - cx).abs();
+                                        let dy = (u.centers_y[e] - cy).abs();
+                                        if dx <= 1.1 && dy <= 1.1 {
+                                            visited.insert(e);
+                                            queue.push(e);
+                                        }
+                                    }
+                                }
+                            }
+
+                            // Overwrite tw and th dynamically
+                            let tw = (c_max_x - c_min_x + 1.0).max(1.0);
+                            let th = (c_max_y - c_min_y + 1.0).max(1.0);
+
+                            // If it's extrapolate, spawn outside the bounding box, diagonally (bottom-right)
+                            // In ARC 22233c11, it's spawned at max_x + tw and max_y + th or similar.
+                            // Let's spawn at Top-Left and Bottom-Right for a diagonal extrapolation.
+                            let new_sem_tensor = FHRR::fractional_bind(
+                                crate::core::core_seeds::CoreSeeds::color_seed(),
+                                target_color as f32,
+                            );
+
+                            let mut spawn_locations = Vec::new();
+                            if axiom_type.starts_with("SPAWN_EXTRAPOLATE_ORTHOGONAL_") {
+                                // Orthogonal raycast: group components and extrapolate cross-diagonal
+                                let mut components = Vec::new();
+                                let mut all_visited = std::collections::HashSet::new();
+
+                                for e in 0..u.active_count {
+                                    if u.masses[e] > 0.0 && !all_visited.contains(&e) {
+                                        let sem = u.get_semantic_tensor(e);
+                                        if FHRR::similarity(&sem, cond) >= 0.8 {
+                                            let mut queue = vec![e];
+                                            let mut c_min_x = 9999.0;
+                                            let mut c_max_x = -9999.0;
+                                            let mut c_min_y = 9999.0;
+                                            let mut c_max_y = -9999.0;
+                                            all_visited.insert(e);
+
+                                            while let Some(curr) = queue.pop() {
+                                                let cx = u.centers_x[curr];
+                                                let cy = u.centers_y[curr];
+                                                if cx < c_min_x { c_min_x = cx; }
+                                                if cx > c_max_x { c_max_x = cx; }
+                                                if cy < c_min_y { c_min_y = cy; }
+                                                if cy > c_max_y { c_max_y = cy; }
+
+                                                for n in 0..u.active_count {
+                                                    if u.masses[n] > 0.0 && !all_visited.contains(&n) && FHRR::similarity(&u.get_semantic_tensor(n), cond) >= 0.8 {
+                                                        let dx = (u.centers_x[n] - cx).abs();
+                                                        let dy = (u.centers_y[n] - cy).abs();
+                                                        if dx <= 1.1 && dy <= 1.1 {
+                                                            all_visited.insert(n);
+                                                            queue.push(n);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            components.push((c_min_x, c_max_x, c_min_y, c_max_y));
+                                        }
+                                    }
+                                }
+
+                                for i in 0..components.len() {
+                                    for j in (i+1)..components.len() {
+                                        let (c1_min_x, c1_max_x, c1_min_y, c1_max_y) = components[i];
+                                        let (c2_min_x, c2_max_x, c2_min_y, c2_max_y) = components[j];
+
+                                        let cx1 = (c1_min_x + c1_max_x) / 2.0;
+                                        let cy1 = (c1_min_y + c1_max_y) / 2.0;
+                                        let cx2 = (c2_min_x + c2_max_x) / 2.0;
+                                        let cy2 = (c2_min_y + c2_max_y) / 2.0;
+
+                                        let dx = cx2 - cx1;
+                                        let dy = cy2 - cy1;
+
+                                        if dx.abs() > 0.5 && dy.abs() > 0.5 && (dx.abs() - dy.abs()).abs() <= 2.0 {
+                                            let pair_min_x = c1_min_x.min(c2_min_x);
+                                            let pair_max_x = c1_max_x.max(c2_max_x);
+                                            let pair_min_y = c1_min_y.min(c2_min_y);
+                                            let pair_max_y = c1_max_y.max(c2_max_y);
+
+                                            let tw = (c1_max_x - c1_min_x + 1.0).max(1.0);
+                                            let th = (c1_max_y - c1_min_y + 1.0).max(1.0);
+
+                                            if dx * dy > 0.0 {
+                                                // \ diagonal -> spawn /
+                                                let mut px = pair_max_x + 1.0; let mut py = pair_min_y - th;
+                                                while px < u.global_width + tw && py >= -th { spawn_locations.push((px, py)); px += tw; py -= th; }
+                                                let mut px = pair_min_x - tw; let mut py = pair_max_y + 1.0;
+                                                while px >= -tw && py < u.global_height + th { spawn_locations.push((px, py)); px -= tw; py += th; }
+                                            } else {
+                                                // / diagonal -> spawn \
+                                                let mut px = pair_min_x - tw; let mut py = pair_min_y - th;
+                                                while px >= -tw && py >= -th { spawn_locations.push((px, py)); px -= tw; py -= th; }
+                                                let mut px = pair_max_x + 1.0; let mut py = pair_max_y + 1.0;
+                                                while px < u.global_width + tw && py < u.global_height + th { spawn_locations.push((px, py)); px += tw; py += th; }
+                                            }
+                                        }
+                                    }
+                                }
+                            } else if axiom_type.starts_with("SPAWN_EXTRAPOLATE_TL_BR_") {
+                                spawn_locations.push((min_x - tw, min_y - th)); // Top-Left
+                                spawn_locations.push((max_x + 1.0, max_y + 1.0));
+                            // Bottom-Right
+                            } else if axiom_type.starts_with("SPAWN_EXTRAPOLATE_TR_BL_") {
+                                spawn_locations.push((max_x + 1.0, min_y - th)); // Top-Right
+                                spawn_locations.push((min_x - tw, max_y + 1.0));
+                            // Bottom-Left
+                            } else if axiom_type.starts_with("SPAWN_EXTRAPOLATE_") {
+                                spawn_locations.push((min_x - tw, min_y - th));
+                                spawn_locations.push((max_x + 1.0, max_y + 1.0));
+                                spawn_locations.push((max_x + 1.0, min_y - th));
+                                spawn_locations.push((min_x - tw, max_y + 1.0));
+                            } else {
+                                // INTERSECTION_FILL
+                                spawn_locations
+                                    .push(((max_x + min_x) / 2.0, (max_y + min_y) / 2.0));
+                                spawn_locations.push((min_x, min_y));
+                                spawn_locations.push((min_x, max_y));
+                                spawn_locations.push((max_x, min_y));
+                                spawn_locations.push((max_x, max_y));
+                            }
+
+                            for (sx, sy) in spawn_locations {
+                                let min_xi = sx.round() as i32;
+                                let max_xi = (sx + tw - 1.0).round() as i32;
+                                let min_yi = sy.round() as i32;
+                                let max_yi = (sy + th - 1.0).round() as i32;
+
+                                for spawn_y in min_yi..=max_yi {
+                                    for spawn_x in min_xi..=max_xi {
+                                        if spawn_x < 0 || spawn_y < 0 {
+                                            continue;
+                                        } // Keep bounds sane
+                                        if spawn_x as f32 >= u.global_width
+                                            || spawn_y as f32 >= u.global_height
+                                        {
+                                            continue;
+                                        } // Edge crop // Keep bounds sane initially
+
+                                        let mut occupied = false;
+                                        for e in 0..u.active_count {
+                                            if u.masses[e] > 0.0
+                                                && (u.centers_x[e] - spawn_x as f32).abs() < 0.1
+                                                && (u.centers_y[e] - spawn_y as f32).abs() < 0.1
+                                            {
+                                                occupied = true;
+                                                if u.tokens[e] != target_color {
+                                                    u.tokens[e] = target_color;
+                                                    let mut sem_tensor =
+                                                        u.get_semantic_tensor_mut(e);
+                                                    sem_tensor.assign(&new_sem_tensor);
+                                                    collision_detected = true;
+                                                }
+                                                break;
+                                            }
+                                        }
+
+                                        if !occupied {
+                                            let mut dm_idx = u.active_count;
+                                            for m_idx in 0..u.active_count {
+                                                if u.masses[m_idx] == 0.0 {
+                                                    dm_idx = m_idx;
+                                                    break;
+                                                }
+                                            }
+
+                                            u.ensure_scalar_capacity(dm_idx + 1);
+                                            u.masses[dm_idx] = 1.0;
+                                            u.centers_x[dm_idx] = spawn_x as f32;
+                                            u.centers_y[dm_idx] = spawn_y as f32;
+                                            u.tokens[dm_idx] = target_color;
+                                            let mut sem_tensor = u.get_semantic_tensor_mut(dm_idx);
+                                            sem_tensor.assign(&new_sem_tensor);
+
+                                            if dm_idx >= u.active_count {
+                                                u.active_count = dm_idx + 1;
+                                            }
+                                            if spawn_x as f32 >= u.global_width {
+                                                u.global_width = spawn_x as f32 + 1.0;
+                                            }
+                                            if spawn_y as f32 >= u.global_height {
+                                                u.global_height = spawn_y as f32 + 1.0;
+                                            }
+                                            collision_detected = true;
+                                        }
                                     }
                                 }
                             }
@@ -270,7 +551,8 @@ impl MultiverseSandbox {
                                                 u.centers_x[dm_idx] = spawn_x as f32;
                                                 u.centers_y[dm_idx] = spawn_y as f32;
                                                 u.tokens[dm_idx] = target_color;
-                                                let mut sem_tensor = u.get_semantic_tensor_mut(dm_idx);
+                                                let mut sem_tensor =
+                                                    u.get_semantic_tensor_mut(dm_idx);
                                                 sem_tensor.assign(&new_sem_tensor);
                                                 if dm_idx >= u.active_count {
                                                     u.active_count = dm_idx + 1;

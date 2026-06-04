@@ -585,7 +585,10 @@ impl RrmAgent {
 
             let high_confidence_axioms: Vec<WaveNode> = seed_axioms
                 .iter()
-                .filter(|a| a.probability >= 0.3 || a.axiom_type.iter().any(|ax| ax.starts_with("SCALE_AND_FILL")))
+                .filter(|a| {
+                    a.probability >= 0.3
+                        || a.axiom_type.iter().any(|ax| ax.contains("SCALE_AND_FILL"))
+                })
                 .cloned()
                 .collect();
 
@@ -1200,9 +1203,24 @@ impl RrmAgent {
                             std::sync::Arc::new(AsyncWaveSearch::new(expected_grids.clone(), 2));
                         let s_clone = std::sync::Arc::clone(&search);
 
+                        let mut initial_manifolds_adv_mut: Vec<EntityManifold> =
+                            (*initial_manifolds_adv).clone();
+                        if test_target_w > 0.0 && test_target_h > 0.0 {
+                            for man in initial_manifolds_adv_mut.iter_mut() {
+                                man.global_width = test_target_w;
+                                man.global_height = test_target_h;
+                            }
+                        }
+                        let initial_manifolds_adv_final =
+                            std::sync::Arc::new(initial_manifolds_adv_mut);
+
                         pollster::block_on(async move {
                             s_clone
-                                .propagate_wave(initial_wave, initial_manifolds_adv, all_clone)
+                                .propagate_wave(
+                                    initial_wave,
+                                    initial_manifolds_adv_final,
+                                    all_clone,
+                                )
                                 .await;
                         });
 
@@ -1388,9 +1406,19 @@ impl RrmAgent {
                 path
             );
 
-println!("DEBUG TEST_MANIFOLD BEFORE: active_count={}", test_manifold.active_count);
+            println!(
+                "DEBUG TEST_MANIFOLD BEFORE: active_count={}",
+                test_manifold.active_count
+            );
             for i in 0..test_manifold.active_count {
-                println!("  Entity {}: mass={}, token={}, cx={}, cy={}", i, test_manifold.masses[i], test_manifold.tokens[i], test_manifold.centers_x[i], test_manifold.centers_y[i]);
+                println!(
+                    "  Entity {}: mass={}, token={}, cx={}, cy={}",
+                    i,
+                    test_manifold.masses[i],
+                    test_manifold.tokens[i],
+                    test_manifold.centers_x[i],
+                    test_manifold.centers_y[i]
+                );
             }
 
             // Apply all rules in the path in order.
@@ -1408,9 +1436,19 @@ println!("DEBUG TEST_MANIFOLD BEFORE: active_count={}", test_manifold.active_cou
                 );
                 println!("DEBUG AXIOM RESULT: changed={}", changed);
             }
-            println!("DEBUG TEST_MANIFOLD AFTER: active_count={}", test_manifold.active_count);
+            println!(
+                "DEBUG TEST_MANIFOLD AFTER: active_count={}",
+                test_manifold.active_count
+            );
             for i in 0..test_manifold.active_count {
-                println!("  Entity {}: mass={}, token={}, cx={}, cy={}", i, test_manifold.masses[i], test_manifold.tokens[i], test_manifold.centers_x[i], test_manifold.centers_y[i]);
+                println!(
+                    "  Entity {}: mass={}, token={}, cx={}, cy={}",
+                    i,
+                    test_manifold.masses[i],
+                    test_manifold.tokens[i],
+                    test_manifold.centers_x[i],
+                    test_manifold.centers_y[i]
+                );
             }
 
             let current_axiom_str = rule

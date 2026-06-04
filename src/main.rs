@@ -225,7 +225,9 @@ fn main() {
             for r in &result {
                 println!("{r:?}");
             }
-            println!("MCTS failed. Engaging Generative Synthesized Skill: extract_anomalous_quadrant...");
+            println!(
+                "MCTS failed. Engaging Generative Synthesized Skill: extract_anomalous_quadrant..."
+            );
 
             let mut raw_manifold = EntityManifold::new();
             raw_manifold.global_width = test_in[0].len() as f32;
