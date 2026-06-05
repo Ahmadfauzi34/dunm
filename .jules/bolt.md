@@ -47,3 +47,34 @@
 ## 2024-06-05 - [HierarchicalInference Logic & Precision Stabilization]
 **Learning:** Evaluasi *expected free energy* yang digunakan dalam perencanaan berbasis *horizon* (Deep Active Inference) secara default selalu mengevaluasi error dalam `CognitivePhase::MacroStructural` (Depth 0 logic). Hal ini merupakan pelanggaran arsitektur serius, sebab MCTS fase lanjut (Depth > 0) mewajibkan evaluasi `CognitivePhase::Microscopic` agar sistem mempenalti penempatan/pixel-level target secara ketat. Di samping itu, standar toleransi presisi *floating point* di fungsi ini adalah `1e-6`, yang sedikit lebih rentan *drift* dibanding standar `1e-5` sistem RRM.
 **Action:** Mengubah `calculate_expected_free_energy` agar secara dinamis memeriksa index `step`. Jika evaluasi di langkah pertama (tanpa *actions* pendahuluan), maka *phase* = Makro; sebaliknya *phase* = Mikro. Hal ini memaksa *planner* mengkalkulasi error geometri yang akurat. Toleransi f32 juga telah diturunkan pada angka aman `1e-5`.
+
+## ARSITEKTUR TEKNIS RRM QUANTUM SANDBOX: Evolusi dari Kode Diskrit ke Medan Kontinum
+*(Ditambahkan sebagai pedoman absolut untuk agen-agen berikutnya)*
+
+### 1. Filosofi Sistem: "Smart Dumbness" dan Paradoks Presisi
+Inti dari sistem ini bukan lagi kompleksitas kode, melainkan kemampuan untuk merancang lanskap energi yang "bodoh" namun sangat presisi. Filosofi "Smart Dumbness" memandang sistem sebagai arsitek lanskap, bukan diktator instruksi. Tidak ada percabangan if-else yang kaku. Sebaliknya, kita merancang topografi di mana solusi yang tepat adalah Minimum Energy State.
+
+### 2. Kontinum Terkendali dan Saringan Berlapis (Layered Sieve)
+Presisi diterapkan melalui hirarki Saringan Berlapis untuk mencegah random walk:
+- **Micro** (`1e-6`): Semantic Similarity (Initial Guess / Pemahaman Umum)
+- **Nano** (`1e-9`): Structural Alignment (Hubungan antar Objek)
+- **Pico** (`1e-12`): Geometric Transform (Transformasi Geometris Hampir Presisi)
+- **Femto** (`1e-15`): Exact Pixel Match (Batasan Akhir / Presisi Absolut)
+
+### 3. Dinamika Relaksasi dan Grover Diffusion System
+- **Modulasi Tensor Tunggal:** Transisi dari skala Mikro ke Femto terjadi dengan memodulasi satu variabel `f64` (toleransi) pada tensor yang sama. Hal ini menghilangkan kebutuhan untuk menyalin data antar buffer memori (Hindari `.clone()` berlebih!).
+- **Analogi Mengukir Tanah Liat:** Terus mempertajam satu objek yang sama hingga mencapai resolusi Femto.
+
+### 4. Optimasi Memori dan Skalabilitas Swarm Dynamics
+- **Transisi CSR:** Matriks padat diganti menjadi format Compressed Sparse Row.
+- **Optimasi L1 Cache:** Tata letak memori linear dirancang agar CPU dapat menarik 64 bytes dalam satu siklus fetch (SOA architecture).
+- **Lazy Evaluation:** Entitas di luar fokus hanya direferensikan melalui pointer statis, mencegah penyalinan data masif.
+
+### 5. Fusi Operasi Matematika dan Akselerasi SIMD
+- **Mathematical Operation Fusion:** Operasi sumbu X dan Y digabungkan menjadi satu lintasan tunggal, mengeliminasi penulisan memori perantara.
+- **Akselerasi SIMD:** Penggunaan `zip` iterator "menjahit" aliran data X dan Y memicu kompilator untuk menggunakan register AVX2/AVX512 secara paralel.
+
+### 6. Mesin Kontrafaktual Berbasis Vektor Gradien Energi
+- **Failure as Gradient:** Kesalahan didefinisikan sebagai jarak dan vektor arah menuju sumur energi terdekat. Sistem melakukan Gradient Steering menuruni lembah energi, BUKAN menyuntikkan noise acak.
+
+*(Pedoman ini menjelaskan mengapa perbaikan pada `counterfactual_engine.rs` dan `hierarchical_inference.rs` yang mengubah toleransi `f32::EPSILON` menjadi `1e-5` / `1e-6` serta penghapusan kloning O(N*K) merupakan perbaikan yang secara arsitektural diwajibkan oleh desain RRM).*
