@@ -305,13 +305,27 @@ impl MultiverseSandbox {
                                             while let Some(curr) = queue.pop() {
                                                 let cx = u.centers_x[curr];
                                                 let cy = u.centers_y[curr];
-                                                if cx < c_min_x { c_min_x = cx; }
-                                                if cx > c_max_x { c_max_x = cx; }
-                                                if cy < c_min_y { c_min_y = cy; }
-                                                if cy > c_max_y { c_max_y = cy; }
+                                                if cx < c_min_x {
+                                                    c_min_x = cx;
+                                                }
+                                                if cx > c_max_x {
+                                                    c_max_x = cx;
+                                                }
+                                                if cy < c_min_y {
+                                                    c_min_y = cy;
+                                                }
+                                                if cy > c_max_y {
+                                                    c_max_y = cy;
+                                                }
 
                                                 for n in 0..u.active_count {
-                                                    if u.masses[n] > 0.0 && !all_visited.contains(&n) && FHRR::similarity(&u.get_semantic_tensor(n), cond) >= 0.8 {
+                                                    if u.masses[n] > 0.0
+                                                        && !all_visited.contains(&n)
+                                                        && FHRR::similarity(
+                                                            &u.get_semantic_tensor(n),
+                                                            cond,
+                                                        ) >= 0.8
+                                                    {
                                                         let dx = (u.centers_x[n] - cx).abs();
                                                         let dy = (u.centers_y[n] - cy).abs();
                                                         if dx <= 1.1 && dy <= 1.1 {
@@ -327,9 +341,11 @@ impl MultiverseSandbox {
                                 }
 
                                 for i in 0..components.len() {
-                                    for j in (i+1)..components.len() {
-                                        let (c1_min_x, c1_max_x, c1_min_y, c1_max_y) = components[i];
-                                        let (c2_min_x, c2_max_x, c2_min_y, c2_max_y) = components[j];
+                                    for j in (i + 1)..components.len() {
+                                        let (c1_min_x, c1_max_x, c1_min_y, c1_max_y) =
+                                            components[i];
+                                        let (c2_min_x, c2_max_x, c2_min_y, c2_max_y) =
+                                            components[j];
 
                                         let cx1 = (c1_min_x + c1_max_x) / 2.0;
                                         let cy1 = (c1_min_y + c1_max_y) / 2.0;
@@ -339,7 +355,10 @@ impl MultiverseSandbox {
                                         let dx = cx2 - cx1;
                                         let dy = cy2 - cy1;
 
-                                        if dx.abs() > 0.5 && dy.abs() > 0.5 && (dx.abs() - dy.abs()).abs() <= 2.0 {
+                                        if dx.abs() > 0.5
+                                            && dy.abs() > 0.5
+                                            && (dx.abs() - dy.abs()).abs() <= 2.0
+                                        {
                                             let pair_min_x = c1_min_x.min(c2_min_x);
                                             let pair_max_x = c1_max_x.max(c2_max_x);
                                             let pair_min_y = c1_min_y.min(c2_min_y);
@@ -350,16 +369,38 @@ impl MultiverseSandbox {
 
                                             if dx * dy > 0.0 {
                                                 // \ diagonal -> spawn /
-                                                let mut px = pair_max_x + 1.0; let mut py = pair_min_y - th;
-                                                while px < u.global_width + tw && py >= -th { spawn_locations.push((px, py)); px += tw; py -= th; }
-                                                let mut px = pair_min_x - tw; let mut py = pair_max_y + 1.0;
-                                                while px >= -tw && py < u.global_height + th { spawn_locations.push((px, py)); px -= tw; py += th; }
+                                                let mut px = pair_max_x + 1.0;
+                                                let mut py = pair_min_y - th;
+                                                while px < u.global_width + tw && py >= -th {
+                                                    spawn_locations.push((px, py));
+                                                    px += tw;
+                                                    py -= th;
+                                                }
+                                                let mut px = pair_min_x - tw;
+                                                let mut py = pair_max_y + 1.0;
+                                                while px >= -tw && py < u.global_height + th {
+                                                    spawn_locations.push((px, py));
+                                                    px -= tw;
+                                                    py += th;
+                                                }
                                             } else {
                                                 // / diagonal -> spawn \
-                                                let mut px = pair_min_x - tw; let mut py = pair_min_y - th;
-                                                while px >= -tw && py >= -th { spawn_locations.push((px, py)); px -= tw; py -= th; }
-                                                let mut px = pair_max_x + 1.0; let mut py = pair_max_y + 1.0;
-                                                while px < u.global_width + tw && py < u.global_height + th { spawn_locations.push((px, py)); px += tw; py += th; }
+                                                let mut px = pair_min_x - tw;
+                                                let mut py = pair_min_y - th;
+                                                while px >= -tw && py >= -th {
+                                                    spawn_locations.push((px, py));
+                                                    px -= tw;
+                                                    py -= th;
+                                                }
+                                                let mut px = pair_max_x + 1.0;
+                                                let mut py = pair_max_y + 1.0;
+                                                while px < u.global_width + tw
+                                                    && py < u.global_height + th
+                                                {
+                                                    spawn_locations.push((px, py));
+                                                    px += tw;
+                                                    py += th;
+                                                }
                                             }
                                         }
                                     }

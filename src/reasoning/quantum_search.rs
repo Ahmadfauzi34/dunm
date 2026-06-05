@@ -535,8 +535,16 @@ impl AsyncWaveSearch {
 
                     let width = self.expected_grids[i][0].len();
                     let height = self.expected_grids[i].len();
-                    let m_width = if manifold.global_width > 0.0 { manifold.global_width as usize } else { width };
-                    let m_height = if manifold.global_height > 0.0 { manifold.global_height as usize } else { height };
+                    let m_width = if manifold.global_width > 0.0 {
+                        manifold.global_width as usize
+                    } else {
+                        width
+                    };
+                    let m_height = if manifold.global_height > 0.0 {
+                        manifold.global_height as usize
+                    } else {
+                        height
+                    };
 
                     let pre_error = if current_depth > 0 {
                         SimdEnergyCalculator::calculate_pragmatic_streaming(
@@ -545,9 +553,11 @@ impl AsyncWaveSearch {
                             m_width,
                             m_height,
                             &CognitivePhase::Microscopic,
-                            0.0
+                            0.0,
                         )
-                    } else { 9999.0 };
+                    } else {
+                        9999.0
+                    };
 
                     if pre_error == 0.0 && current_depth > 0 {
                         continue;
@@ -762,7 +772,11 @@ impl AsyncWaveSearch {
                         }
 
                         // Allow chaining of identical tiers if they are geometric (Tier 6/7)
-                        if next_axiom.physics_tier >= 3 && arena.action_tier[current_idx] >= 3 && next_axiom.physics_tier != 6 && next_axiom.physics_tier != 7 {
+                        if next_axiom.physics_tier >= 3
+                            && arena.action_tier[current_idx] >= 3
+                            && next_axiom.physics_tier != 6
+                            && next_axiom.physics_tier != 7
+                        {
                             continue;
                         }
 
