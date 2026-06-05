@@ -381,7 +381,7 @@ impl FractalArena {
         let g_bounded = expected_free_energy.max(0.0);
 
         // Update amplitude based on dynamic free energy
-        self.amplitudes[idx] = if total_pragmatic_error <= 0.0 {
+        self.amplitudes[idx] = if total_pragmatic_error.abs() < 1e-5 {
             1.0
         } else {
             let mut penalty = (expected_free_energy / 50000.0).clamp(0.0, 0.95);
@@ -559,7 +559,7 @@ impl AsyncWaveSearch {
                         9999.0
                     };
 
-                    if pre_error == 0.0 && current_depth > 0 {
+                    if (pre_error - 0.0).abs() < 1e-5 && current_depth > 0 {
                         continue;
                     }
 
