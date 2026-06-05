@@ -78,3 +78,11 @@ Presisi diterapkan melalui hirarki Saringan Berlapis untuk mencegah random walk:
 - **Failure as Gradient:** Kesalahan didefinisikan sebagai jarak dan vektor arah menuju sumur energi terdekat. Sistem melakukan Gradient Steering menuruni lembah energi, BUKAN menyuntikkan noise acak.
 
 *(Pedoman ini menjelaskan mengapa perbaikan pada `counterfactual_engine.rs` dan `hierarchical_inference.rs` yang mengubah toleransi `f32::EPSILON` menjadi `1e-5` / `1e-6` serta penghapusan kloning O(N*K) merupakan perbaikan yang secara arsitektural diwajibkan oleh desain RRM).*
+
+## 2024-06-05 - [Axiom Generator Math Fix & Decay Tracker Meta-Upgrade]
+**Learning:** Tensor identitas dalam komputasi ruang fourier FHRR (`Fractional Holographic Reduced Representations`) wajib didefinisikan sebagai *Dirac Delta* murni (hanya index ke-0 yang diset `1.0`). Implementasi *fallback* sebelumnya secara cacat menyematkan angka `1.0` pada index akhir (`GLOBAL_DIMENSION - 1`) yang menyebabkan intrusi distorsi fasa asimetris selama *circular convolution*, membiaskan posisi objek.
+**Action:** Kode di `axiom_generator.rs` dikoreksi dengan memastikan *fallback identity tensor* murni merujuk pada `identity[0] = 1.0`. Di luar kode internal Rust, pustaka alat pelacak python (`axiom_decay_tracker.py`) telah diperbarui (Meta-Upgrade) agar memiliki pola regex yang jauh lebih kokoh dalam mengekstrak parameter MCTS yang dinamis (contohnya ketiadaan *Epistemic* pada baris log tertentu) serta menggunakan toleransi *float drift* `1e-5` alih-alih `0.0` absolut untuk mendeteksi *ground states*.
+
+## 2024-06-05 - [Structures Fast L2 Normalization Safety]
+**Learning:** Komputasi `Fast L2 Normalization` dalam utilitas kognitif (`optimize_reasoning_paths`) yang berjalan sangat ketat menggunakan batas pelindung (`padding`) `1e-15` di single-precision (`f32`). Batas ini fungsionalnya sama dengan `0.0` pada `f32`, yang berpotensi mencederai tensor SIMD FHRR dengan masalah `divide-by-zero` (atau propagasi `NaN`) saat `sq_sum` adalah 0.0. Selain itu, atribut kompiler LLVM `#[inline]` tanpa parameter `always` tidak dapat memberikan jaminan asertif *Zero-Cost Abstractions*.
+**Action:** Parameter perlindungan presisi dinaikkan ke level aman `f32` yakni `1e-8`. Fungsi tersebut dipaksa lebur tanpa beban *Call Stack* menggunakan pengarah kompiler LLVM eksplisit `#[inline(always)]`.

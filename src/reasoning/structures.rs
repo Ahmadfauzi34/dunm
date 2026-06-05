@@ -102,7 +102,7 @@ impl CognitiveAbstractions {
     /// Wrapper API berlevel tinggi untuk interference pattern.
     /// `#[inline(always)]` menjamin bahwa kompiler meratakan panggilan ini menjadi operasi SIMD murni,
     /// sehingga menghilangkan beban `call stack` namun menjaga kode tetap bersih (bebas Cognitive Debt).
-    #[inline]
+    #[inline(always)]
     pub fn optimize_reasoning_paths(
         wave_a: &Array1<f32>,
         wave_b: &Array1<f32>,
@@ -117,7 +117,9 @@ impl CognitiveAbstractions {
         for &v in novel.iter() {
             sq_sum += v * v;
         }
-        let inv_mag = 1.0 / (sq_sum.sqrt() + 1e-15);
+
+        // Single precision (f32) eps is ~1.19e-7, use 1e-8 to safely prevent NaN / Division by zero
+        let inv_mag = 1.0 / (sq_sum.sqrt() + 1e-8);
         for v in novel.iter_mut() {
             *v *= inv_mag;
         }

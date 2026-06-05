@@ -28,8 +28,8 @@ impl AxiomGenerator {
             "MIRROR_XY" => FHRR::fractional_bind_2d(x_seed, -1.0, y_seed, -1.0),
             _ => {
                 let mut identity = Array1::zeros(GLOBAL_DIMENSION);
+                // In FHRR, an identity vector for circular convolution is a pure Dirac delta.
                 identity[0] = 1.0;
-                identity[GLOBAL_DIMENSION - 1] = 1.0;
                 identity
             }
         };
