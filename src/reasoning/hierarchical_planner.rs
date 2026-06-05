@@ -207,14 +207,20 @@ impl HierarchicalPlanner {
             }
             PlanningNode::Validation(ValidationCheck::ExactMatch) => {
                 // Node validasi: Evaluasi apakah state akhir sesuai dengan ground truth
+                use crate::perception::hologram_decoder::HologramDecoder;
                 use crate::reasoning::quantum_search_simd::{CognitivePhase, SimdEnergyCalculator};
 
-                let dummy_grid =
-                    vec![vec![0; expected.global_width as usize]; expected.global_height as usize];
+                let decoder = HologramDecoder::new();
+                let expected_grid = decoder.collapse_to_grid(
+                    expected,
+                    expected.global_width as usize,
+                    expected.global_height as usize,
+                    0.50,
+                );
 
                 let pragmatic_error = SimdEnergyCalculator::calculate_pragmatic_streaming(
                     &state,
-                    &dummy_grid,
+                    &expected_grid,
                     state.global_width as usize,
                     state.global_height as usize,
                     &CognitivePhase::Microscopic,

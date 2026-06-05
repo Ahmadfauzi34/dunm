@@ -82,14 +82,21 @@ impl DeepActiveInferenceEngine {
             }
 
             // 1. Pragmatic: Seberapa cocok dengan Ground Truth?
-            // Kita gunakan depth_ratio 0.0 agar hadiah dimensi (-500) langsung aktif
+            // Kita wajib menggunakan Microscopic agar penempatan piksel dievaluasi.
+            // MacroStructural hanya untuk Depth 0 awal pencarian MCTS.
+            let phase = if step == 0 && policy.actions.is_empty() {
+                CognitivePhase::MacroStructural
+            } else {
+                CognitivePhase::Microscopic
+            };
+
             let pragmatic = SimdEnergyCalculator::calculate_pragmatic_streaming(
                 &temp_state,
                 expected_grid,
                 temp_state.global_width as usize,
                 temp_state.global_height as usize,
-                &CognitivePhase::MacroStructural,
-                1e-6,
+                &phase,
+                1e-5,
             );
             total_pragmatic += pragmatic;
 

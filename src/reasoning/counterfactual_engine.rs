@@ -114,16 +114,17 @@ impl CounterfactualEngine {
         expected: &EntityManifold,
     ) -> SequenceResult {
         let mut state = input.clone();
-        let mut intermediate_results = Vec::new();
 
         for (i, axiom) in sequence.iter().enumerate() {
-            if let Some(_prev_result) = intermediate_results.last() {
-                if !self.are_compatible(_prev_result, axiom) {
-                    return SequenceResult::Invalid {
-                        at_step: i,
-                        reason: IncompatibilityReason::StateMismatch,
-                    };
-                }
+            // Note: In an optimized SoA setup, we don't need to keep pushing `state.clone()`
+            // into `intermediate_results` just to check `are_compatible` against the immediately preceding state.
+            // We can just check the current mutating `state` directly against the new axiom.
+
+            if !self.are_compatible(&state, axiom) {
+                return SequenceResult::Invalid {
+                    at_step: i,
+                    reason: IncompatibilityReason::StateMismatch,
+                };
             }
 
             MultiverseSandbox::apply_axiom(
@@ -136,7 +137,6 @@ impl CounterfactualEngine {
                 axiom.tier,
                 &axiom.name,
             );
-            intermediate_results.push(state.clone());
 
             if self.is_clearly_wrong(&state, expected, i) {
                 return SequenceResult::FailedEarly {
@@ -165,7 +165,7 @@ impl CounterfactualEngine {
         let exp_h = expected.global_height;
 
         let mut dim_mismatch = false;
-        if (sim_w - exp_w).abs() > f32::EPSILON || (sim_h - exp_h).abs() > f32::EPSILON {
+        if (sim_w - exp_w).abs() > 1e-5 || (sim_h - exp_h).abs() > 1e-5 {
             energy += ((sim_w - exp_w).powi(2) + (sim_h - exp_h).powi(2)).sqrt() * 1000.0;
             dim_mismatch = true;
         }
