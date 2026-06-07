@@ -5,6 +5,7 @@
 use crate::core::config::GLOBAL_DIMENSION;
 use crate::core::entity_manifold::EntityManifold;
 use ndarray::{Array1, Array2};
+use nalgebra::DMatrix;
 
 /// Quantum Cell Complex: Simplicial complex dengan amplitude kuantum
 #[derive(Clone, Debug)]
@@ -197,44 +198,78 @@ impl QuantumCellComplex {
             self.laplacians.push(l1);
         }
 
-        for laplacian in &self.laplacians {
-            let eigenvalues = self.estimate_eigenvalues(laplacian);
-            let zero_count = eigenvalues.iter().filter(|&&x| x.abs() < 1e-4).count();
-            self.betti_numbers.push(zero_count);
+        // Bug 1 Fix: Replace laplacian zero eigenvalue count (power iteration)
+        // with exact Betti numbers computed via SVD rank of boundary operators.
+        self.betti_numbers.clear();
+        let n_vertices = n;
+
+        let rank_d1 = if !self.boundary_operators.is_empty() {
+            Self::svd_rank(&self.boundary_operators[0])
+        } else {
+            0
+        };
+
+        let rank_d2 = if self.boundary_operators.len() > 1 {
+            Self::svd_rank(&self.boundary_operators[1])
+        } else {
+            0
+        };
+
+        let n_edges = edges.len();
+        let n_triangles = if self.boundary_operators.len() > 1 {
+            self.boundary_operators[1].shape()[1]
+        } else {
+            0
+        };
+
+        // Betti 0: Components
+        let b0 = n_vertices - rank_d1;
+        self.betti_numbers.push(b0);
+
+        // Betti 1: Tunnels / Cycles
+        if self.boundary_operators.is_empty() {
+            self.betti_numbers.push(0);
+        } else {
+            let b1 = n_edges.saturating_sub(rank_d1 + rank_d2);
+            self.betti_numbers.push(b1);
+        }
+
+        // Betti 2: Voids
+        if self.boundary_operators.len() > 1 {
+            let b2 = n_triangles - rank_d2;
+            self.betti_numbers.push(b2);
         }
     }
 
-    fn estimate_eigenvalues(&self, matrix: &Array2<f32>) -> Vec<f32> {
-        if matrix.is_empty() {
-            return vec![0.0];
-        }
-        let n = matrix.shape()[0];
-        let mut v = Array1::<f32>::ones(n);
-        let norm = v.dot(&v).sqrt();
-        if norm > 0.0 {
-            v /= norm;
-        } else {
-            return vec![0.0];
+    fn svd_rank(matrix: &Array2<f32>) -> usize {
+        let (rows, cols) = (matrix.shape()[0], matrix.shape()[1]);
+        if rows == 0 || cols == 0 {
+            return 0;
         }
 
-        for _ in 0..20 {
-            let v_new = matrix.dot(&v);
-            let norm = v_new.dot(&v_new).sqrt();
-            if norm > 1e-6 {
-                v = v_new / norm;
+        let mut dmat = DMatrix::<f64>::zeros(rows, cols);
+        for i in 0..rows {
+            for j in 0..cols {
+                dmat[(i, j)] = matrix[[i, j]] as f64;
             }
         }
-        let lambda = v.dot(&(matrix.dot(&v)));
-        vec![lambda]
+
+        let svd = dmat.svd(false, false);
+        svd.rank(1e-5)
     }
+
 
     fn compute_persistence(
         &mut self,
         dist_matrix: &Array2<f32>,
         edges: &[(usize, usize)],
-        _triangles: &[(usize, usize, usize)],
+        triangles: &[(usize, usize, usize)],
     ) {
-        // Here dist_matrix holds squared distances, we take the sqrt when pushing to barcode
+        self.persistence_barcode.clear();
+
+        // Standard boundary reduction algorithm for 0D and 1D homology
+
+        // 1. Sort edges and triangles by appearance distance (filtration time)
         let mut edge_filtration: Vec<(f32, usize)> = edges
             .iter()
             .enumerate()
@@ -242,17 +277,132 @@ impl QuantumCellComplex {
             .collect();
         edge_filtration.sort_by(|a, b| a.0.partial_cmp(&b.0).unwrap_or(std::cmp::Ordering::Equal));
 
-        let mut uf = UnionFind::new(dist_matrix.shape()[0]);
+        let mut tri_filtration: Vec<(f32, usize)> = triangles
+            .iter()
+            .enumerate()
+            .map(|(idx, &(i, j, k))| {
+                let d1 = dist_matrix[[i, j]].sqrt();
+                let d2 = dist_matrix[[j, k]].sqrt();
+                let d3 = dist_matrix[[i, k]].sqrt();
+                (d1.max(d2).max(d3), idx)
+            })
+            .collect();
+        tri_filtration.sort_by(|a, b| a.0.partial_cmp(&b.0).unwrap_or(std::cmp::Ordering::Equal));
 
-        for (dist, e_idx) in edge_filtration {
+        let n = dist_matrix.shape()[0];
+        let mut uf = UnionFind::new(n);
+
+        // Map from edge internal index to its birth time and filtration index
+        let mut edge_birth_time = vec![0.0; edges.len()];
+        let mut edge_to_filt = vec![0; edges.len()];
+
+        // 0D Persistence (Components) & 1D Births
+        for (filt_idx, &(dist, e_idx)) in edge_filtration.iter().enumerate() {
+            edge_birth_time[e_idx] = dist;
+            edge_to_filt[e_idx] = filt_idx;
+
             let (i, j) = edges[e_idx];
             let root_i = uf.find(i);
             let root_j = uf.find(j);
 
-            if root_i == root_j {
+            if root_i != root_j {
+                // Component merges (0D death)
+                // Assuming all components born at dist = 0.0
                 self.persistence_barcode.push((0.0, dist));
-            } else {
                 uf.union(root_i, root_j);
+            }
+            // If root_i == root_j, it's a 1D birth (cycle formed), handled below
+        }
+
+        // Add remaining components that never die (1 component if connected)
+        for i in 0..n {
+            if uf.find(i) == i {
+                self.persistence_barcode.push((0.0, f32::INFINITY));
+            }
+        }
+
+        // 1D Persistence (Cycles) boundary reduction
+        let n_edges = edges.len();
+        let mut r: Vec<Vec<usize>> = vec![vec![]; tri_filtration.len()];
+        let mut low: Vec<Option<usize>> = vec![None; tri_filtration.len()];
+        // Keep track of which triangle is the youngest to kill a particular edge cycle
+        let mut edge_killed_by: Vec<Option<usize>> = vec![None; n_edges];
+
+        for (j, &(_, tri_idx)) in tri_filtration.iter().enumerate() {
+            let (v1, v2, v3) = triangles[tri_idx];
+
+            // Find the 3 edges in the triangle and their filtration indices
+            let mut tri_edges = Vec::new();
+            for (e_idx, &(e_v1, e_v2)) in edges.iter().enumerate() {
+                if (e_v1 == v1 && e_v2 == v2) || (e_v1 == v2 && e_v2 == v1) ||
+                   (e_v1 == v2 && e_v2 == v3) || (e_v1 == v3 && e_v2 == v2) ||
+                   (e_v1 == v1 && e_v2 == v3) || (e_v1 == v3 && e_v2 == v1) {
+                    tri_edges.push(e_idx);
+                }
+            }
+
+            if tri_edges.len() != 3 { continue; } // Malformed triangle
+
+            // Sort column boundary by edge filtration index (descending)
+            tri_edges.sort_by_key(|&e| std::cmp::Reverse(edge_to_filt[e]));
+            r[j] = tri_edges;
+            low[j] = r[j].first().copied();
+
+            // Column reduction
+            let mut changed = true;
+            while changed {
+                changed = false;
+                if let Some(l_idx) = low[j] {
+                    // Find if any previous column has the same lowest one
+                    for prev_j in 0..j {
+                        if low[prev_j] == Some(l_idx) {
+                            // Add column prev_j to column j (Z2 addition -> XOR)
+                            let mut new_col = Vec::new();
+                            let mut i_a = 0;
+                            let mut i_b = 0;
+                            while i_a < r[j].len() || i_b < r[prev_j].len() {
+                                if i_a < r[j].len() && (i_b == r[prev_j].len() || edge_to_filt[r[j][i_a]] > edge_to_filt[r[prev_j][i_b]]) {
+                                    new_col.push(r[j][i_a]);
+                                    i_a += 1;
+                                } else if i_b < r[prev_j].len() && (i_a == r[j].len() || edge_to_filt[r[prev_j][i_b]] > edge_to_filt[r[j][i_a]]) {
+                                    new_col.push(r[prev_j][i_b]);
+                                    i_b += 1;
+                                } else {
+                                    // Match -> Cancel out (Z2)
+                                    i_a += 1;
+                                    i_b += 1;
+                                }
+                            }
+                            r[j] = new_col;
+                            low[j] = r[j].first().copied();
+                            changed = true;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if let Some(l_idx) = low[j] {
+                edge_killed_by[l_idx] = Some(j);
+            }
+        }
+
+        // Calculate 1D births and deaths
+        for &(dist, e_idx) in &edge_filtration {
+            let (v1, v2) = edges[e_idx];
+            if uf.find(v1) == uf.find(v2) {
+                // If the edge connects already connected components in the union-find tree
+                // *at the time of birth*, it forms a cycle (1D birth)
+                let birth = dist;
+                let death = if let Some(killer_j) = edge_killed_by[e_idx] {
+                    tri_filtration[killer_j].0
+                } else {
+                    f32::INFINITY
+                };
+
+                if birth < death {
+                    self.persistence_barcode.push((birth, death));
+                }
             }
         }
     }
@@ -398,9 +548,16 @@ impl SkillFiberBundle {
                 break;
             }
 
-            // Apply connection: rotate fiber (fractional binding style)
+            // Bug 6 Fix: Apply proper rotation/normalization to preserve fiber norm
+            // instead of just scalar scaling.
             let transport_weight = self.connection[[current, best_next]];
             result = &result * transport_weight;
+
+            let norm = result.dot(&result).sqrt();
+            if norm > 1e-6 {
+                result /= norm;
+            }
+
             current = best_next;
         }
 
@@ -554,10 +711,19 @@ impl ReasoningSheaf {
 
     /// Sheaf condition: compatibility pada overlap
     pub fn check_sheaf_condition(&self) -> bool {
-        // Cek gluing condition: restrictions cocok pada overlap
-        for &(_i, _j, compat) in &self.gluing_data {
-            if compat < 0.7 {
-                // Threshold compatibility
+        // Bug 7 Fix: Normalize compatibility threshold based on local section norms
+        for &(i, j, compat) in &self.gluing_data {
+            let norm_i = self.local_sections[i].dot(&self.local_sections[i]).sqrt();
+            let norm_j = self.local_sections[j].dot(&self.local_sections[j]).sqrt();
+            let denominator = norm_i * norm_j;
+
+            let normalized_compat = if denominator > 1e-6 {
+                compat / denominator
+            } else {
+                0.0
+            };
+
+            if normalized_compat < 0.5 { // Adjusted threshold for normalized cosine similarity
                 return false;
             }
         }
@@ -573,8 +739,16 @@ impl ReasoningSheaf {
         let mut global = Array1::<f32>::zeros(GLOBAL_DIMENSION);
         let mut total_weight = 0.0;
 
+        // Bug 7 Fix: Compute partition of unity weights based on overlap geometry
         for (i, section) in self.local_sections.iter().enumerate() {
-            let weight = self.cover[i].len() as f32;
+            let mut overlap_count = 0;
+            for &(ui, uj, _) in &self.gluing_data {
+                if ui == i || uj == i {
+                    overlap_count += 1;
+                }
+            }
+            // Weight is proportional to how "central" or overlapped the cover is
+            let weight = (self.cover[i].len() as f32) / (1.0 + overlap_count as f32);
             global += &(section * weight);
             total_weight += weight;
         }
@@ -643,39 +817,33 @@ impl SpectralEmbedding {
             }
         }
 
-        // Compute first k eigenvectors (power iteration + Gram-Schmidt)
-        let mut embedding = Array2::<f32>::zeros((n, k));
-        let mut eigenvalues = vec![0.0; k];
-
-        for dim in 0..k {
-            let mut v = Array1::<f32>::from_vec(
-                (0..n).map(|i| ((i * 7919) as f32).sin()).collect(), // Deterministic init
-            );
-            let v_norm = v.dot(&v).sqrt();
-            if v_norm > 0.0 {
-                v /= v_norm;
+        // Bug 2 Fix: Use nalgebra's SymmetricEigen for correct full-spectrum decomposition
+        // instead of power iteration which collapses eigenvalues towards 0.
+        let mut dmat = nalgebra::DMatrix::<f64>::zeros(n, n);
+        for i in 0..n {
+            for j in 0..n {
+                dmat[(i, j)] = laplacian[[i, j]] as f64;
             }
+        }
 
-            // Gram-Schmidt orthogonalization
-            for prev in 0..dim {
-                let u = embedding.column(prev).to_owned();
-                let proj = v.dot(&u);
-                v -= &(u * proj);
-            }
+        let eig = dmat.symmetric_eigen();
+        let mut eigen_pairs: Vec<(f64, Vec<f64>)> = (0..n).map(|i| {
+            let val = eig.eigenvalues[i];
+            let vec = (0..n).map(|j| eig.eigenvectors[(j, i)]).collect();
+            (val, vec)
+        }).collect();
 
-            // Power iteration
-            for _ in 0..20 {
-                let v_new = laplacian.dot(&v);
-                let norm = v_new.dot(&v_new).sqrt();
-                if norm > 1e-6 {
-                    v = v_new / norm;
-                }
-            }
+        // Sort by eigenvalues ascending
+        eigen_pairs.sort_by(|a, b| a.0.partial_cmp(&b.0).unwrap_or(std::cmp::Ordering::Equal));
 
-            let lambda = v.dot(&(laplacian.dot(&v)));
-            eigenvalues[dim] = lambda;
+        let actual_k = k.min(n);
+        let mut embedding = Array2::<f32>::zeros((n, actual_k));
+        let mut eigenvalues = vec![0.0; actual_k];
+
+        for dim in 0..actual_k {
+            eigenvalues[dim] = eigen_pairs[dim].0 as f32;
             for i in 0..n {
-                embedding[[i, dim]] = v[i];
+                embedding[[i, dim]] = eigen_pairs[dim].1[i] as f32;
             }
         }
 
@@ -692,6 +860,7 @@ impl SpectralEmbedding {
 pub struct QuantumTensorNetwork {
     pub layers: Vec<TensorLayer>,
     pub top_tensor: Array1<f32>,
+    pub original_n: usize,
 }
 
 #[derive(Clone, Debug)]
@@ -706,12 +875,18 @@ impl QuantumTensorNetwork {
         let mut layers = Vec::new();
         let mut current_n = manifold.active_count;
 
+        let original_n = current_n;
         if current_n == 0 {
             return QuantumTensorNetwork {
                 layers: vec![],
                 top_tensor: Array1::<f32>::zeros(GLOBAL_DIMENSION),
+                original_n: 0,
             };
         }
+
+        // Bug 3 Fix: Pad to next power of 2 to guarantee perfectly invertible decoding
+        // without odd-length cascading dimension mismatches.
+        let padded_n = current_n.next_power_of_two();
 
         // Initialize features dari SOA
         let mut current_features: Vec<Array1<f32>> = (0..current_n)
@@ -723,6 +898,11 @@ impl QuantumTensorNetwork {
                 f
             })
             .collect();
+
+        while current_features.len() < padded_n {
+            current_features.push(Array1::<f32>::zeros(GLOBAL_DIMENSION));
+        }
+        current_n = padded_n;
 
         let mut scale = 1usize;
         while current_n > 1 {
@@ -772,7 +952,7 @@ impl QuantumTensorNetwork {
             .cloned()
             .unwrap_or_else(|| Array1::<f32>::zeros(GLOBAL_DIMENSION));
 
-        QuantumTensorNetwork { layers, top_tensor }
+        QuantumTensorNetwork { layers, top_tensor, original_n }
     }
 
     /// Decode: expand top tensor ke spatial resolution
@@ -805,6 +985,8 @@ impl QuantumTensorNetwork {
             current = next;
         }
 
+        // Bug 3 Fix: Truncate output tensor back to the true un-padded dimension
+        current.truncate(self.original_n);
         current
     }
 }
@@ -880,11 +1062,15 @@ impl FourierSkillOperator {
             }
         }
 
-        // 4. Pruning frekuensi tinggi (Low-Pass Filter) -> simpan hanya 'modes' terendah
-        let mode_limit = self.modes;
+        // Bug 4 Fix: Correctly apply Circular (Euclidean) Low-Pass filter from DC instead of Cartesian box
+        let mode_limit = self.modes as f32;
+
         for y in 0..height {
             for x in 0..width {
-                if x >= mode_limit && y >= mode_limit {
+                let dx = x.min(width.saturating_sub(x)) as f32;
+                let dy = y.min(height.saturating_sub(y)) as f32;
+
+                if (dx * dx + dy * dy).sqrt() >= mode_limit {
                     final_spectral[y][x] = Complex { re: 0.0, im: 0.0 };
                 }
             }

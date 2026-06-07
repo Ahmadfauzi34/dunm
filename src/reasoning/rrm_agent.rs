@@ -1042,11 +1042,8 @@ impl RrmAgent {
                                 delta_x: ax.delta_x,
                                 delta_y: ax.delta_y,
                                 physics_tier: ax.physics_tier,
-                                axiom_type: ax
-                                    .axiom_type
-                                    .last()
-                                    .cloned()
-                                    .unwrap_or_else(String::new),
+                                axiom_type: ax.axiom_type.clone(),
+                                axiom_history: ax.axiom_history.clone(),
                             });
                         }
 
@@ -1081,22 +1078,29 @@ impl RrmAgent {
                                     idx
                                 );
                                 let winner = &candidates[idx];
-                                let mut w_node = WaveNode::new(
-                                    winner.axiom_type.clone(),
-                                    winner.condition_tensor.clone(),
-                                    winner.tensor_rule.clone(),
-                                    winner.tensor_rule.clone(),
-                                    winner.delta_x,
-                                    winner.delta_y,
-                                    winner.physics_tier,
-                                    std::sync::Arc::new(
+                                let mut w_node = WaveNode {
+                                    axiom_type: winner.axiom_type.clone(),
+                                    axiom_history: winner.axiom_history.clone(),
+                                    condition_tensor: winner.condition_tensor.clone(),
+                                    tensor_spatial: winner.tensor_rule.clone(),
+                                    tensor_semantic: winner.tensor_rule.clone(),
+                                    delta_x: winner.delta_x,
+                                    delta_y: winner.delta_y,
+                                    physics_tier: winner.physics_tier,
+                                    static_background: std::sync::Arc::new(crate::core::infinite_detail::CoarseData {
+                                        regions: std::sync::Arc::new(vec![]),
+                                        signatures: std::sync::Arc::new(vec![]),
+                                    }),
+                                    state_manifolds: std::sync::Arc::new(
                                         train_states
                                             .iter()
                                             .map(|(m, _)| m.clone())
                                             .collect::<Vec<_>>(),
                                     ),
-                                    None,
-                                );
+                                    state_modified: false,
+                                    probability: 1.0,
+                                    depth: winner.axiom_type.len(),
+                                };
                                 w_node.probability = 1.0;
                                 best_rule = Some(w_node);
                                 max_prob = 1.0;
@@ -1455,6 +1459,8 @@ impl RrmAgent {
                 .axiom_type
                 .last()
                 .map_or("IDENTITY_STATIC", |s: &String| s.as_str());
+            println!("DEBUG: Rule applied: {:?}", rule.axiom_type);
+            println!("DEBUG: Rule history: {:?}", rule.axiom_history.iter().map(|a| &a.name).collect::<Vec<_>>());
 
             // Simpan ke LogicSeedBank agar bisa dipanggil lebih cepat di task selanjutnya
             self.seed_bank

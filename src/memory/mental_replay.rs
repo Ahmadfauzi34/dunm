@@ -160,7 +160,8 @@ impl MentalReplay {
                     delta_x: axiom.delta_x,
                     delta_y: axiom.delta_y,
                     physics_tier: axiom.tier,
-                    axiom_type: axiom.name.clone(),
+                    axiom_type: vec![axiom.name.clone()],
+                    axiom_history: vec![axiom.clone()],
                 });
             }
 
@@ -177,7 +178,7 @@ impl MentalReplay {
 
             if let Some(winner_idx) = grover.search(&candidates, &train_states, &mode) {
                 // If grover found a universal axiom for this dream variation!
-                println!("🌙 [Grover Dreamer] Menemukan Universal Axiom baru untuk skenario mimpi! Pemenang: {}", candidates[winner_idx].axiom_type);
+                println!("🌙 [Grover Dreamer] Menemukan Universal Axiom baru untuk skenario mimpi! Pemenang: {:?}", candidates[winner_idx].axiom_type);
 
                 // Construct a ComposedSkill (dummy representation)
                 let composed = ComposedSkill {

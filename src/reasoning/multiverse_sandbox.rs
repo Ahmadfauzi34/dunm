@@ -38,6 +38,7 @@ impl MultiverseSandbox {
         physics_tier: u8,
         axiom_type: &str, // Digunakan untuk parsing operator geometri jika Tier 4
     ) -> bool {
+        println!("🚀 APPLYING AXIOM IN SANDBOX: {} (Tier: {})", axiom_type, physics_tier);
         let mut collision_detected = false;
         // 🌟 FISIKA TIER 8: REKURSI MACRO (Interpreter Siklus Otot/Skill) 🌟
         if physics_tier == 8 {
