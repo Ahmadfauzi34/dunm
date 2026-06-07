@@ -8,12 +8,15 @@ def analyze_decay(log_content):
     Reads the RRM simulation log and traces the probability of each Axiom Path
     to detect where it starts decaying and where it gets pruned (dies).
     """
-    # Regex to capture: [Depth 0] Axioms: ["ROOT_START"] | Pragmatic: -1500.00 | Epistemic: 0.00 | Prob: 1.0000 | Dim: 11x11
-    pattern = re.compile(r"\[Depth\s+(\d+)\]\s+Axioms:\s+\[(.*?)\]\s+\|\s+Pragmatic:\s+([-\d.]+)\s+\|\s+Epistemic:\s+([-\d.]+)\s+\|\s+Prob:\s+([\d.]+)")
+    # Lebih luwes (Robust Regex) - mendeteksi berbagai variasi log MCTS
+    # Matches: [Depth 0] Axioms: ["ROOT_START"] | Pragmatic: -1500.00 | Epistemic: 0.00 | Prob: 1.0000 | Dim: 11x11
+    # ATAU format MCTS alternatif lainnya jika kelak visualizer berubah.
+    pattern = re.compile(r"\[Depth\s+(\d+)\]\s+Axioms:\s+\[(.*?)\]\s+\|\s+Pragmatic:\s+([-\d.]+)(?:\s+\|\s+Epistemic:\s+([-\d.]+))?\s+\|\s+Prob:\s+([\d.]+)")
 
-    # Data structure: path -> list of (depth, prob, pragmatic_error)
+    # Data structure: path -> list of (depth, prob, pragmatic_error, epistemic_val)
     history = defaultdict(list)
     max_depth_seen = 0
+    ground_states_found = 0
 
     for line in log_content.splitlines():
         match = pattern.search(line)
@@ -23,28 +26,32 @@ def analyze_decay(log_content):
             # Cleanup raw path, e.g., '"ROOT_START", "SCALE_AND_FILL_2_3x3"' -> 'ROOT_START -> SCALE_AND_FILL_2_3x3'
             clean_path = raw_path.replace('"', '').replace(', ', ' -> ')
             prag = float(match.group(3))
+
+            # Toleransi jika format log tidak mencetak Epistemic
+            epistemic = float(match.group(4)) if match.group(4) else 0.0
             prob = float(match.group(5))
 
-            history[clean_path].append((depth, prob, prag))
+            history[clean_path].append((depth, prob, prag, epistemic))
             if depth > max_depth_seen:
                 max_depth_seen = depth
 
     print("=========================================================")
-    print(" 🕵️‍♂️  Axiom Decay & Pruning Tracker")
+    print(" 🕵️‍♂️  Axiom Decay & Pruning Tracker (Meta-Upgraded)")
     print("=========================================================")
-    print(f"Total Unique Paths Evaluated: {len(history)}")
-    print(f"Max Depth Reached: {max_depth_seen}")
+    print(f"Total Unique Paths Evaluated : {len(history)}")
+    print(f"Max Depth Reached            : {max_depth_seen}")
     print("---------------------------------------------------------\n")
 
     # Analyze each path
-    for path, records in sorted(history.items(), key=lambda x: len(x[1])):
-        # records is a list of (depth, prob, prag)
+    # Mengurutkan berdasarkan kedalaman tercapai, lalu jumlah elemen dalam path
+    for path, records in sorted(history.items(), key=lambda x: (max(r[0] for r in x[1]), len(x[1]))):
+        # records is a list of (depth, prob, prag, epistemic)
         records = sorted(records, key=lambda x: x[0]) # Sort by depth
 
         print(f"🌿 Path: {path}")
 
         previous_prob = None
-        for i, (depth, prob, prag) in enumerate(records):
+        for i, (depth, prob, prag, epistemic) in enumerate(records):
             status = ""
 
             # Detect Decay (Drop in probability)
@@ -58,10 +65,12 @@ def analyze_decay(log_content):
             # Detect Death/Pruning (Prob <= 0.01)
             if prob <= 0.01:
                 status += " 💀 PRUNED/DEAD (Prob too low)"
-            elif prag == 0.0 and depth > 0:
+            # Robust Ground State check: Error is very close to 0.0 (prevent float drift errors)
+            elif abs(prag) <= 1e-5 and depth > 0:
                 status += " 🏆 GROUND STATE FOUND!"
+                ground_states_found += 1
 
-            print(f"   ├─ Depth {depth} | Prob: {prob:.4f} | Pragmatic: {prag:>8.2f} {status}")
+            print(f"   ├─ Depth {depth} | Prob: {prob:.4f} | Pragmatic: {prag:>8.2f} | Epis: {epistemic:>5.2f} {status}")
             previous_prob = prob
 
         # If the path didn't reach the max_depth and isn't a ground state, it was structurally abandoned
@@ -69,11 +78,17 @@ def analyze_decay(log_content):
         last_prob = records[-1][1]
         last_prag = records[-1][2]
 
-        if last_depth < max_depth_seen and last_prob > 0.01 and last_prag != 0.0:
-             print(f"   └─ 🪦 ABANDONED at Depth {last_depth} (Did not spawn children)")
+        if last_depth < max_depth_seen and last_prob > 0.01 and abs(last_prag) > 1e-5:
+             print(f"   └─ 🪦 ABANDONED at Depth {last_depth} (Did not spawn children or halted)")
+        elif abs(last_prag) <= 1e-5 and last_depth > 0:
+             print("   └─ ✨ SOLUTION BRANCH")
         else:
              print("   └─ End of trace")
         print()
+
+    print("=========================================================")
+    print(f" 🏁 SUMMARY: Found {ground_states_found} distinct Ground State matches in the MCTS tree.")
+    print("=========================================================")
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
