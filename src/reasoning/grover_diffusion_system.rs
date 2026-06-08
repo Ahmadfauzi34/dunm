@@ -12,6 +12,9 @@ pub struct GroverConfig {
     pub max_iterations: usize,
 }
 
+use crate::reasoning::structures::Axiom;
+use crate::reasoning::structures::Unverified;
+
 pub struct GroverCandidate {
     pub energy: f32,
     pub tensor_rule: Array1<f32>,
@@ -19,7 +22,8 @@ pub struct GroverCandidate {
     pub delta_x: f32,
     pub delta_y: f32,
     pub physics_tier: u8,
-    pub axiom_type: String,
+    pub axiom_type: Vec<String>,
+    pub axiom_history: Vec<Axiom<Unverified>>,
 }
 
 pub struct TrainState {
@@ -108,16 +112,18 @@ impl<'a> GroverDiffusionSystem<'a> {
                 let _dummy_spatial_delta =
                     Array1::<f32>::zeros(crate::core::config::GLOBAL_DIMENSION);
 
-                MultiverseSandbox::apply_axiom(
-                    &mut temp_state,
-                    &candidate.condition_tensor,
-                    &candidate.tensor_rule,
-                    &candidate.tensor_rule,
-                    candidate.delta_x,
-                    candidate.delta_y,
-                    candidate.physics_tier,
-                    &candidate.axiom_type,
-                );
+                for axiom in &candidate.axiom_history {
+                    MultiverseSandbox::apply_axiom(
+                        &mut temp_state,
+                        &axiom.condition_tensor,
+                        &axiom.delta_spatial,
+                        &axiom.delta_semantic,
+                        axiom.delta_x,
+                        axiom.delta_y,
+                        axiom.tier,
+                        &axiom.name,
+                    );
+                }
 
                 let pragmatic_error = SimdEnergyCalculator::calculate_pragmatic_streaming(
                     &temp_state,

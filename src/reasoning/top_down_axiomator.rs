@@ -191,6 +191,21 @@ impl TopDownAxiomator {
                             axiom_type: format!("INTERSECTION_FILL_{}", out_atom.color),
                             physics_tier: 6,
                         });
+
+                        // NEW: Emit Geometry-Symmetry ARC Axiom Hypothesis
+                        axioms.push(TopologicalMatch {
+                            source_index: 0,
+                            target_index: -1,
+                            similarity: 5.99,
+                            condition_tensor: Some(cond.clone()),
+                            delta_spatial: id_tensor.clone(),
+                            delta_semantic: id_tensor.clone(),
+                            delta_x: out_atom.color as f32, // Used for spawn_color internally
+                            delta_y: 0.0,
+                            axiom_type: format!("ARC_SYMMETRY_SPAWN_{}", out_atom.color),
+                            physics_tier: 6,
+                        });
+
                         break;
                     }
                 }

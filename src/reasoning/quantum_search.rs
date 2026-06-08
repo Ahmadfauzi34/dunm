@@ -619,6 +619,7 @@ impl AsyncWaveSearch {
                 let current_axiom_str = arena.axiom_path[current_idx].join(" ");
                 if current_axiom_str.contains("SPAWN_EXTRAPOLATE")
                     || current_axiom_str.contains("INTERSECTION_FILL")
+                    || current_axiom_str.contains("ARC_SYMMETRY_SPAWN")
                 {
                     arena.amplitudes[current_idx] = 1.0;
                 }

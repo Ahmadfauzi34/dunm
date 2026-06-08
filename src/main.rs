@@ -86,7 +86,7 @@ fn distill_yaml_skills() {
         }
 
         let yaml_doc = format!(
-            "\n# Tensor Driven Macro: {id}\n\n```yaml\nid: MACRO:{id}\ntier: 6\ndescription: Generated tensor skill\nsequence:\n  - axiom_type: TENSOR_DRIVEN_BIND\n    physics_tier: 6\n    delta_x: {dx:.1}\n    delta_y: {dy:.1}\n    tensor_spatial: [{yaml_arr}]\n```\n"
+            "\n# Tensor Driven Macro: {id}\n\nyaml\nid: MACRO:{id}\ntier: 6\ndescription: Generated tensor skill\nsequence:\n  - axiom_type: TENSOR_DRIVEN_BIND\n    physics_tier: 6\n    delta_x: {dx:.1}\n    delta_y: {dy:.1}\n    tensor_spatial: [{yaml_arr}]\n\n"
         );
 
         if let Err(e) = fs::write(

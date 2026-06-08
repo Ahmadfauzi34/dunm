@@ -1,0 +1,512 @@
+   Compiling rrm_rust v0.1.0 (/app)
+    Finished `release` profile [optimized] target(s) in 57.08s
+     Running `target/release/rrm_rust 22233c11.json`
+--- DISTILLING 4 CORE TENSOR SKILLS TO YAML ---
+--- DISTILLATION TO YAML COMPLETED ---
+🌌 RRM Quantum Sandbox (Rust Edition) Initialized.
+📚 Berhasil meload 6 skill dari Executable Wiki (.md)
+
+
+🌿 ==================================
+Solving Task: 05269061.json
+🌿 ==================================
+🧠 [Orientasi Pre-emptive] Membaca Niat Task...
+   -> Niat / Klasifikasi Masalah: Task ini menunjukkan: StructuralTransform. Dimensi Larger (3 → 7), Added(43) objek (6 → 49), topologi berubah dari Scatter ke Grid. Tidak ada template frame.
+🧠 [Topologi Kuantum] Betti-1: Tidak ada lubang terdeteksi. Struktur solid.
+🧠 [Metakognisi] Mode::Exploring - FAST PASS MCTS (Depth 1)
+🚀 APPLYING AXIOM IN SANDBOX: IDENTITY_STATIC (Tier: 0)
+🚀 APPLYING AXIOM IN SANDBOX: IDENTITY_STATIC (Tier: 0)
+🚀 APPLYING AXIOM IN SANDBOX: IDENTITY_STATIC (Tier: 0)
+[Depth 0] Axioms: ["IDENTITY_STATIC"] | Pragmatic: 79000.00 | Epistemic: 0.00 | Prob: 0.9900 | Dim: 3x3
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 1/2 │ Depth 0                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ ●=0.990 μ=0.895 range[0.800, 0.990]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  79000.000  │  Goal-seeking error             │
+  │    Epistemic (I):     0.000  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: 79000.000  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (6/6): [██████]
+🧠 [Metakognisi] Bottleneck::LocalOptimum - MCTS mentok.
+   -> Beralih ke ADVANCED PASS (Iterative Deepening MCTS / Grover)...
+   🔍 Search Attempt 1: Exploring top 2 advanced axioms...
+   ⚡ Memulai MCTS dari ROOT ZERO-POINT dengan 0 amunisi unik...
+🚀 APPLYING AXIOM IN SANDBOX: ROOT_START (Tier: 0)
+🚀 APPLYING AXIOM IN SANDBOX: ROOT_START (Tier: 0)
+🚀 APPLYING AXIOM IN SANDBOX: ROOT_START (Tier: 0)
+[Depth 0] Axioms: ["ROOT_START"] | Pragmatic: -1500.00 | Epistemic: 0.00 | Prob: 0.9900 | Dim: 7x7
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 1/2 │ Depth 0                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ ●=0.990 μ=0.895 range[0.800, 0.990]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  -1500.000  │  Goal-seeking error             │
+  │    Epistemic (I):     0.000  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: -1500.000  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (6/6): [██████]
+🧠 [Metakognisi] Bottleneck::FalseSharing - Amnesia Singkat (Cache Miss) Terdeteksi!
+   📝 MENULIS LOG ARCHITECTURE KE SISTEM: Iterasi iterasi EntityManifold lambat rata-rata 124637 ns per entitas. Kecepatan ini 3x lipat dari limit AVX2.
+🧠 [Metakognisi] Bottleneck::LocalOptimum - MCTS mentok.
+   -> Beralih ke ADVANCED PASS (Iterative Deepening MCTS / Grover)...
+   🔍 Search Attempt 1: Exploring top 2 advanced axioms...
+   ⚡ Memulai MCTS dari ROOT ZERO-POINT dengan 0 amunisi unik...
+🚀 APPLYING AXIOM IN SANDBOX: ROOT_START (Tier: 0)
+🚀 APPLYING AXIOM IN SANDBOX: ROOT_START (Tier: 0)
+🚀 APPLYING AXIOM IN SANDBOX: ROOT_START (Tier: 0)
+[Depth 0] Axioms: ["ROOT_START"] | Pragmatic: -1500.00 | Epistemic: 0.00 | Prob: 0.9900 | Dim: 7x7
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 1/2 │ Depth 0                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ ●=0.990 μ=0.895 range[0.800, 0.990]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  -1500.000  │  Goal-seeking error             │
+  │    Epistemic (I):     0.000  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: -1500.000  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (6/6): [██████]
+🧠 [Metakognisi] Bottleneck::FalseSharing - Amnesia Singkat (Cache Miss) Terdeteksi!
+   📝 MENULIS LOG ARCHITECTURE KE SISTEM: Iterasi iterasi EntityManifold lambat rata-rata 118518 ns per entitas. Kecepatan ini 3x lipat dari limit AVX2.
+🧠 [Metakognisi] Bottleneck::LocalOptimum - MCTS mentok.
+   -> Beralih ke ADVANCED PASS (Iterative Deepening MCTS / Grover)...
+   🔍 Search Attempt 1: Exploring top 2 advanced axioms...
+   ⚡ Memulai MCTS dari ROOT ZERO-POINT dengan 0 amunisi unik...
+🚀 APPLYING AXIOM IN SANDBOX: ROOT_START (Tier: 0)
+🚀 APPLYING AXIOM IN SANDBOX: ROOT_START (Tier: 0)
+🚀 APPLYING AXIOM IN SANDBOX: ROOT_START (Tier: 0)
+[Depth 0] Axioms: ["ROOT_START"] | Pragmatic: -1500.00 | Epistemic: 0.00 | Prob: 0.9900 | Dim: 7x7
+  ╭──────────────────────────────────────────────────────────────╮
+  │  MCTS NODE [0] — Rank 1/2 │ Depth 0                       │
+  ├──────────────────────────────────────────────────────────────┤
+  │  P(dist): ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ ●=0.990 μ=0.895 range[0.800, 0.990]   │
+  │  Threshold: 0.050 ✓ SURVIVES                                │
+  │  Energy Components:                                          │
+  │    Pragmatic (E):  -1500.000  │  Goal-seeking error             │
+  │    Epistemic (I):     0.000  │  Information gain               │
+  │    Complexity (C):    0.000  │  Model complexity               │
+  │    ───────────────────────────────────────────────────────── │
+  │    Total Free Energy: -1500.000  │  G = E - I + C                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  Status: 🌿 EXPANDING (exploring policies...)                   │
+  ╰──────────────────────────────────────────────────────────────╯
+  [Memory]  Map (6/6): [██████]
+🧠 [Metakognisi] Batas loop kognitif tercapai (Infinite Loop Protection). Simulasi dihentikan paksa.
+   [Rust MCTS] WARNING: Semua gelombang hancur! (Halusinasi/Meleset)
+🧬 [Autopoiesis] Kode genetik sudah ada di Wiki (knowledge/skills/auto/synthesized_crossover_8b516458.md). Menggunakan kembali tanpa menulis file baru.
+🧬 [Quantum Inference] Menjalankan Axiom Tensor 'synthesized_crossover_8b516458' secara dinamis di Multiverse Sandbox...
+🚀 APPLYING AXIOM IN SANDBOX: synthesized_crossover_8b516458 (Tier: 1)
+🧬 [Quantum Inference] Wave propagation selesai. (Simulasi internal berhasil).
+DEBUG: Agent returned grid:
+[0, 1, 0, 0, 0, 0, 2]
+[1, 0, 0, 0, 0, 2, 0]
+[0, 0, 0, 0, 2, 0, 0]
+[0, 0, 0, 2, 0, 0, 0]
+[0, 0, 2, 0, 0, 0, 0]
+[0, 2, 0, 0, 0, 0, 4]
+[2, 0, 0, 0, 0, 4, 0]
+MCTS failed. Engaging Generative Synthesized Skill: extract_anomalous_quadrant...
+✅ SUCCESS (100% Match!)
+
+
+🌿 ==================================
+Solving Task: 09629e4f.json
+🌿 ==================================
+🧠 [Orientasi Pre-emptive] Membaca Niat Task...
+   -> Niat / Klasifikasi Masalah: Task ini menunjukkan: ObjectManipulation. Dimensi Equal (11 → 11), Removed(40) objek (45 → 5), topologi berubah dari Scatter ke Scatter. Tidak ada template frame.
+🧠 [Topologi Kuantum] Betti-1: Mendeteksi 1 lubang (holes).
+🧠 [Memori Masa Lalu & Topologi] Teringat pola Flood Fill karena ada 1 lubang Betti-1...
+   -> Menginjeksi [CROP_TO_COLOR, FLOOD_FILL] ke dalam Seed Axioms.
+🧠 [Metakognisi] Bottleneck::FalseSharing - Amnesia Singkat (Cache Miss) Terdeteksi!
+   📝 MENULIS LOG ARCHITECTURE KE SISTEM: Iterasi iterasi EntityManifold lambat rata-rata 115912 ns per entitas. Kecepatan ini 3x lipat dari limit AVX2.
+🧠 [Metakognisi] Bottleneck::LocalOptimum - MCTS mentok.
+   -> Beralih ke ADVANCED PASS (Iterative Deepening MCTS / Grover)...
+   🔍 Search Attempt 1: Exploring top 2 advanced axioms...
+🚀 APPLYING AXIOM IN SANDBOX: FLOOD_FILL (Tier: 3)
+🚀 APPLYING AXIOM IN SANDBOX: FLOOD_FILL (Tier: 3)
+🚀 APPLYING AXIOM IN SANDBOX: FLOOD_FILL (Tier: 3)
+🚀 APPLYING AXIOM IN SANDBOX: FLOOD_FILL (Tier: 3)
+   ✅ Grover Diffusion menemukan solusi eksak! Index: 0
+🧠 [Metakognisi] Bottleneck::Solved - Sistem telah menemukan Ground State!
+   [Rust MCTS] Ground State Ditemukan: FLOOD_FILL (Energy = 0.0)
+DEBUG TEST_MANIFOLD BEFORE: active_count=45
+  Entity 0: mass=1, token=2, cx=6, cy=5
+  Entity 1: mass=40, token=5, cx=5, cy=5
+  Entity 2: mass=1, token=3, cx=9, cy=2
+  Entity 3: mass=1, token=4, cx=6, cy=8
+  Entity 4: mass=1, token=8, cx=8, cy=6
+  Entity 5: mass=1, token=8, cx=2, cy=2
+  Entity 6: mass=1, token=4, cx=9, cy=0
+  Entity 7: mass=1, token=4, cx=10, cy=5
+  Entity 8: mass=1, token=3, cx=5, cy=0
+  Entity 9: mass=1, token=3, cx=0, cy=5
+  Entity 10: mass=1, token=4, cx=1, cy=0
+  Entity 11: mass=1, token=8, cx=1, cy=6
+  Entity 12: mass=1, token=8, cx=6, cy=10
+  Entity 13: mass=1, token=6, cx=10, cy=9
+  Entity 14: mass=1, token=4, cx=5, cy=5
+  Entity 15: mass=1, token=4, cx=1, cy=5
+  Entity 16: mass=1, token=3, cx=2, cy=9
+  Entity 17: mass=1, token=6, cx=5, cy=8
+  Entity 18: mass=1, token=2, cx=9, cy=8
+  Entity 19: mass=1, token=6, cx=1, cy=9
+  Entity 20: mass=1, token=8, cx=5, cy=1
+  Entity 21: mass=1, token=2, cx=10, cy=1
+  Entity 22: mass=1, token=4, cx=4, cy=2
+  Entity 23: mass=1, token=3, cx=5, cy=4
+  Entity 24: mass=1, token=6, cx=6, cy=1
+  Entity 25: mass=1, token=2, cx=0, cy=2
+  Entity 26: mass=1, token=8, cx=8, cy=1
+  Entity 27: mass=1, token=2, cx=0, cy=4
+  Entity 28: mass=1, token=8, cx=4, cy=5
+  Entity 29: mass=1, token=4, cx=2, cy=8
+  Entity 30: mass=1, token=8, cx=10, cy=8
+  Entity 31: mass=1, token=2, cx=4, cy=1
+  Entity 32: mass=1, token=2, cx=1, cy=8
+  Entity 33: mass=1, token=3, cx=6, cy=9
+  Entity 34: mass=1, token=6, cx=2, cy=5
+  Entity 35: mass=1, token=6, cx=6, cy=6
+  Entity 36: mass=1, token=4, cx=8, cy=9
+  Entity 37: mass=1, token=2, cx=4, cy=10
+  Entity 38: mass=1, token=3, cx=8, cy=10
+  Entity 39: mass=1, token=6, cx=8, cy=2
+  Entity 40: mass=1, token=6, cx=9, cy=4
+  Entity 41: mass=1, token=2, cx=10, cy=4
+  Entity 42: mass=1, token=3, cx=8, cy=4
+  Entity 43: mass=1, token=6, cx=0, cy=0
+  Entity 44: mass=1, token=3, cx=2, cy=1
+DEBUG APPLYING AXIOM: FLOOD_FILL tier=3
+🚀 APPLYING AXIOM IN SANDBOX: FLOOD_FILL (Tier: 3)
+DEBUG AXIOM RESULT: changed=false
+DEBUG TEST_MANIFOLD AFTER: active_count=45
+  Entity 0: mass=1, token=2, cx=6, cy=5
+  Entity 1: mass=40, token=5, cx=5, cy=5
+  Entity 2: mass=1, token=3, cx=9, cy=2
+  Entity 3: mass=1, token=4, cx=6, cy=8
+  Entity 4: mass=1, token=8, cx=8, cy=6
+  Entity 5: mass=1, token=8, cx=2, cy=2
+  Entity 6: mass=1, token=4, cx=9, cy=0
+  Entity 7: mass=1, token=4, cx=10, cy=5
+  Entity 8: mass=1, token=3, cx=5, cy=0
+  Entity 9: mass=1, token=3, cx=0, cy=5
+  Entity 10: mass=1, token=4, cx=1, cy=0
+  Entity 11: mass=1, token=8, cx=1, cy=6
+  Entity 12: mass=1, token=8, cx=6, cy=10
+  Entity 13: mass=1, token=6, cx=10, cy=9
+  Entity 14: mass=1, token=4, cx=5, cy=5
+  Entity 15: mass=1, token=4, cx=1, cy=5
+  Entity 16: mass=1, token=3, cx=2, cy=9
+  Entity 17: mass=1, token=6, cx=5, cy=8
+  Entity 18: mass=1, token=2, cx=9, cy=8
+  Entity 19: mass=1, token=6, cx=1, cy=9
+  Entity 20: mass=1, token=8, cx=5, cy=1
+  Entity 21: mass=1, token=2, cx=10, cy=1
+  Entity 22: mass=1, token=4, cx=4, cy=2
+  Entity 23: mass=1, token=3, cx=5, cy=4
+  Entity 24: mass=1, token=6, cx=6, cy=1
+  Entity 25: mass=1, token=2, cx=0, cy=2
+  Entity 26: mass=1, token=8, cx=8, cy=1
+  Entity 27: mass=1, token=2, cx=0, cy=4
+  Entity 28: mass=1, token=8, cx=4, cy=5
+  Entity 29: mass=1, token=4, cx=2, cy=8
+  Entity 30: mass=1, token=8, cx=10, cy=8
+  Entity 31: mass=1, token=2, cx=4, cy=1
+  Entity 32: mass=1, token=2, cx=1, cy=8
+  Entity 33: mass=1, token=3, cx=6, cy=9
+  Entity 34: mass=1, token=6, cx=2, cy=5
+  Entity 35: mass=1, token=6, cx=6, cy=6
+  Entity 36: mass=1, token=4, cx=8, cy=9
+  Entity 37: mass=1, token=2, cx=4, cy=10
+  Entity 38: mass=1, token=3, cx=8, cy=10
+  Entity 39: mass=1, token=6, cx=8, cy=2
+  Entity 40: mass=1, token=6, cx=9, cy=4
+  Entity 41: mass=1, token=2, cx=10, cy=4
+  Entity 42: mass=1, token=3, cx=8, cy=4
+  Entity 43: mass=1, token=6, cx=0, cy=0
+  Entity 44: mass=1, token=3, cx=2, cy=1
+DEBUG: Rule applied: ["FLOOD_FILL"]
+DEBUG: Rule history: ["FLOOD_FILL"]
+DEBUG: Agent returned grid:
+[6, 4, 5, 5, 5, 3, 5, 5, 5, 4, 5]
+[5, 5, 3, 5, 2, 8, 6, 5, 8, 5, 2]
+[2, 5, 8, 5, 4, 5, 5, 5, 6, 3, 5]
+[5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5]
+[2, 5, 5, 5, 5, 3, 5, 5, 3, 6, 2]
+[3, 4, 6, 5, 8, 4, 5, 5, 5, 5, 4]
+[5, 8, 5, 5, 5, 5, 6, 5, 8, 5, 5]
+[5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5]
+[5, 2, 4, 5, 5, 6, 4, 5, 5, 2, 8]
+[5, 6, 3, 5, 5, 5, 3, 5, 4, 5, 6]
+[5, 5, 5, 5, 2, 5, 8, 5, 3, 5, 5]
+MCTS failed. Engaging Generative Synthesized Skill: extract_anomalous_quadrant...
+✅ SUCCESS (100% Match!)
+
+
+🌿 ==================================
+Solving Task: 2dc579da.json
+🌿 ==================================
+🧠 [Orientasi Pre-emptive] Membaca Niat Task...
+   -> Niat / Klasifikasi Masalah: Task ini menunjukkan: StructuralTransform. Dimensi Smaller (5 → 2), Removed(4) objek (6 → 2), topologi berubah dari Scatter ke Scatter. Tidak ada template frame.
+🧠 [Topologi Kuantum] Betti-1: Tidak ada lubang terdeteksi. Struktur solid.
+🧠 [Metakognisi] Bottleneck::Solved - Sistem telah menemukan Ground State!
+   [Rust MCTS] WARNING: Semua gelombang hancur! (Halusinasi/Meleset)
+🧬 [Autopoiesis] Kode genetik sudah ada di Wiki (knowledge/skills/auto/synthesized_crossover_19b9eee8.md). Menggunakan kembali tanpa menulis file baru.
+🧬 [Quantum Inference] Menjalankan Axiom Tensor 'synthesized_crossover_19b9eee8' secara dinamis di Multiverse Sandbox...
+🚀 APPLYING AXIOM IN SANDBOX: synthesized_crossover_19b9eee8 (Tier: 1)
+🧬 [Quantum Inference] Wave propagation selesai. (Simulasi internal berhasil).
+DEBUG: Agent returned grid:
+[1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1]
+[1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1]
+[1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1]
+[1, 1, 1, 1, 1, 1, 0, 1, 2, 1, 1, 1, 1]
+[1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1]
+[1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1]
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+[1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1]
+[1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1]
+[1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1]
+[1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1]
+[1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1]
+[1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1]
+MCTS failed. Engaging Generative Synthesized Skill: extract_anomalous_quadrant...
+✅ SUCCESS (100% Match!)
+
+
+🌿 ==================================
+Solving Task: 11852cab.json
+🌿 ==================================
+🧠 [Orientasi Pre-emptive] Membaca Niat Task...
+   -> Niat / Klasifikasi Masalah: Task ini menunjukkan: ObjectManipulation. Dimensi Equal (7 → 7), Added(3) objek (10 → 13), topologi berubah dari Scatter ke Scatter. Tidak ada template frame.
+🧠 [Topologi Kuantum] Betti-1: Mendeteksi 4 lubang (holes).
+🧠 [Memori Masa Lalu & Topologi] Teringat pola Flood Fill karena ada 4 lubang Betti-1...
+   -> Menginjeksi [CROP_TO_COLOR, FLOOD_FILL] ke dalam Seed Axioms.
+🧠 [Metakognisi] Bottleneck::Solved - Sistem telah menemukan Ground State!
+   [Rust MCTS] WARNING: Semua gelombang hancur! (Halusinasi/Meleset)
+🧬 [Autopoiesis] Kode genetik sudah ada di Wiki (knowledge/skills/auto/synthesized_crossover_ac2309aa.md). Menggunakan kembali tanpa menulis file baru.
+🧬 [Quantum Inference] Menjalankan Axiom Tensor 'synthesized_crossover_ac2309aa' secara dinamis di Multiverse Sandbox...
+🚀 APPLYING AXIOM IN SANDBOX: synthesized_crossover_ac2309aa (Tier: 1)
+🧬 [Quantum Inference] Wave propagation selesai. (Simulasi internal berhasil).
+DEBUG: Agent returned grid:
+[0, 0, 0, 0, 0, 0]
+[0, 0, 0, 0, 0, 0]
+[0, 1, 0, 4, 0, 1]
+[0, 0, 2, 0, 2, 0]
+[0, 0, 0, 1, 0, 0]
+[0, 0, 2, 0, 2, 0]
+[0, 1, 0, 0, 0, 1]
+MCTS failed. Engaging Generative Synthesized Skill: extract_anomalous_quadrant...
+💀 FAILED (Mismatch)
+
+
+🌿 ==================================
+Solving Task: 22168020.json
+🌿 ==================================
+🧠 [Orientasi Pre-emptive] Membaca Niat Task...
+   -> Niat / Klasifikasi Masalah: Task ini menunjukkan: ObjectManipulation. Dimensi Equal (9 → 9), Removed(6) objek (7 → 1), topologi berubah dari Scatter ke Single. Tidak ada template frame.
+🧠 [Topologi Kuantum] Betti-1: Tidak ada lubang terdeteksi. Struktur solid.
+🧠 [Metakognisi] Bottleneck::Solved - Sistem telah menemukan Ground State!
+   [Rust MCTS] WARNING: Semua gelombang hancur! (Halusinasi/Meleset)
+🧬 [Autopoiesis] Kode genetik sudah ada di Wiki (knowledge/skills/auto/synthesized_crossover_8b516458.md). Menggunakan kembali tanpa menulis file baru.
+🧬 [Quantum Inference] Menjalankan Axiom Tensor 'synthesized_crossover_8b516458' secara dinamis di Multiverse Sandbox...
+🚀 APPLYING AXIOM IN SANDBOX: synthesized_crossover_8b516458 (Tier: 1)
+🧬 [Quantum Inference] Wave propagation selesai. (Simulasi internal berhasil).
+DEBUG: Agent returned grid:
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+[4, 0, 0, 4, 0, 0, 0, 0, 0, 0]
+[0, 4, 4, 0, 7, 0, 0, 0, 0, 7]
+[0, 4, 4, 0, 0, 7, 0, 0, 7, 0]
+[0, 0, 0, 0, 0, 0, 7, 7, 0, 0]
+[0, 0, 0, 0, 0, 0, 7, 7, 0, 0]
+[0, 3, 0, 0, 0, 0, 3, 0, 0, 0]
+[0, 0, 3, 0, 0, 3, 0, 0, 0, 0]
+[0, 0, 0, 3, 3, 0, 0, 0, 0, 0]
+[0, 0, 0, 3, 3, 0, 0, 0, 0, 0]
+MCTS failed. Engaging Generative Synthesized Skill: extract_anomalous_quadrant...
+💀 FAILED (Mismatch)
+
+
+🌿 ==================================
+Solving Task: 22233c11.json
+🌿 ==================================
+🧠 [Orientasi Pre-emptive] Membaca Niat Task...
+   -> Niat / Klasifikasi Masalah: Task ini menunjukkan: StructuralTransform. Dimensi Larger (8 → 9), Added(4) objek (4 → 8), topologi berubah dari Scatter ke Scatter. Tidak ada template frame.
+🧠 [Topologi Kuantum] Betti-1: Tidak ada lubang terdeteksi. Struktur solid.
+🧠 [Metakognisi] Bottleneck::Solved - Sistem telah menemukan Ground State!
+   [Rust MCTS] WARNING: Semua gelombang hancur! (Halusinasi/Meleset)
+🧬 [Autopoiesis] Kode genetik sudah ada di Wiki (knowledge/skills/auto/synthesized_crossover_7839c984.md). Menggunakan kembali tanpa menulis file baru.
+🧬 [Quantum Inference] Menjalankan Axiom Tensor 'synthesized_crossover_7839c984' secara dinamis di Multiverse Sandbox...
+🚀 APPLYING AXIOM IN SANDBOX: synthesized_crossover_7839c984 (Tier: 1)
+🧬 [Quantum Inference] Wave propagation selesai. (Simulasi internal berhasil).
+DEBUG: Agent returned grid:
+[0, 0, 0, 0, 0, 0, 0, 0, 0]
+[0, 0, 0, 0, 0, 0, 0, 0, 0]
+[0, 0, 0, 0, 0, 0, 3, 3, 3]
+[0, 0, 0, 0, 0, 0, 3, 3, 3]
+[0, 0, 0, 0, 0, 0, 3, 3, 3]
+[0, 0, 0, 3, 3, 3, 0, 0, 0]
+[0, 0, 0, 3, 3, 3, 0, 0, 0]
+[0, 0, 0, 3, 3, 3, 0, 0, 0]
+MCTS failed. Engaging Generative Synthesized Skill: extract_anomalous_quadrant...
+💀 FAILED (Mismatch)
+
+
+🌿 ==================================
+Solving Task: 23581191.json
+🌿 ==================================
+🧠 [Orientasi Pre-emptive] Membaca Niat Task...
+   -> Niat / Klasifikasi Masalah: Task ini menunjukkan: StructuralTransform. Dimensi Larger (7 → 9), Added(6) objek (2 → 8), topologi berubah dari Scatter ke Scatter. Tidak ada template frame.
+🧠 [Topologi Kuantum] Betti-1: Tidak ada lubang terdeteksi. Struktur solid.
+🧠 [Metakognisi] Bottleneck::Solved - Sistem telah menemukan Ground State!
+   [Rust MCTS] WARNING: Semua gelombang hancur! (Halusinasi/Meleset)
+🧬 [Autopoiesis] Kode genetik sudah ada di Wiki (knowledge/skills/auto/synthesized_crossover_cb4dc40c.md). Menggunakan kembali tanpa menulis file baru.
+🧬 [Quantum Inference] Menjalankan Axiom Tensor 'synthesized_crossover_cb4dc40c' secara dinamis di Multiverse Sandbox...
+🚀 APPLYING AXIOM IN SANDBOX: synthesized_crossover_cb4dc40c (Tier: 1)
+🧬 [Quantum Inference] Wave propagation selesai. (Simulasi internal berhasil).
+DEBUG: Agent returned grid:
+[0, 0, 0, 0, 0]
+[0, 0, 0, 0, 8]
+[0, 0, 0, 0, 0]
+[0, 0, 0, 0, 0]
+[0, 0, 0, 0, 0]
+[0, 0, 0, 0, 0]
+[0, 7, 0, 0, 0]
+MCTS failed. Engaging Generative Synthesized Skill: extract_anomalous_quadrant...
+💀 FAILED (Mismatch)
+
+
+🌿 ==================================
+Solving Task: 264363fd.json
+🌿 ==================================
+🧠 [Orientasi Pre-emptive] Membaca Niat Task...
+   -> Niat / Klasifikasi Masalah: Task ini menunjukkan: ObjectManipulation. Dimensi Equal (30 → 30), Added(13) objek (14 → 27), topologi berubah dari Scatter ke Scatter. Tidak ada template frame.
+🧠 [Topologi Kuantum] Betti-1: Tidak ada lubang terdeteksi. Struktur solid.
+🧠 [Metakognisi] Bottleneck::Solved - Sistem telah menemukan Ground State!
+   [Rust MCTS] WARNING: Semua gelombang hancur! (Halusinasi/Meleset)
+🧬 [Autopoiesis] Kode genetik sudah ada di Wiki (knowledge/skills/auto/synthesized_crossover_8b516458.md). Menggunakan kembali tanpa menulis file baru.
+🧬 [Quantum Inference] Menjalankan Axiom Tensor 'synthesized_crossover_8b516458' secara dinamis di Multiverse Sandbox...
+🚀 APPLYING AXIOM IN SANDBOX: synthesized_crossover_8b516458 (Tier: 1)
+🧬 [Quantum Inference] Wave propagation selesai. (Simulasi internal berhasil).
+DEBUG: Agent returned grid:
+[4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0]
+[4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0]
+[4, 4, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0]
+[4, 4, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0]
+[4, 4, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0]
+[4, 4, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0]
+[4, 4, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0]
+[4, 4, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0]
+[4, 4, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0]
+[4, 4, 4, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0]
+[4, 4, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0]
+[4, 4, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0]
+[4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0]
+[4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0]
+[4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0]
+[4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0]
+[4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0]
+[4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 0]
+[4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0]
+[4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0]
+[4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0]
+[4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0]
+[4, 4, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0]
+[4, 8, 8, 2, 8, 8, 4, 4, 4, 4, 4, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0]
+[4, 4, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0]
+[4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0]
+[4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0]
+[4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0]
+[4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0]
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+MCTS failed. Engaging Generative Synthesized Skill: extract_anomalous_quadrant...
+💀 FAILED (Mismatch)
+
+
+🌿 ==================================
+Solving Task: 29623171.json
+🌿 ==================================
+🧠 [Orientasi Pre-emptive] Membaca Niat Task...
+   -> Niat / Klasifikasi Masalah: Task ini menunjukkan: ObjectManipulation. Dimensi Equal (11 → 11), Removed(7) objek (9 → 2), topologi berubah dari Scatter ke Scatter. Tidak ada template frame.
+🧠 [Topologi Kuantum] Betti-1: Tidak ada lubang terdeteksi. Struktur solid.
+🧠 [Metakognisi] Bottleneck::Solved - Sistem telah menemukan Ground State!
+   [Rust MCTS] WARNING: Semua gelombang hancur! (Halusinasi/Meleset)
+🧬 [Autopoiesis] Kode genetik sudah ada di Wiki (knowledge/skills/auto/synthesized_crossover_8b516458.md). Menggunakan kembali tanpa menulis file baru.
+🧬 [Quantum Inference] Menjalankan Axiom Tensor 'synthesized_crossover_8b516458' secara dinamis di Multiverse Sandbox...
+🚀 APPLYING AXIOM IN SANDBOX: synthesized_crossover_8b516458 (Tier: 1)
+🧬 [Quantum Inference] Wave propagation selesai. (Simulasi internal berhasil).
+DEBUG: Agent returned grid:
+[4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5]
+[4, 4, 5, 5, 5, 5, 4, 5, 4, 4, 5]
+[4, 5, 5, 5, 5, 5, 5, 5, 4, 4, 5]
+[5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5]
+[5, 5, 5, 5, 5, 5, 5, 5, 5, 4, 5]
+[4, 5, 5, 5, 5, 4, 5, 5, 4, 5, 4]
+[5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5]
+[5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5]
+[5, 5, 5, 5, 5, 4, 5, 5, 5, 5, 4]
+[4, 5, 5, 5, 5, 5, 4, 5, 5, 4, 5]
+[5, 5, 5, 5, 4, 4, 5, 5, 5, 5, 5]
+MCTS failed. Engaging Generative Synthesized Skill: extract_anomalous_quadrant...
+💀 FAILED (Mismatch)
+
+
+🌿 ==================================
+Solving Task: 32597951.json
+🌿 ==================================
+🧠 [Orientasi Pre-emptive] Membaca Niat Task...
+   -> Niat / Klasifikasi Masalah: Task ini menunjukkan: ObjectManipulation. Dimensi Equal (17 → 17), Added(3) objek (41 → 44), topologi berubah dari Scatter ke Scatter. Tidak ada template frame.
+🧠 [Topologi Kuantum] Betti-1: Tidak ada lubang terdeteksi. Struktur solid.
+🧠 [Metakognisi] Bottleneck::Solved - Sistem telah menemukan Ground State!
+   [Rust MCTS] WARNING: Semua gelombang hancur! (Halusinasi/Meleset)
+🧬 [Autopoiesis] Kode genetik sudah ada di Wiki (knowledge/skills/auto/synthesized_crossover_2edc0287.md). Menggunakan kembali tanpa menulis file baru.
+🧬 [Quantum Inference] Menjalankan Axiom Tensor 'synthesized_crossover_2edc0287' secara dinamis di Multiverse Sandbox...
+🚀 APPLYING AXIOM IN SANDBOX: synthesized_crossover_2edc0287 (Tier: 1)
+🧬 [Quantum Inference] Wave propagation selesai. (Simulasi internal berhasil).
+DEBUG: Agent returned grid:
+[1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0]
+[0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1]
+[0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0]
+[1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0]
+[0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1]
+[0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0]
+[1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0]
+[0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1]
+[0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0]
+[1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0]
+[0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1]
+[0, 0, 1, 0, 0, 1, 0, 8, 1, 8, 8, 8, 8, 0, 1, 0, 0]
+[1, 0, 0, 1, 0, 0, 1, 8, 8, 1, 8, 8, 1, 0, 0, 1, 0]
+[0, 1, 0, 0, 1, 0, 0, 1, 8, 8, 1, 8, 8, 1, 0, 0, 1]
+[0, 0, 1, 0, 0, 1, 0, 8, 1, 8, 8, 1, 8, 0, 1, 0, 0]
+[1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0]
+[0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1]
+MCTS failed. Engaging Generative Synthesized Skill: extract_anomalous_quadrant...
+💀 FAILED (Mismatch)
+
+
+🏁 BATCH EXECUTION COMPLETE
+Score: 3 / 10
+
+🌿 ==================================
+🌙 MENGAKTIFKAN SIKLUS TIDUR (MENTAL REPLAY)
+🌿 ==================================
+🌙 [Mental Replay] RRM memasuki fase REM (Bermimpi)...
+   -> Tidak ada memori aktif. Menciptakan skenario fraktal hipotetis...
+   -> Generate skenario variasi...
+   -> Tercipta 3 dimensi alternatif (Size Scaling, Color Permutation, Noise Injection).
+   -> Mensimulasikan Counterfactual Engine di alam mimpi...
+   -> Mimpi selesai. Sistem telah melatih otot kognitifnya.

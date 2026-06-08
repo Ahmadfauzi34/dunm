@@ -52,12 +52,21 @@ impl SimdEnergyCalculator {
                 // EXTREME PENALTY: FORCE MCTS TO AVOID TRANSLATIONS IF DIMENSIONS ARE WRONG
                 return 10000.0 * dim_diff;
             }
-            return -500.0; // Sukses mutlak di Fase 1! Abaikan piksel berantakan.
+            // Ghost Axiom Fix: Do NOT return an absolute -500.0 success when dimensions match!
+            // We must still calculate pixel layout energy to prevent MCTS from accepting
+            // over-spawned grids (blue pixel bomb) as a perfect macro ground state.
         }
 
         // 🌟 GERBANG FASE 2: MIKROSKOPIS 🌟
         // Di fase ini, kita berasumsi dimensi sudah (atau sedang dicoba) diselesaikan.
         let mut energy = 0.0;
+
+        // If we are in MacroStructural, we'll give a massive discount/base negative energy
+        // to encourage dimension discovery, but we STILL add pixel errors on top of it.
+        if *phase == CognitivePhase::MacroStructural {
+            energy -= 500.0;
+        }
+
         if dim_diff > 0.0 {
             energy += 10.0 * dim_diff; // Pinalti standar jika dimensi masih salah
         }
