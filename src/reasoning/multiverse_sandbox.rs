@@ -184,6 +184,27 @@ impl MultiverseSandbox {
                         }
                     }
                 }
+            } else if axiom_type.starts_with("ARC_SYMMETRY_SPAWN_") {
+                let parts: Vec<&str> = axiom_type.split('_').collect();
+                let spawn_color = parts.last().unwrap_or(&"3").parse::<i32>().unwrap_or(3);
+                // Fallback for anchor color if available in condition tensor
+                let mut anchor_color = 0;
+                if let Some(cond) = condition_tensor {
+                    for e in 0..u.active_count {
+                        if u.masses[e] > 0.0 {
+                            let sem = u.get_semantic_tensor(e);
+                            if FHRR::similarity(&sem, cond) >= 0.8 {
+                                anchor_color = u.tokens[e];
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if anchor_color != 0 {
+                    return Self::apply_arc_symmetry_spawn(u, anchor_color, spawn_color);
+                }
+                return false;
             } else if axiom_type.starts_with("SPAWN_EXTRAPOLATE_")
                 || axiom_type.starts_with("INTERSECTION_FILL_")
             {
@@ -1279,5 +1300,206 @@ impl MultiverseSandbox {
             }
         }
         u.sync_to_cow();
+    }
+
+    // === Tier 9: SYMMETRY-AWARE AZURE SPAWN (ARC Task Pattern) ===
+    pub fn apply_arc_symmetry_spawn(
+        u: &mut EntityManifold,
+        anchor_color: i32,
+        spawn_color: i32,
+    ) -> bool {
+        let com = Self::compute_com(u, anchor_color);
+        if !Self::verify_point_symmetry(u, anchor_color, com) {
+            return false;
+        }
+
+        let mut color_cells = Vec::new();
+        for e in 0..u.active_count {
+            if u.masses[e] > 0.0 && u.tokens[e] == anchor_color {
+                color_cells.push((u.centers_x[e], u.centers_y[e]));
+            }
+        }
+
+        let shape = Self::classify_component(&color_cells);
+        let mut spawn_locations = Vec::new();
+
+        if shape == "DiagonalSlash" || shape == "DiagonalBackslash" {
+            // Perpendicular diagonal distance 3x
+            let d_perp = if shape == "DiagonalSlash" { -1.0 } else { 1.0 };
+
+            // Generate points extending perpendicular to the COM
+            // Example pattern: spawning blocks perpendicular to the center
+            spawn_locations.push((com.0 - 3.0, com.1 - 3.0 * d_perp));
+            spawn_locations.push((com.0 + 3.0, com.1 + 3.0 * d_perp));
+        } else if shape == "SquareBlock" || shape == "SingleCell" {
+            // Project to corner of the grid
+            let gw = u.global_width - 1.0;
+            let gh = u.global_height - 1.0;
+
+            // Push to empty corners
+            if com.0 < gw / 2.0 && com.1 < gh / 2.0 {
+                spawn_locations.push((gw, gh)); // Spawn opposite BR
+            } else if com.0 > gw / 2.0 && com.1 < gh / 2.0 {
+                spawn_locations.push((0.0, gh)); // Spawn opposite BL
+            } else if com.0 < gw / 2.0 && com.1 > gh / 2.0 {
+                spawn_locations.push((gw, 0.0)); // Spawn opposite TR
+            } else {
+                spawn_locations.push((0.0, 0.0)); // Spawn opposite TL
+            }
+        } else {
+            return false;
+        }
+
+        let mut collision = false;
+        for (sx, sy) in spawn_locations {
+            let sx_i = sx.round();
+            let sy_i = sy.round();
+
+            if sx_i < 0.0 || sy_i < 0.0 || sx_i >= u.global_width || sy_i >= u.global_height {
+                continue;
+            }
+
+            let mut occupied = false;
+            for e in 0..u.active_count {
+                if u.masses[e] > 0.0 && (u.centers_x[e] - sx_i).abs() < 0.1 && (u.centers_y[e] - sy_i).abs() < 0.1 {
+                    occupied = true;
+                    if u.tokens[e] != spawn_color {
+                        u.tokens[e] = spawn_color;
+                        collision = true;
+                    }
+                    break;
+                }
+            }
+
+            if !occupied {
+                let mut dm_idx = u.active_count;
+                for m_idx in 0..u.active_count {
+                    if u.masses[m_idx] == 0.0 {
+                        dm_idx = m_idx;
+                        break;
+                    }
+                }
+                u.ensure_scalar_capacity(dm_idx + 1);
+                u.masses[dm_idx] = 1.0;
+                u.centers_x[dm_idx] = sx_i;
+                u.centers_y[dm_idx] = sy_i;
+                u.tokens[dm_idx] = spawn_color;
+
+                let new_sem = crate::core::fhrr::FHRR::fractional_bind(crate::core::core_seeds::CoreSeeds::color_seed(), spawn_color as f32);
+                let mut sem = u.get_semantic_tensor_mut(dm_idx);
+                sem.assign(&new_sem);
+
+                if dm_idx >= u.active_count {
+                    u.active_count = dm_idx + 1;
+                }
+                collision = true;
+            }
+        }
+
+        collision
+    }
+
+    // === Utilitas Geometri & Simetri Dasar ===
+
+    pub fn classify_component(cells: &[(f32, f32)]) -> &'static str {
+        if cells.is_empty() {
+            return "Unknown";
+        }
+        if cells.len() == 1 {
+            return "SingleCell";
+        }
+
+        let mut min_x = f32::MAX;
+        let mut max_x = f32::MIN;
+        let mut min_y = f32::MAX;
+        let mut max_y = f32::MIN;
+        for &(x, y) in cells {
+            min_x = min_x.min(x);
+            max_x = max_x.max(x);
+            min_y = min_y.min(y);
+            max_y = max_y.max(y);
+        }
+
+        let width = (max_x - min_x).round() + 1.0;
+        let height = (max_y - min_y).round() + 1.0;
+        let area = width * height;
+
+        // Full square block
+        if (cells.len() as f32 - area).abs() < 0.1 {
+            return "SquareBlock";
+        }
+
+        let mut all_slash = true;
+        let mut all_backslash = true;
+
+        let c_slash = cells[0].1 - cells[0].0; // y = x + c => c = y - x
+        let c_back = cells[0].1 + cells[0].0;  // y = -x + c => c = y + x
+
+        for &(x, y) in cells {
+            if (y - x - c_slash).abs() > 0.5 {
+                all_slash = false;
+            }
+            if (y + x - c_back).abs() > 0.5 {
+                all_backslash = false;
+            }
+        }
+
+        if all_slash {
+            return "DiagonalSlash";
+        }
+        if all_backslash {
+            return "DiagonalBackslash";
+        }
+
+        "Unknown"
+    }
+
+    pub fn compute_com(u: &EntityManifold, color: i32) -> (f32, f32) {
+        let mut sum_x = 0.0f32;
+        let mut sum_y = 0.0f32;
+        let mut count = 0.0f32;
+        for e in 0..u.active_count {
+            if u.masses[e] > 0.0 && u.tokens[e] == color {
+                sum_x += u.centers_x[e];
+                sum_y += u.centers_y[e];
+                count += 1.0;
+            }
+        }
+        let inv = 1.0 / count.max(f32::EPSILON);
+        (sum_x * inv, sum_y * inv)
+    }
+
+    pub fn verify_point_symmetry(u: &EntityManifold, color: i32, com: (f32, f32)) -> bool {
+        let mut color_cells = Vec::new();
+        for e in 0..u.active_count {
+            if u.masses[e] > 0.0 && u.tokens[e] == color {
+                color_cells.push((u.centers_x[e], u.centers_y[e]));
+            }
+        }
+
+        if color_cells.is_empty() {
+            return false;
+        }
+
+        for &(cx, cy) in &color_cells {
+            let dx = cx - com.0;
+            let dy = cy - com.1;
+            let expected_x = com.0 - dx;
+            let expected_y = com.1 - dy;
+
+            let mut has_reflection = false;
+            for &(ox, oy) in &color_cells {
+                if (ox - expected_x).abs() < 0.5 && (oy - expected_y).abs() < 0.5 {
+                    has_reflection = true;
+                    break;
+                }
+            }
+
+            if !has_reflection {
+                return false;
+            }
+        }
+
+        true
     }
 }
