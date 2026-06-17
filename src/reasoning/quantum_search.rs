@@ -794,6 +794,7 @@ impl AsyncWaveSearch {
                             arena.spawn_node(Some(current_idx), child_tolerance, parent_state)
                         {
                             // Populate child aksioma
+                            // Menggunakan clone() dan menonaktifkan lint karena source dan target berada dalam arena yang sama, menghindari borrow checker error E0502 jika menggunakan clone_from()
                             #[allow(clippy::assigning_clones)]
                             {
                                 arena.axiom_path[child_idx] = arena.axiom_path[current_idx].clone();
